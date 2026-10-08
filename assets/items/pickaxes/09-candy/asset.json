@@ -1,0 +1,51 @@
+{
+  "tier": 9,
+  "key": "Candy",
+  "nameRu": "Конфетная",
+  "referenceImage": "references/09-candy-pickaxe-studs-v02.png",
+  "imageStatus": "awaiting-user-approval",
+  "modelStatus": "ready-for-user-review",
+  "generator": "built-in image_gen",
+  "prompt": "Change ONLY framing of this existing candy pickaxe icon. Preserve the exact pink-white striped double-hook head, peppermint discs, turquoise fittings, square Roblox studs, pose, colors, dark contour and clean bevelled 3D cartoon style. Zoom out enough that the entire upper candy arch is completely visible, reconstruct the tiny cropped top of the left arch. Leave 9 percent transparent padding around the whole tool on ALL sides. Exactly one complete pickaxe, full head and handle inside the canvas, true transparent alpha background, no new decoration, no text or external shadow. Do not redesign the weapon.\n",
+  "directories": {
+    "models": "models",
+    "textures": "textures",
+    "icons": "icons",
+    "exports": "exports"
+  },
+  "reviewModel": {
+    "version": "v01",
+    "status": "accepted-for-continuation",
+    "blend": "../pack/models/pickaxes-asset-pack-review-v20.blend",
+    "scene": "Pickaxe_Pack_Review",
+    "collection": "09_Candy_Review_v01",
+    "texture": "../pack/textures/candy-striped-dark-studs-v01.png",
+    "preview": "../pack/previews/pack-full-18-review-v02.png",
+    "detailPreview": "../pack/previews/candy-detail-review-v01.png",
+    "raisedStudGeometry": false,
+    "runtimeReplaced": true,
+    "attachmentAudit": "../pack/previews/pack-attachment-audit-v20.json",
+    "attachmentStatus": "passed"
+  },
+  "studioImportPackage": {
+    "version": "v03",
+    "fbx": "../pack/exports/roblox-import-v03/models/CandyPickaxe.fbx",
+    "texture": "../pack/exports/roblox-import-v03/textures/Candy_Color.png",
+    "meshName": "CandyPickaxe",
+    "runtimeKey": "Candy",
+    "triangles": 1560,
+    "sizeStuds": [
+      5.396086692810059,
+      5.084999680519104,
+      0.9199999570846558
+    ],
+    "materialCount": 1,
+    "uvSets": 1,
+    "importedToRoblox": true,
+    "manifest": "../pack/exports/roblox-import-v03/manifest.json",
+    "meshId": "rbxassetid://72079467492358",
+    "textureId": "rbxassetid://102977099734663",
+    "templatePath": "ReplicatedStorage.PickaxeModels.Candy",
+    "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.CandyPickaxe"
+  }
+}

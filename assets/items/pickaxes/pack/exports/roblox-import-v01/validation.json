@@ -1,0 +1,149 @@
+{
+  "files": {
+    "Pickaxes_Wooden_Stone.fbx": [
+      {
+        "name": "StonePickaxe",
+        "triangles": 464,
+        "blenderSize": [
+          4.940000116825104,
+          0.8500001430511475,
+          4.654999928548932
+        ],
+        "pivot": [
+          3.0999999046325684,
+          0.0,
+          1.399999976158142
+        ],
+        "textureLoaded": true,
+        "uvValid": true
+      },
+      {
+        "name": "WoodenPickaxe",
+        "triangles": 528,
+        "blenderSize": [
+          5.32000008225441,
+          1.3899999856948853,
+          4.78500016219914
+        ],
+        "pivot": [
+          -3.0999999046325684,
+          0.0,
+          1.399999976158142
+        ],
+        "textureLoaded": true,
+        "uvValid": true
+      }
+    ],
+    "Pickaxes_Wooden_Stone.glb": [
+      {
+        "name": "StonePickaxe",
+        "triangles": 464,
+        "blenderSize": [
+          4.93999981880188,
+          0.8500000238418579,
+          4.654999852180481
+        ],
+        "pivot": [
+          3.0999999046325684,
+          0.0,
+          1.399999976158142
+        ],
+        "textureLoaded": true,
+        "uvValid": true
+      },
+      {
+        "name": "WoodenPickaxe",
+        "triangles": 528,
+        "blenderSize": [
+          5.320000410079956,
+          1.3899999856948853,
+          4.7850000858306885
+        ],
+        "pivot": [
+          -3.0999999046325684,
+          -0.0,
+          1.399999976158142
+        ],
+        "textureLoaded": true,
+        "uvValid": true
+      }
+    ],
+    "models/WoodenPickaxe.fbx": [
+      {
+        "name": "WoodenPickaxe",
+        "triangles": 528,
+        "blenderSize": [
+          5.320000171661377,
+          1.3899999856948853,
+          4.7850000858306885
+        ],
+        "pivot": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "textureLoaded": true,
+        "uvValid": true
+      }
+    ],
+    "models/WoodenPickaxe.glb": [
+      {
+        "name": "WoodenPickaxe",
+        "triangles": 528,
+        "blenderSize": [
+          5.320000171661377,
+          1.3899999856948853,
+          4.784999966621399
+        ],
+        "pivot": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "textureLoaded": true,
+        "uvValid": true
+      }
+    ],
+    "models/StonePickaxe.fbx": [
+      {
+        "name": "StonePickaxe",
+        "triangles": 464,
+        "blenderSize": [
+          4.940000057220459,
+          0.8500001430511475,
+          4.654999852180481
+        ],
+        "pivot": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "textureLoaded": true,
+        "uvValid": true
+      }
+    ],
+    "models/StonePickaxe.glb": [
+      {
+        "name": "StonePickaxe",
+        "triangles": 464,
+        "blenderSize": [
+          4.940000057220459,
+          0.8500000238418579,
+          4.654999732971191
+        ],
+        "pivot": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "textureLoaded": true,
+        "uvValid": true
+      }
+    ]
+  },
+  "sourceObjects": [
+    "StonePickaxe",
+    "WoodenPickaxe"
+  ],
+  "robloxImported": false
+}

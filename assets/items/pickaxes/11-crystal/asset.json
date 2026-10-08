@@ -1,0 +1,51 @@
+{
+  "tier": 11,
+  "key": "Crystal",
+  "nameRu": "Кристальная",
+  "referenceImage": "references/11-crystal-pickaxe-studs-v01.png",
+  "imageStatus": "awaiting-user-approval",
+  "modelStatus": "ready-for-user-review",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A high-tier crystal pickaxe: large asymmetric crown-like cluster of icy cyan and violet angular crystal spikes arranged horizontally as two usable pick tips around a navy socket, three small floating faceted crystal shards very close to the head, crystal shaft with navy rings and one prism pommel. Clearly raised square Roblox studs on select large crystal planes and metal collar, facets remain broad. More monumental sculptural silhouette than rainbow, restrained glow only on core, no particle cloud.",
+  "directories": {
+    "models": "models",
+    "textures": "textures",
+    "icons": "icons",
+    "exports": "exports"
+  },
+  "reviewModel": {
+    "version": "v01",
+    "status": "accepted-for-continuation",
+    "blend": "../pack/models/pickaxes-asset-pack-review-v20.blend",
+    "scene": "Pickaxe_Pack_Review",
+    "collection": "11_Crystal_Review_v01",
+    "texture": "../pack/textures/crystal-dark-studs-v01.png",
+    "preview": "../pack/previews/pack-full-18-review-v02.png",
+    "detailPreview": "../pack/previews/crystal-detail-review-v01.png",
+    "raisedStudGeometry": false,
+    "runtimeReplaced": true,
+    "attachmentAudit": "../pack/previews/pack-attachment-audit-v20.json",
+    "attachmentStatus": "passed"
+  },
+  "studioImportPackage": {
+    "version": "v03",
+    "fbx": "../pack/exports/roblox-import-v03/models/CrystalPickaxe.fbx",
+    "texture": "../pack/exports/roblox-import-v03/textures/Crystal_Color.png",
+    "meshName": "CrystalPickaxe",
+    "runtimeKey": "Crystal",
+    "triangles": 740,
+    "sizeStuds": [
+      5.659999847412109,
+      6.009999990463257,
+      1.2599999904632568
+    ],
+    "materialCount": 1,
+    "uvSets": 1,
+    "importedToRoblox": true,
+    "manifest": "../pack/exports/roblox-import-v03/manifest.json",
+    "meshId": "rbxassetid://85631105250473",
+    "textureId": "rbxassetid://80061973709515",
+    "templatePath": "ReplicatedStorage.PickaxeModels.Crystal",
+    "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.CrystalPickaxe"
+  }
+}

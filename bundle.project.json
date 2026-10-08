@@ -1,0 +1,4 @@
+{
+ "name": "ShopUIBundle",
+ "tree": {"$className": "Folder", "Packages": {"$path": "Packages"}, "GameConfig":{"$path":"src/gameplay/GameConfig.luau"}, "PetVisuals":{"$path":"src/gameplay/PetVisuals.luau"}, "ShopUI": {"$path": "src/shared"}, "ShopUIBootstrap": {"$path": "src/client/ShopUI.client.luau"}}
+}

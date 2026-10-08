@@ -1,0 +1,16 @@
+return {
+	HatchSeconds = 15,
+	StartCash = 100,
+	StartCapacity = 8,
+	SlotCost = 100,
+	MaxCapacity = 40,
+	MaxPets = 200,
+	MaxEggs = 16,
+	GrowAllCost = 20,
+	PetIncome = 5,
+	PlacementRange = 90,
+	PetEdgeMargin = 1.8,
+	PetSpeed = 5,
+	PenHalfWidth = 36,
+	PenHalfDepth = 22,
+}

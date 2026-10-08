@@ -1,0 +1,93 @@
+{
+  "name": "BreakEggAndSurviveFromLava",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "$ignoreUnknownInstances": true,
+      "Packages": {
+        "$path": "Packages"
+      },
+      "ShopUI": {
+        "$path": "src/shared"
+      },
+      "TrainingConfig": {
+        "$path": "src/gameplay/TrainingConfig.luau"
+      },
+      "PetConfig": {
+        "$path": "src/gameplay/PetConfig.luau"
+      },
+      "PetAnimation": {
+        "$path": "src/gameplay/PetAnimation.luau"
+      },
+      "PickaxeEffects": {
+        "$path": "src/gameplay/PickaxeEffects.luau"
+      },
+      "HatchEffects": {
+        "$path": "src/gameplay/HatchEffects.luau"
+      },
+      "PetVisuals": {
+        "$path": "src/gameplay/PetVisuals.luau"
+      },
+      "GameConfig": {
+        "$path": "src/gameplay/GameConfig.luau"
+      },
+      "PickaxeModels": {
+        "$path": "assets/items/pickaxes/pack/exports/PickaxeModels.rbxmx"
+      }
+    },
+    "ServerStorage": {
+      "$className": "ServerStorage",
+      "$ignoreUnknownInstances": true,
+      "ServerPackages": {
+        "$className": "Folder",
+        "$ignoreUnknownInstances": true,
+        "ProfileStore": {
+          "$path": "src/serverPackages/ProfileStore.luau"
+        }
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "$ignoreUnknownInstances": true,
+      "PlayerData": {
+        "$path": "src/server/data"
+      },
+      "TreadmillTraining": {
+        "$path": "src/server/Treadmills.server.luau"
+      },
+      "PetGameplay": {
+        "$path": "src/server/Pets.server.luau"
+      },
+      "PetWorld": {
+        "$path": "src/server/PetWorld.luau"
+      },
+      "Adventure": {
+        "$path": "src/server/Adventure.luau"
+      },
+      "WorldDisplays": {
+        "$path": "src/server/WorldDisplays.server.luau"
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "$ignoreUnknownInstances": true,
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "$ignoreUnknownInstances": true,
+        "ShopUIBootstrap": {
+          "$path": "src/client/ShopUI.client.luau"
+        },
+        "TreadmillControls": {
+          "$path": "src/client/Treadmills.client.luau"
+        },
+        "PetControls": {
+          "$path": "src/client/Pets.client.luau"
+        },
+        "AdventureControls": {
+          "$path": "src/client/Adventure.client.luau"
+        }
+      }
+    }
+  }
+}

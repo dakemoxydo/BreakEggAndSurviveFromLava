@@ -1,0 +1,25 @@
+{
+  "tier": 5,
+  "key": "Diamond",
+  "collection": "05_Diamond",
+  "exportObject": "05_Diamond_Pickaxe",
+  "parts": 17,
+  "vertices": 330,
+  "triangles": 592,
+  "maxMirrorError": 8.940696716308594e-08,
+  "symmetryPlane": "X=0",
+  "closedMeshes": true,
+  "degenerateTriangles": 0,
+  "degenerateUVTriangles": 0,
+  "stem": "05-diamond-pickaxe-studs-pack-v01",
+  "boundsMin": [
+    -2.509999990463257,
+    -0.5799999833106995,
+    -0.23999999463558197
+  ],
+  "boundsMax": [
+    2.509999990463257,
+    0.5799999833106995,
+    4.599999904632568
+  ]
+}

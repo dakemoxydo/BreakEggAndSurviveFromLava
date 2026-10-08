@@ -1,0 +1,30 @@
+{
+  "key": "Stone",
+  "tier": 2,
+  "version": "v01",
+  "parts": 12,
+  "collection": "02_Stone_Reference_v01",
+  "triangles": 464,
+  "vertices": 256,
+  "maxMirrorError": 0.0,
+  "symmetryPlane": "X=0",
+  "closedMeshes": true,
+  "degenerateTriangles": 0,
+  "degenerateUVTriangles": 0,
+  "studPitch": 0.55,
+  "raisedStudMeshes": false,
+  "stem": "stone-pickaxe-reference-v01",
+  "boundsMin": [
+    -2.4700000286102295,
+    -0.42500001192092896,
+    -0.015000000596046448
+  ],
+  "boundsMax": [
+    2.4700000286102295,
+    0.42500001192092896,
+    4.639999866485596
+  ],
+  "packSource": "pack/models/pickaxes-asset-pack-v01.blend",
+  "scene": "Review_Wooden_Stone",
+  "exportMesh": "Stone_Reference_Export_Mesh"
+}

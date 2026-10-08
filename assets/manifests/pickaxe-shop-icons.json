@@ -1,0 +1,236 @@
+{
+  "Wooden": {
+    "batch": 1,
+    "offset": [
+      0,
+      0
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "01-wooden/references/01-wooden-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99300582266284"
+  },
+  "Stone": {
+    "batch": 1,
+    "offset": [
+      341,
+      0
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "02-stone/references/02-stone-pickaxe-studs-v02.png",
+    "assetId": "rbxassetid://99300582266284"
+  },
+  "Iron": {
+    "batch": 1,
+    "offset": [
+      682,
+      0
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "03-iron/references/03-iron-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99300582266284"
+  },
+  "Golden": {
+    "batch": 1,
+    "offset": [
+      0,
+      341
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "04-golden/references/04-golden-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99300582266284"
+  },
+  "Diamond": {
+    "batch": 1,
+    "offset": [
+      341,
+      341
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "05-diamond/references/05-diamond-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99300582266284"
+  },
+  "Strawberry": {
+    "batch": 1,
+    "offset": [
+      682,
+      341
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "06-strawberry/references/06-strawberry-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99300582266284"
+  },
+  "Cactus": {
+    "batch": 1,
+    "offset": [
+      0,
+      682
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "07-cactus/references/07-cactus-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99300582266284"
+  },
+  "Lightning": {
+    "batch": 1,
+    "offset": [
+      341,
+      682
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "08-lightning/references/08-lightning-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99300582266284"
+  },
+  "Candy": {
+    "batch": 1,
+    "offset": [
+      682,
+      682
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "09-candy/references/09-candy-pickaxe-studs-v02.png",
+    "assetId": "rbxassetid://99300582266284"
+  },
+  "Rainbow": {
+    "batch": 2,
+    "offset": [
+      0,
+      0
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "10-rainbow/references/10-rainbow-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99607759575544"
+  },
+  "Crystal": {
+    "batch": 2,
+    "offset": [
+      341,
+      0
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "11-crystal/references/11-crystal-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99607759575544"
+  },
+  "Demon": {
+    "batch": 2,
+    "offset": [
+      682,
+      0
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "12-demon/references/12-demon-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99607759575544"
+  },
+  "Hacker": {
+    "batch": 2,
+    "offset": [
+      0,
+      341
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "13-hacker/references/13-hacker-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99607759575544"
+  },
+  "UFO": {
+    "batch": 2,
+    "offset": [
+      341,
+      341
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "14-ufo/references/14-ufo-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99607759575544"
+  },
+  "Secret": {
+    "batch": 2,
+    "offset": [
+      682,
+      341
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "15-secret/references/15-secret-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99607759575544"
+  },
+  "Cool": {
+    "batch": 2,
+    "offset": [
+      0,
+      682
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "16-cool/references/16-cool-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99607759575544"
+  },
+  "Galaxy": {
+    "batch": 2,
+    "offset": [
+      341,
+      682
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "17-galaxy/references/17-galaxy-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99607759575544"
+  },
+  "Celestial": {
+    "batch": 2,
+    "offset": [
+      682,
+      682
+    ],
+    "rect": [
+      341,
+      341
+    ],
+    "source": "18-celestial/references/18-celestial-pickaxe-studs-v01.png",
+    "assetId": "rbxassetid://99607759575544"
+  }
+}

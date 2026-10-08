@@ -1,0 +1,160 @@
+{
+  "assets": [
+    {
+      "collection": "01_Wooden_v04_DarkStuds",
+      "meshIslands": 13,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "02_Stone_Review_v03",
+      "meshIslands": 14,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "03_Iron_Review_v02",
+      "meshIslands": 21,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "04_Golden_Review_v01",
+      "meshIslands": 17,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "06_Strawberry_Review_v01",
+      "meshIslands": 23,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "07_Cactus_Review_v01",
+      "meshIslands": 27,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "08_Lightning_Review_v01",
+      "meshIslands": 26,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "09_Candy_Review_v01",
+      "meshIslands": 20,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "10_Rainbow_Review_v01",
+      "meshIslands": 26,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "11_Crystal_Review_v01",
+      "meshIslands": 24,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "12_Demon_Review_v01",
+      "meshIslands": 34,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "13_Hacker_Review_v01",
+      "meshIslands": 48,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "14_UFO_Review_v01",
+      "meshIslands": 30,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "15_Secret_Review_v01",
+      "meshIslands": 32,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "16_Cool_Review_v01",
+      "meshIslands": 32,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "17_Galaxy_Review_v01",
+      "meshIslands": 27,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    },
+    {
+      "collection": "18_Celestial_Review_v01",
+      "meshIslands": 33,
+      "contactComponents": 1,
+      "detached": [],
+      "meshErrors": []
+    }
+  ],
+  "sourceBlend": "models/pickaxes-asset-pack-review-v19.blend",
+  "method": "Actual mesh islands; triangle-edge intersection, surface contact and volume containment. A connected contact graph must include every mesh island.",
+  "tolerance": 0.0002,
+  "intentionalAbsentTier": 5,
+  "symmetry": [
+    {
+      "asset": "Hacker",
+      "maxMirroredVertexDistance": 0.0,
+      "passed": true
+    },
+    {
+      "asset": "UFO",
+      "maxMirroredVertexDistance": 8.596304041930125e-07,
+      "passed": true
+    },
+    {
+      "asset": "Secret",
+      "maxMirroredVertexDistance": 0.0,
+      "passed": true
+    },
+    {
+      "asset": "Cool",
+      "maxMirroredVertexDistance": 4.842877388000488e-08,
+      "passed": true
+    },
+    {
+      "asset": "Galaxy",
+      "maxMirroredVertexDistance": 7.784341278238571e-07,
+      "passed": true
+    },
+    {
+      "asset": "Celestial",
+      "maxMirroredVertexDistance": 9.310543305218744e-07,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

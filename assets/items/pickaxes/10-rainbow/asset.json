@@ -1,0 +1,51 @@
+{
+  "tier": 10,
+  "key": "Rainbow",
+  "nameRu": "Радужная",
+  "referenceImage": "references/10-rainbow-pickaxe-studs-v01.png",
+  "imageStatus": "awaiting-user-approval",
+  "modelStatus": "ready-for-user-review",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A powerful rainbow pickaxe. A large double-tipped crescent cross-head built from six thick stepped interlocking colored arcs red orange yellow green cyan violet, clean dark violet central socket with white square star-shaped core. Violet shaft wrapped by stacked colored metal segments and chunky rainbow pommel. Very visible square Roblox studs on the colored broad arc panels and socket. Distinct colorful architectural silhouette, no background rainbow, no loose particles.",
+  "directories": {
+    "models": "models",
+    "textures": "textures",
+    "icons": "icons",
+    "exports": "exports"
+  },
+  "reviewModel": {
+    "version": "v01",
+    "status": "accepted-for-continuation",
+    "blend": "../pack/models/pickaxes-asset-pack-review-v20.blend",
+    "scene": "Pickaxe_Pack_Review",
+    "collection": "10_Rainbow_Review_v01",
+    "texture": "../pack/textures/rainbow-dark-studs-v01.png",
+    "preview": "../pack/previews/pack-full-18-review-v02.png",
+    "detailPreview": "../pack/previews/rainbow-detail-review-v01.png",
+    "raisedStudGeometry": false,
+    "runtimeReplaced": true,
+    "attachmentAudit": "../pack/previews/pack-attachment-audit-v20.json",
+    "attachmentStatus": "passed"
+  },
+  "studioImportPackage": {
+    "version": "v03",
+    "fbx": "../pack/exports/roblox-import-v03/models/RainbowPickaxe.fbx",
+    "texture": "../pack/exports/roblox-import-v03/textures/Rainbow_Color.png",
+    "meshName": "RainbowPickaxe",
+    "runtimeKey": "Rainbow",
+    "triangles": 1148,
+    "sizeStuds": [
+      5.559999942779541,
+      5.079999804496765,
+      1.2799999713897705
+    ],
+    "materialCount": 1,
+    "uvSets": 1,
+    "importedToRoblox": true,
+    "manifest": "../pack/exports/roblox-import-v03/manifest.json",
+    "meshId": "rbxassetid://100812205398062",
+    "textureId": "rbxassetid://94820149994239",
+    "templatePath": "ReplicatedStorage.PickaxeModels.Rainbow",
+    "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.RainbowPickaxe"
+  }
+}

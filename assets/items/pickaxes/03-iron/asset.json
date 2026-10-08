@@ -1,0 +1,50 @@
+{
+  "tier": 3,
+  "key": "Iron",
+  "nameRu": "Железная",
+  "referenceImage": "references/03-iron-pickaxe-studs-v01.png",
+  "imageStatus": "awaiting-user-approval",
+  "modelStatus": "ready-for-user-review",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A forged iron pickaxe, more sophisticated than stone. Wide brushed silver angular cross-head with a long downturned sharp beak and a slightly shorter sharp downturned chisel beak, neither end resembles a hammer, dark steel center socket, sturdy brown handle with black wrap grip and two riveted silver bands. Several broad clean rows of raised square Roblox studs on metal head and collar. No magic or gems.",
+  "directories": {
+    "models": "models",
+    "textures": "textures",
+    "icons": "icons",
+    "exports": "exports"
+  },
+  "reviewModel": {
+    "version": "v02",
+    "status": "accepted-for-continuation",
+    "blend": "../pack/models/pickaxes-asset-pack-review-v20.blend",
+    "scene": "Pickaxe_Pack_Review",
+    "collection": "03_Iron_Review_v02",
+    "texture": "../pack/textures/iron-dark-studs-v01.png",
+    "preview": "../pack/previews/pack-full-18-review-v02.png",
+    "raisedStudGeometry": false,
+    "runtimeReplaced": true,
+    "attachmentAudit": "../pack/previews/pack-attachment-audit-v20.json",
+    "attachmentStatus": "passed"
+  },
+  "studioImportPackage": {
+    "version": "v03",
+    "fbx": "../pack/exports/roblox-import-v03/models/IronPickaxe.fbx",
+    "texture": "../pack/exports/roblox-import-v03/textures/Iron_Color.png",
+    "meshName": "IronPickaxe",
+    "runtimeKey": "Iron",
+    "triangles": 880,
+    "sizeStuds": [
+      5.360000133514404,
+      4.970000147819519,
+      1.0480000972747803
+    ],
+    "materialCount": 1,
+    "uvSets": 1,
+    "importedToRoblox": true,
+    "manifest": "../pack/exports/roblox-import-v03/manifest.json",
+    "meshId": "rbxassetid://121622606415379",
+    "textureId": "rbxassetid://128758611018794",
+    "templatePath": "ReplicatedStorage.PickaxeModels.Iron",
+    "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.IronPickaxe"
+  }
+}

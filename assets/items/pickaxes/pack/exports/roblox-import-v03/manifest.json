@@ -1,0 +1,713 @@
+{
+  "version": "v03",
+  "sourceBlend": "../../models/pickaxes-asset-pack-review-v20.blend",
+  "sourceScene": "Pickaxe_Pack_Review",
+  "mainFile": "Pickaxes_Pack.fbx",
+  "models": [
+    {
+      "name": "WoodenPickaxe",
+      "assetKey": "Wooden",
+      "tier": 1,
+      "sourceCollection": "01_Wooden_v04_DarkStuds",
+      "fbx": "models/WoodenPickaxe.fbx",
+      "texture": "textures/Wooden_Color.png",
+      "triangles": 528,
+      "vertices": 290,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.6600000858306885,
+          -0.6790000200271606,
+          -1.415000081062317
+        ],
+        "max": [
+          2.6600000858306885,
+          0.6790000200271606,
+          3.369999885559082
+        ]
+      },
+      "sizeStuds": [
+        5.320000171661377,
+        4.784999966621399,
+        1.3580000400543213
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://113249536688225",
+      "textureId": "rbxassetid://102332464573874"
+    },
+    {
+      "name": "StonePickaxe",
+      "assetKey": "Stone",
+      "tier": 2,
+      "sourceCollection": "02_Stone_Review_v03",
+      "fbx": "models/StonePickaxe.fbx",
+      "texture": "textures/Stone_Color.png",
+      "triangles": 572,
+      "vertices": 314,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.680000066757202,
+          -0.5490000247955322,
+          -1.415000081062317
+        ],
+        "max": [
+          2.680000066757202,
+          0.5490000247955322,
+          3.4599997997283936
+        ]
+      },
+      "sizeStuds": [
+        5.360000133514404,
+        4.8749998807907104,
+        1.0980000495910645
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://78726493939751",
+      "textureId": "rbxassetid://89919742798446"
+    },
+    {
+      "name": "IronPickaxe",
+      "assetKey": "Iron",
+      "tier": 3,
+      "sourceCollection": "03_Iron_Review_v02",
+      "fbx": "models/IronPickaxe.fbx",
+      "texture": "textures/Iron_Color.png",
+      "triangles": 880,
+      "vertices": 482,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.680000066757202,
+          -0.5240000486373901,
+          -1.415000081062317
+        ],
+        "max": [
+          2.680000066757202,
+          0.5240000486373901,
+          3.555000066757202
+        ]
+      },
+      "sizeStuds": [
+        5.360000133514404,
+        4.970000147819519,
+        1.0480000972747803
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://121622606415379",
+      "textureId": "rbxassetid://128758611018794"
+    },
+    {
+      "name": "GoldenPickaxe",
+      "assetKey": "Golden",
+      "tier": 4,
+      "sourceCollection": "04_Golden_Review_v01",
+      "fbx": "models/GoldenPickaxe.fbx",
+      "texture": "textures/Golden_Color.png",
+      "triangles": 716,
+      "vertices": 392,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.7200000286102295,
+          -0.6350000500679016,
+          -1.40500009059906
+        ],
+        "max": [
+          2.7200000286102295,
+          0.6350000500679016,
+          3.6449997425079346
+        ]
+      },
+      "sizeStuds": [
+        5.440000057220459,
+        5.049999833106995,
+        1.2700001001358032
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://126921251810443",
+      "textureId": "rbxassetid://117164328827111"
+    },
+    {
+      "name": "DiamondPickaxe",
+      "assetKey": "Diamond",
+      "tier": 5,
+      "sourceCollection": "05_Diamond_Review_v02",
+      "fbx": "models/DiamondPickaxe.fbx",
+      "texture": "textures/Diamond_Color.png",
+      "triangles": 654,
+      "vertices": 367,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.759999990463257,
+          -0.6200000047683716,
+          -1.415000081062317
+        ],
+        "max": [
+          2.759999990463257,
+          0.6200000047683716,
+          3.6599998474121094
+        ]
+      },
+      "sizeStuds": [
+        5.519999980926514,
+        5.074999928474426,
+        1.2400000095367432
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://90738514604134",
+      "textureId": "rbxassetid://125433804733622"
+    },
+    {
+      "name": "StrawberryPickaxe",
+      "assetKey": "Strawberry",
+      "tier": 6,
+      "sourceCollection": "06_Strawberry_Review_v01",
+      "fbx": "models/StrawberryPickaxe.fbx",
+      "texture": "textures/Strawberry_Color.png",
+      "triangles": 828,
+      "vertices": 460,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.7699999809265137,
+          -0.6349999904632568,
+          -1.415000081062317
+        ],
+        "max": [
+          2.7699999809265137,
+          0.6349999904632568,
+          3.6649997234344482
+        ]
+      },
+      "sizeStuds": [
+        5.539999961853027,
+        5.079999804496765,
+        1.2699999809265137
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://90706778905318",
+      "textureId": "rbxassetid://132601465996557"
+    },
+    {
+      "name": "CactusPickaxe",
+      "assetKey": "Cactus",
+      "tier": 7,
+      "sourceCollection": "07_Cactus_Review_v01",
+      "fbx": "models/CactusPickaxe.fbx",
+      "texture": "textures/Cactus_Color.png",
+      "triangles": 916,
+      "vertices": 512,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.759999990463257,
+          -0.4399999976158142,
+          -1.415000081062317
+        ],
+        "max": [
+          2.759999990463257,
+          0.4399999976158142,
+          3.679999828338623
+        ]
+      },
+      "sizeStuds": [
+        5.519999980926514,
+        5.09499990940094,
+        0.8799999952316284
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://130355843116379",
+      "textureId": "rbxassetid://73600022507601"
+    },
+    {
+      "name": "LightningPickaxe",
+      "assetKey": "Lightning",
+      "tier": 8,
+      "sourceCollection": "08_Lightning_Review_v01",
+      "fbx": "models/LightningPickaxe.fbx",
+      "texture": "textures/Lightning_Color.png",
+      "triangles": 1288,
+      "vertices": 696,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.7711353302001953,
+          -0.5875000357627869,
+          -1.415000081062317
+        ],
+        "max": [
+          2.7711353302001953,
+          0.5875000357627869,
+          3.669999599456787
+        ]
+      },
+      "sizeStuds": [
+        5.542270660400391,
+        5.084999680519104,
+        1.1750000715255737
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://82685402077422",
+      "textureId": "rbxassetid://96888424705402"
+    },
+    {
+      "name": "CandyPickaxe",
+      "assetKey": "Candy",
+      "tier": 9,
+      "sourceCollection": "09_Candy_Review_v01",
+      "fbx": "models/CandyPickaxe.fbx",
+      "texture": "textures/Candy_Color.png",
+      "triangles": 1560,
+      "vertices": 820,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.6980433464050293,
+          -0.4599999785423279,
+          -1.415000081062317
+        ],
+        "max": [
+          2.6980433464050293,
+          0.4599999785423279,
+          3.669999599456787
+        ]
+      },
+      "sizeStuds": [
+        5.396086692810059,
+        5.084999680519104,
+        0.9199999570846558
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://72079467492358",
+      "textureId": "rbxassetid://102977099734663"
+    },
+    {
+      "name": "RainbowPickaxe",
+      "assetKey": "Rainbow",
+      "tier": 10,
+      "sourceCollection": "10_Rainbow_Review_v01",
+      "fbx": "models/RainbowPickaxe.fbx",
+      "texture": "textures/Rainbow_Color.png",
+      "triangles": 1148,
+      "vertices": 626,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.7799999713897705,
+          -0.6399999856948853,
+          -1.399999976158142
+        ],
+        "max": [
+          2.7799999713897705,
+          0.6399999856948853,
+          3.679999828338623
+        ]
+      },
+      "sizeStuds": [
+        5.559999942779541,
+        5.079999804496765,
+        1.2799999713897705
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://100812205398062",
+      "textureId": "rbxassetid://94820149994239"
+    },
+    {
+      "name": "CrystalPickaxe",
+      "assetKey": "Crystal",
+      "tier": 11,
+      "sourceCollection": "11_Crystal_Review_v01",
+      "fbx": "models/CrystalPickaxe.fbx",
+      "texture": "textures/Crystal_Color.png",
+      "triangles": 740,
+      "vertices": 418,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.8299999237060547,
+          -0.6299999952316284,
+          -1.4700000286102295
+        ],
+        "max": [
+          2.8299999237060547,
+          0.6299999952316284,
+          4.539999961853027
+        ]
+      },
+      "sizeStuds": [
+        5.659999847412109,
+        6.009999990463257,
+        1.2599999904632568
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://85631105250473",
+      "textureId": "rbxassetid://80061973709515"
+    },
+    {
+      "name": "DemonPickaxe",
+      "assetKey": "Demon",
+      "tier": 12,
+      "sourceCollection": "12_Demon_Review_v01",
+      "fbx": "models/DemonPickaxe.fbx",
+      "texture": "textures/Demon_Color.png",
+      "triangles": 1262,
+      "vertices": 699,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.809999942779541,
+          -0.6850000023841858,
+          -1.7699999809265137
+        ],
+        "max": [
+          2.809999942779541,
+          0.6850000023841858,
+          4.110000133514404
+        ]
+      },
+      "sizeStuds": [
+        5.619999885559082,
+        5.880000114440918,
+        1.3700000047683716
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://116605554193178",
+      "textureId": "rbxassetid://128576122667851"
+    },
+    {
+      "name": "HackerPickaxe",
+      "assetKey": "Hacker",
+      "tier": 13,
+      "sourceCollection": "13_Hacker_Review_v01",
+      "fbx": "models/HackerPickaxe.fbx",
+      "texture": "textures/Hacker_Color.png",
+      "triangles": 2056,
+      "vertices": 1124,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.801643133163452,
+          -0.5734999775886536,
+          -1.415000081062317
+        ],
+        "max": [
+          2.801643133163452,
+          0.5734999775886536,
+          3.5199997425079346
+        ]
+      },
+      "sizeStuds": [
+        5.603286266326904,
+        4.9349998235702515,
+        1.1469999551773071
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://123049135110897",
+      "textureId": "rbxassetid://124376442284830"
+    },
+    {
+      "name": "UFOPickaxe",
+      "assetKey": "UFO",
+      "tier": 14,
+      "sourceCollection": "14_UFO_Review_v01",
+      "fbx": "models/UFOPickaxe.fbx",
+      "texture": "textures/UFO_Color.png",
+      "triangles": 1972,
+      "vertices": 1044,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.801643133163452,
+          -1.0299999713897705,
+          -1.7200000286102295
+        ],
+        "max": [
+          2.801643133163452,
+          1.0299999713897705,
+          3.5999999046325684
+        ]
+      },
+      "sizeStuds": [
+        5.603286266326904,
+        5.319999933242798,
+        2.059999942779541
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://119121501832425",
+      "textureId": "rbxassetid://107254769406502"
+    },
+    {
+      "name": "SecretPickaxe",
+      "assetKey": "Secret",
+      "tier": 15,
+      "sourceCollection": "15_Secret_Review_v01",
+      "fbx": "models/SecretPickaxe.fbx",
+      "texture": "textures/Secret_Color.png",
+      "triangles": 1070,
+      "vertices": 599,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.801643133163452,
+          -0.6449999809265137,
+          -1.7000000476837158
+        ],
+        "max": [
+          2.801643133163452,
+          0.6449999809265137,
+          3.75
+        ]
+      },
+      "sizeStuds": [
+        5.603286266326904,
+        5.450000047683716,
+        1.2899999618530273
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://104111583848672",
+      "textureId": "rbxassetid://119743413572887"
+    },
+    {
+      "name": "CoolPickaxe",
+      "assetKey": "Cool",
+      "tier": 16,
+      "sourceCollection": "16_Cool_Review_v01",
+      "fbx": "models/CoolPickaxe.fbx",
+      "texture": "textures/Cool_Color.png",
+      "triangles": 1038,
+      "vertices": 583,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.801643133163452,
+          -0.7039999961853027,
+          -1.7200000286102295
+        ],
+        "max": [
+          2.801643133163452,
+          0.7039999961853027,
+          4.259999752044678
+        ]
+      },
+      "sizeStuds": [
+        5.603286266326904,
+        5.979999780654907,
+        1.4079999923706055
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://94233891810593",
+      "textureId": "rbxassetid://70582806283452"
+    },
+    {
+      "name": "GalaxyPickaxe",
+      "assetKey": "Galaxy",
+      "tier": 17,
+      "sourceCollection": "17_Galaxy_Review_v01",
+      "fbx": "models/GalaxyPickaxe.fbx",
+      "texture": "textures/Galaxy_Color.png",
+      "triangles": 1584,
+      "vertices": 844,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.801643133163452,
+          -0.5991664528846741,
+          -1.7525578737258911
+        ],
+        "max": [
+          2.801643133163452,
+          0.5991664528846741,
+          3.523524522781372
+        ]
+      },
+      "sizeStuds": [
+        5.603286266326904,
+        5.276082396507263,
+        1.1983329057693481
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://93772870146902",
+      "textureId": "rbxassetid://103388724931048"
+    },
+    {
+      "name": "CelestialPickaxe",
+      "assetKey": "Celestial",
+      "tier": 18,
+      "sourceCollection": "18_Celestial_Review_v01",
+      "fbx": "models/CelestialPickaxe.fbx",
+      "texture": "textures/Celestial_Color.png",
+      "triangles": 2438,
+      "vertices": 1281,
+      "materialCount": 1,
+      "uvSets": 1,
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "boundsBlender": {
+        "min": [
+          -2.801643133163452,
+          -0.7350000143051147,
+          -1.7423501014709473
+        ],
+        "max": [
+          2.801643133163452,
+          0.7350000143051147,
+          4.364999771118164
+        ]
+      },
+      "sizeStuds": [
+        5.603286266326904,
+        6.107349872589111,
+        1.4700000286102295
+      ],
+      "bakedBaseColor": true,
+      "importedToRoblox": true,
+      "meshId": "rbxassetid://122808458320112",
+      "textureId": "rbxassetid://84667052348530"
+    }
+  ],
+  "source": "source/Pickaxes_Import.blend",
+  "exportSettings": {
+    "forward": "Z",
+    "up": "Y",
+    "scale": 1,
+    "applyUnitScale": false,
+    "applyScaling": "FBX Unit Scale",
+    "embedTextures": true
+  },
+  "importSettings": {
+    "Scale Unit": "Studs",
+    "Merge Meshes": false,
+    "Use Imported Pivot": true,
+    "Anchored": true
+  },
+  "runtimeTemplatePath": "ReplicatedStorage.PickaxeModels",
+  "robloxImported": true,
+  "completePack": true,
+  "inspection": "export-inspection.json",
+  "readme": "README_IMPORT.md",
+  "geometryAudit": "attachment-audit.json"
+}

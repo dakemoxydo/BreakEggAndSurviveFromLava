@@ -1,0 +1,51 @@
+{
+  "tier": 7,
+  "key": "Cactus",
+  "nameRu": "Кактусовая",
+  "referenceImage": "references/07-cactus-pickaxe-studs-v01.png",
+  "imageStatus": "awaiting-user-approval",
+  "modelStatus": "ready-for-user-review",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A distinctive cactus pickaxe. Thick bright green block cactus cross-head with a long pointed curved branch to the left and a hooked raised branch to the right, chunky angular cream spikes attached to sides, orange desert copper central collar. Green ribbed shaft and stacked copper grip rings. Clear raised square Roblox studs along green broad surfaces. More complex branch silhouette than strawberry. Spikes moderate and readable.",
+  "directories": {
+    "models": "models",
+    "textures": "textures",
+    "icons": "icons",
+    "exports": "exports"
+  },
+  "reviewModel": {
+    "version": "v01",
+    "status": "accepted-for-continuation",
+    "blend": "../pack/models/pickaxes-asset-pack-review-v20.blend",
+    "scene": "Pickaxe_Pack_Review",
+    "collection": "07_Cactus_Review_v01",
+    "texture": "../pack/textures/cactus-dark-studs-v01.png",
+    "preview": "../pack/previews/pack-full-18-review-v02.png",
+    "detailPreview": "../pack/previews/cactus-detail-review-v01.png",
+    "raisedStudGeometry": false,
+    "runtimeReplaced": true,
+    "attachmentAudit": "../pack/previews/pack-attachment-audit-v20.json",
+    "attachmentStatus": "passed"
+  },
+  "studioImportPackage": {
+    "version": "v03",
+    "fbx": "../pack/exports/roblox-import-v03/models/CactusPickaxe.fbx",
+    "texture": "../pack/exports/roblox-import-v03/textures/Cactus_Color.png",
+    "meshName": "CactusPickaxe",
+    "runtimeKey": "Cactus",
+    "triangles": 916,
+    "sizeStuds": [
+      5.519999980926514,
+      5.09499990940094,
+      0.8799999952316284
+    ],
+    "materialCount": 1,
+    "uvSets": 1,
+    "importedToRoblox": true,
+    "manifest": "../pack/exports/roblox-import-v03/manifest.json",
+    "meshId": "rbxassetid://130355843116379",
+    "textureId": "rbxassetid://73600022507601",
+    "templatePath": "ReplicatedStorage.PickaxeModels.Cactus",
+    "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.CactusPickaxe"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "models": {
+    "Wooden": {
+      "meshId": "rbxassetid://107741255862953",
+      "textureId": "rbxassetid://127231661745403",
+      "version": "v04"
+    },
+    "Stone": {
+      "meshId": "rbxassetid://138824994833865",
+      "textureId": "rbxassetid://127231661745403",
+      "version": "v01"
+    }
+  },
+  "template": "ReplicatedStorage.PickaxeModels",
+  "toolScale": 0.65,
+  "grip": "identity; invisible Handle at shaft grip",
+  "validation": {
+    "woodenEquipped": true,
+    "stoneEquipAndRestore": true,
+    "bothHandDistancesStuds": 0.07723,
+    "shopIcons": 18,
+    "visibleShopIconsLoaded": 4,
+    "shopScreenshotVerified": true,
+    "defaultRojoBuild": true,
+    "releaseRojoBuild": true
+  }
+}

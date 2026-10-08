@@ -1,0 +1,71 @@
+{
+  "version": "v01",
+  "models": [
+    {
+      "name": "WoodenPickaxe",
+      "assetKey": "Wooden",
+      "tier": 1,
+      "version": "v04",
+      "fbx": "models/WoodenPickaxe.fbx",
+      "glb": "models/WoodenPickaxe.glb",
+      "icon": "icons/WoodenPickaxe.png",
+      "triangles": 528,
+      "sizeStuds": [
+        5.320000171661377,
+        4.784999966621399,
+        1.3899999856948853
+      ],
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "materialCount": 1,
+      "texture": "textures/Pickaxes_Studs.png"
+    },
+    {
+      "name": "StonePickaxe",
+      "assetKey": "Stone",
+      "tier": 2,
+      "version": "v01",
+      "fbx": "models/StonePickaxe.fbx",
+      "glb": "models/StonePickaxe.glb",
+      "icon": "icons/StonePickaxe.png",
+      "triangles": 464,
+      "sizeStuds": [
+        4.940000057220459,
+        4.654999732971191,
+        0.8500000238418579
+      ],
+      "gripOrigin": [
+        0,
+        0,
+        0
+      ],
+      "materialCount": 1,
+      "texture": "textures/Pickaxes_Studs.png"
+    }
+  ],
+  "mainFile": "Pickaxes_Wooden_Stone.fbx",
+  "alternativeFile": "Pickaxes_Wooden_Stone.glb",
+  "texture": "textures/Pickaxes_Studs.png",
+  "source": "source/Pickaxes_Import.blend",
+  "importSettings": {
+    "Scale Unit": "Stud",
+    "Scale Factor": 1,
+    "World Up": "Top",
+    "World Forward": "Front",
+    "Merge Meshes": false,
+    "Use Imported Pivot": true
+  },
+  "fbxExport": {
+    "Apply Scalings": "FBX Unit Scale",
+    "Scale": 1,
+    "Forward": "Z",
+    "Up": "Y",
+    "Embed Textures": true
+  },
+  "pivot": "Origin of each mesh is at the handle grip. One Blender unit is one intended stud.",
+  "robloxImported": false,
+  "validation": "All six FBX/GLB exports re-imported in Blender; two final named models only, scales, pivots, texture and UV verified."
+}

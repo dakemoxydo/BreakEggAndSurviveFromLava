@@ -1,0 +1,25 @@
+{
+  "tier": 1,
+  "key": "Wooden",
+  "collection": "01_Wooden",
+  "exportObject": "01_Wooden_Pickaxe",
+  "parts": 8,
+  "vertices": 264,
+  "triangles": 496,
+  "maxMirrorError": 2.9802322387695312e-08,
+  "symmetryPlane": "X=0",
+  "closedMeshes": true,
+  "degenerateTriangles": 0,
+  "degenerateUVTriangles": 0,
+  "stem": "01-wooden-pickaxe-studs-pack-v01",
+  "boundsMin": [
+    -2.430000066757202,
+    -0.4099999964237213,
+    0.0
+  ],
+  "boundsMax": [
+    2.430000066757202,
+    0.4099999964237213,
+    4.614999771118164
+  ]
+}

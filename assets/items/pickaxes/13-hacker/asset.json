@@ -1,0 +1,52 @@
+{
+  "tier": 13,
+  "key": "Hacker",
+  "nameRu": "Хакерская",
+  "referenceImage": "references/13-hacker-pickaxe-studs-v01.png",
+  "imageStatus": "awaiting-user-approval",
+  "modelStatus": "ready-for-user-review",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A unique high-tech hacker pickaxe. Oversized black angular cross-head with acid-green luminous stepped pixel cutting edges, head has two geometric open gaps and several chunky detached cube segments aligned very close as a broken digital blade. Large square black center hub surrounds a green circuit core; black shaft with a few broad neon green circuit strips, green block pommel. Clear raised square Roblox studs on dark head armor and shaft panels. Pixel breakup forms silhouette, not background noise. No text, no numbers, no code.\nFraming priority: zoom out slightly. Keep ALL tips, horns and pommel completely inside the central 78 percent of the square image. Leave at least 9 percent completely transparent padding on every side. No cropped geometry.\n",
+  "directories": {
+    "models": "models",
+    "textures": "textures",
+    "icons": "icons",
+    "exports": "exports"
+  },
+  "reviewModel": {
+    "version": "v01",
+    "status": "awaiting-user-review",
+    "scene": "Pickaxe_Pack_Review",
+    "collection": "13_Hacker_Review_v01",
+    "texture": "../pack/textures/hacker-dark-studs-v01.png",
+    "detailPreview": "../pack/previews/hacker-detail-review-v01.png",
+    "raisedStudGeometry": false,
+    "runtimeReplaced": true,
+    "descriptionRu": "Графитовые ступенчатые секции, зелёные наконечники и симметричные линии, экран с кодовыми скобками.",
+    "blend": "../pack/models/pickaxes-asset-pack-review-v20.blend",
+    "preview": "../pack/previews/pack-full-18-review-v02.png",
+    "attachmentAudit": "../pack/previews/pack-attachment-audit-v20.json",
+    "attachmentStatus": "passed"
+  },
+  "studioImportPackage": {
+    "version": "v03",
+    "fbx": "../pack/exports/roblox-import-v03/models/HackerPickaxe.fbx",
+    "texture": "../pack/exports/roblox-import-v03/textures/Hacker_Color.png",
+    "meshName": "HackerPickaxe",
+    "runtimeKey": "Hacker",
+    "triangles": 2056,
+    "sizeStuds": [
+      5.603286266326904,
+      4.9349998235702515,
+      1.1469999551773071
+    ],
+    "materialCount": 1,
+    "uvSets": 1,
+    "importedToRoblox": true,
+    "manifest": "../pack/exports/roblox-import-v03/manifest.json",
+    "meshId": "rbxassetid://123049135110897",
+    "textureId": "rbxassetid://124376442284830",
+    "templatePath": "ReplicatedStorage.PickaxeModels.Hacker",
+    "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.HackerPickaxe"
+  }
+}

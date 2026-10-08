@@ -1,0 +1,25 @@
+{
+  "tier": 6,
+  "key": "Strawberry",
+  "collection": "06_Strawberry",
+  "exportObject": "06_Strawberry_Pickaxe",
+  "parts": 18,
+  "vertices": 418,
+  "triangles": 764,
+  "maxMirrorError": 5.960464477539063e-08,
+  "symmetryPlane": "X=0",
+  "closedMeshes": true,
+  "degenerateTriangles": 0,
+  "degenerateUVTriangles": 0,
+  "stem": "06-strawberry-pickaxe-studs-pack-v01",
+  "boundsMin": [
+    -2.5333199501037598,
+    -0.5799999833106995,
+    -0.23999999463558197
+  ],
+  "boundsMax": [
+    2.5333199501037598,
+    0.5799999833106995,
+    4.906908988952637
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "status": "awaiting-user-feedback",
+  "currentScene": "Review_Wooden_Stone",
+  "source": "models/pickaxes-asset-pack-v01.blend",
+  "reviewModels": [
+    {
+      "key": "Wooden",
+      "tier": 1,
+      "version": "v04",
+      "modelStatus": "ready-for-user-review",
+      "blend": "../pack/models/pickaxes-asset-pack-v01.blend",
+      "scene": "Review_Wooden_Stone",
+      "collection": "01_Wooden_Reference_v04",
+      "fbx": "exports/wooden-pickaxe-reference-v04.fbx",
+      "glb": "exports/wooden-pickaxe-reference-v04.glb",
+      "shopIcon": "icons/wooden-pickaxe-reference-v04.png",
+      "texture": "textures/reference-wood-stone-studs-v01.png",
+      "frontPreview": "models/wooden-pickaxe-reference-v04-front.png",
+      "sidePreview": "models/wooden-pickaxe-reference-v04-side.png",
+      "triangles": 528,
+      "symmetryPlane": "X=0",
+      "studsGeometry": false,
+      "studsTexture": true,
+      "importedToRoblox": false
+    },
+    {
+      "key": "Stone",
+      "tier": 2,
+      "version": "v01",
+      "modelStatus": "ready-for-user-review",
+      "blend": "../pack/models/pickaxes-asset-pack-v01.blend",
+      "scene": "Review_Wooden_Stone",
+      "collection": "02_Stone_Reference_v01",
+      "fbx": "exports/stone-pickaxe-reference-v01.fbx",
+      "glb": "exports/stone-pickaxe-reference-v01.glb",
+      "shopIcon": "icons/stone-pickaxe-reference-v01.png",
+      "texture": "textures/reference-wood-stone-studs-v01.png",
+      "frontPreview": "models/stone-pickaxe-reference-v01-front.png",
+      "sidePreview": "models/stone-pickaxe-reference-v01-side.png",
+      "triangles": 464,
+      "symmetryPlane": "X=0",
+      "studsGeometry": false,
+      "studsTexture": true,
+      "importedToRoblox": false
+    }
+  ],
+  "completedTiers": [
+    1,
+    2
+  ],
+  "nextTier": 3,
+  "draftScene": "Pickaxe_Asset_Pack_v01",
+  "note": "The earlier batch remains as drafts. Do not continue before user feedback.",
+  "importPackage": {
+    "status": "prepared-for-import",
+    "archive": "pack/exports/pickaxes-wooden-stone-roblox-v01.zip",
+    "fbx": "pack/exports/roblox-import-v01/Pickaxes_Wooden_Stone.fbx",
+    "instructions": "pack/exports/roblox-import-v01/README_IMPORT.md",
+    "assetKeys": [
+      "Wooden",
+      "Stone"
+    ],
+    "robloxImported": false
+  }
+}

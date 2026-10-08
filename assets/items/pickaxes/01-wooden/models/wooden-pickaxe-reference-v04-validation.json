@@ -1,0 +1,32 @@
+{
+  "key": "Wooden",
+  "tier": 1,
+  "version": "v04",
+  "parts": 13,
+  "collection": "01_Wooden_Reference_v04",
+  "triangles": 528,
+  "vertices": 290,
+  "maxMirrorError": 5.960464477539063e-08,
+  "symmetryPlane": "X=0",
+  "closedMeshes": true,
+  "degenerateTriangles": 0,
+  "degenerateUVTriangles": 0,
+  "studPitch": 0.55,
+  "raisedStudMeshes": false,
+  "stem": "wooden-pickaxe-reference-v04",
+  "boundsMin": [
+    -2.6600000858306885,
+    -0.6949999928474426,
+    -0.015000081062316983
+  ],
+  "boundsMax": [
+    2.6600000858306885,
+    0.6949999928474426,
+    4.769999885559082
+  ],
+  "packSource": "pack/models/pickaxes-asset-pack-v01.blend",
+  "scene": "Review_Wooden_Stone",
+  "exportMesh": "Wooden_Reference_Export_Mesh_v04",
+  "onlyChanged": "Both Wooden terminal blocks tapered to mining tips",
+  "protectedMeshesUnchanged": 25
+}

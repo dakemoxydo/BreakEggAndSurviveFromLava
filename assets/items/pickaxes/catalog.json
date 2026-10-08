@@ -1,0 +1,778 @@
+{
+  "status": "wooden-and-stone-ready-for-review",
+  "modelingStatus": "Wooden reference v04 and Stone reference v01 completed. Stop before tier 3, per user request.",
+  "generator": "built-in image_gen",
+  "stylePrompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: ",
+  "items": [
+    {
+      "tier": 1,
+      "key": "Wooden",
+      "nameRu": "Деревянная",
+      "filename": "01-wooden/references/01-wooden-pickaxe-studs-v01.png",
+      "description": "A modest starter pickaxe. A curved angular cross-head made of orange-brown wooden blocks with two blunt tapered wooden tips, a straight wooden shaft, two simple dark silver bands. Chunky wood grain suggested by a few planar color changes. No magic, no gems, no glow. Clear rectangular raised studs on the broad wooden head and shaft.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A modest starter pickaxe. A curved angular cross-head made of orange-brown wooden blocks with two blunt tapered wooden tips, a straight wooden shaft, two simple dark silver bands. Chunky wood grain suggested by a few planar color changes. No magic, no gems, no glow. Clear rectangular raised studs on the broad wooden head and shaft.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          69,
+          21,
+          1212,
+          1222
+        ],
+        "boundsAboveAlpha32": [
+          131,
+          67,
+          1192,
+          1199
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-2cc18f26-c457-473d-90d4-9d77edd1e918.png",
+      "imageStatus": "approved",
+      "folder": "01-wooden",
+      "referenceImage": "01-wooden/references/01-wooden-pickaxe-studs-v01.png",
+      "modelsDirectory": "01-wooden/models",
+      "texturesDirectory": "01-wooden/textures",
+      "iconsDirectory": "01-wooden/icons",
+      "exportsDirectory": "01-wooden/exports",
+      "modelStatus": "ready-for-user-review",
+      "model": {
+        "version": "v04",
+        "modelStatus": "ready-for-user-review",
+        "blend": "pack/models/pickaxes-asset-pack-v01.blend",
+        "scene": "Review_Wooden_Stone",
+        "collection": "01_Wooden_Reference_v04",
+        "fbx": "01-wooden/exports/wooden-pickaxe-reference-v04.fbx",
+        "glb": "01-wooden/exports/wooden-pickaxe-reference-v04.glb",
+        "shopIcon": "01-wooden/icons/wooden-pickaxe-reference-v04.png",
+        "texture": "01-wooden/textures/reference-wood-stone-studs-v01.png",
+        "frontPreview": "01-wooden/models/wooden-pickaxe-reference-v04-front.png",
+        "sidePreview": "01-wooden/models/wooden-pickaxe-reference-v04-side.png",
+        "triangles": 528,
+        "symmetryPlane": "X=0",
+        "studsGeometry": false,
+        "studsTexture": true,
+        "importedToRoblox": false
+      }
+    },
+    {
+      "tier": 2,
+      "key": "Stone",
+      "nameRu": "Каменная",
+      "filename": "02-stone/references/02-stone-pickaxe-studs-v02.png",
+      "description": "A sturdy stone pickaxe, visibly stronger than a wooden starter. Massive asymmetric angular charcoal-gray rock head with one long pointed wedge and one short thick chisel, a wooden shaft, brown binding at the socket. Large pale gray stone faces with sparse raised rectangular studs; primitive heavy silhouette. No magic, no gems, no glow.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A sturdy stone pickaxe, visibly stronger than a wooden starter. Massive asymmetric angular charcoal-gray rock head with one long pointed wedge and one short thick chisel, a wooden shaft, brown binding at the socket. Large pale gray stone faces with sparse raised rectangular studs; primitive heavy silhouette. No magic, no gems, no glow.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          66,
+          64,
+          1221,
+          1205
+        ],
+        "boundsAboveAlpha32": [
+          69,
+          67,
+          1216,
+          1202
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-80c212d4-0391-413f-9abe-109ebd3530a8.png",
+      "imageStatus": "awaiting-user-approval",
+      "generationPrompt": "Edit the stone pickaxe in image 1. Image 2 is the APPROVED wooden pickaxe style and shape reference.\nChange the stone head into a graceful broad shallow downward-curving arched double-ended pickaxe head, like the approved wooden one, but built of chunky gray faceted stone blocks. BOTH ends must taper into long sharp pointed mining tips, similar balanced length; REMOVE the blunt right-side hammer mass. Head moderately thick but not oversized. Add 4-6 clear raised square stone studs following the arc. Keep a strong dark iron center socket holding a warm orange-brown wooden shaft, two dark metal grip bands, square studs on the shaft, matching approved wooden craftsmanship.\nMatch image 2's clean blocky bevelled 3D cartoon illustration, crisp highlights, dark outline, square Roblox studs, warm wooden colors and soft upper-left studio lighting. Keep the complete tool angled from lower-left handle to upper-right center socket, front three-quarter orthographic view. Exactly one complete pickaxe on true transparent alpha, comfortably centered with 8 percent empty padding on ALL sides. No text, scene, frame, external shadow or loose stones. This is tier 2, modestly stronger than the wooden starter, no magic or gems.\n",
+      "folder": "02-stone",
+      "referenceImage": "02-stone/references/02-stone-pickaxe-studs-v02.png",
+      "modelsDirectory": "02-stone/models",
+      "texturesDirectory": "02-stone/textures",
+      "iconsDirectory": "02-stone/icons",
+      "exportsDirectory": "02-stone/exports",
+      "modelStatus": "ready-for-user-review",
+      "model": {
+        "version": "v01",
+        "modelStatus": "ready-for-user-review",
+        "blend": "pack/models/pickaxes-asset-pack-v01.blend",
+        "scene": "Review_Wooden_Stone",
+        "collection": "02_Stone_Reference_v01",
+        "fbx": "02-stone/exports/stone-pickaxe-reference-v01.fbx",
+        "glb": "02-stone/exports/stone-pickaxe-reference-v01.glb",
+        "shopIcon": "02-stone/icons/stone-pickaxe-reference-v01.png",
+        "texture": "02-stone/textures/reference-wood-stone-studs-v01.png",
+        "frontPreview": "02-stone/models/stone-pickaxe-reference-v01-front.png",
+        "sidePreview": "02-stone/models/stone-pickaxe-reference-v01-side.png",
+        "triangles": 464,
+        "symmetryPlane": "X=0",
+        "studsGeometry": false,
+        "studsTexture": true,
+        "importedToRoblox": false
+      }
+    },
+    {
+      "tier": 3,
+      "key": "Iron",
+      "nameRu": "Железная",
+      "filename": "03-iron/references/03-iron-pickaxe-studs-v01.png",
+      "description": "A forged iron pickaxe, more sophisticated than stone. Wide brushed silver angular cross-head with a long downturned sharp beak and a short flat chisel, dark steel center socket, sturdy brown handle with black wrap grip and two riveted silver bands. Several broad clean rows of raised square Roblox studs on metal head and collar. No magic or gems.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A forged iron pickaxe, more sophisticated than stone. Wide brushed silver angular cross-head with a long downturned sharp beak and a short flat chisel, dark steel center socket, sturdy brown handle with black wrap grip and two riveted silver bands. Several broad clean rows of raised square Roblox studs on metal head and collar. No magic or gems.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          0,
+          10,
+          1218,
+          1246
+        ],
+        "boundsAboveAlpha32": [
+          65,
+          65,
+          1202,
+          1192
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-db6a807d-b4f2-40b4-9512-5cdb68914d78.png",
+      "imageStatus": "awaiting-user-approval",
+      "generationPrompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A forged iron pickaxe, more sophisticated than stone. Wide brushed silver angular cross-head with a long downturned sharp beak and a slightly shorter sharp downturned chisel beak, neither end resembles a hammer, dark steel center socket, sturdy brown handle with black wrap grip and two riveted silver bands. Several broad clean rows of raised square Roblox studs on metal head and collar. No magic or gems.",
+      "folder": "03-iron",
+      "referenceImage": "03-iron/references/03-iron-pickaxe-studs-v01.png",
+      "modelsDirectory": "03-iron/models",
+      "texturesDirectory": "03-iron/textures",
+      "iconsDirectory": "03-iron/icons",
+      "exportsDirectory": "03-iron/exports",
+      "modelStatus": "early-draft-not-finalized",
+      "draftSource": "pack/models/pickaxes-asset-pack-v01.blend: Pickaxe_Asset_Pack_v01"
+    },
+    {
+      "tier": 4,
+      "key": "Golden",
+      "nameRu": "Золотая",
+      "filename": "04-golden/references/04-golden-pickaxe-studs-v01.png",
+      "description": "A royal golden pickaxe, clearly more impressive than iron. Stepped bright gold asymmetric crescent head with bevelled pointed ends, emerald green square jewel at the center socket, dark walnut shaft, gold grip rings and pommel. Raised square Roblox studs on the broad golden head and metal collars. Rich golden faces, limited crisp highlights. No crown or detached decorations.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A royal golden pickaxe, clearly more impressive than iron. Stepped bright gold asymmetric crescent head with bevelled pointed ends, emerald green square jewel at the center socket, dark walnut shaft, gold grip rings and pommel. Raised square Roblox studs on the broad golden head and metal collars. Rich golden faces, limited crisp highlights. No crown or detached decorations.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          0,
+          21,
+          1240,
+          1224
+        ],
+        "boundsAboveAlpha32": [
+          81,
+          39,
+          1200,
+          1218
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-33209c2e-daa9-4754-8e10-fdb69a1f7b99.png",
+      "imageStatus": "awaiting-user-approval",
+      "folder": "04-golden",
+      "referenceImage": "04-golden/references/04-golden-pickaxe-studs-v01.png",
+      "modelsDirectory": "04-golden/models",
+      "texturesDirectory": "04-golden/textures",
+      "iconsDirectory": "04-golden/icons",
+      "exportsDirectory": "04-golden/exports",
+      "modelStatus": "early-draft-not-finalized",
+      "draftSource": "pack/models/pickaxes-asset-pack-v01.blend: Pickaxe_Asset_Pack_v01"
+    },
+    {
+      "tier": 5,
+      "key": "Diamond",
+      "nameRu": "Алмазная",
+      "filename": "05-diamond/references/05-diamond-pickaxe-studs-v01.png",
+      "description": "A diamond pickaxe with bold cyan-blue faceted translucent-looking angular crystal blades forming a wide double pointed cross-head, sturdy navy socket with one square diamond, matching navy armored shaft with silver collars. Sparse raised square Roblox studs on the broad crystal planes and socket, facets remain very readable. Clearly a complete functional pickaxe, more elaborate than gold.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A diamond pickaxe with bold cyan-blue faceted translucent-looking angular crystal blades forming a wide double pointed cross-head, sturdy navy socket with one square diamond, matching navy armored shaft with silver collars. Sparse raised square Roblox studs on the broad crystal planes and socket, facets remain very readable. Clearly a complete functional pickaxe, more elaborate than gold.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          23,
+          32,
+          1236,
+          1230
+        ],
+        "boundsAboveAlpha32": [
+          69,
+          34,
+          1233,
+          1227
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-b4e1d6f1-fbad-4fd0-9a04-f2aea5f1ceae.png",
+      "imageStatus": "awaiting-user-approval",
+      "folder": "05-diamond",
+      "referenceImage": "05-diamond/references/05-diamond-pickaxe-studs-v01.png",
+      "modelsDirectory": "05-diamond/models",
+      "texturesDirectory": "05-diamond/textures",
+      "iconsDirectory": "05-diamond/icons",
+      "exportsDirectory": "05-diamond/exports",
+      "modelStatus": "early-draft-not-finalized",
+      "draftSource": "pack/models/pickaxes-asset-pack-v01.blend: Pickaxe_Asset_Pack_v01"
+    },
+    {
+      "tier": 6,
+      "key": "Strawberry",
+      "nameRu": "Клубничная",
+      "filename": "06-strawberry/references/06-strawberry-pickaxe-studs-v01.png",
+      "description": "A playful powerful strawberry pickaxe with a broad red angular berry cross-head shaped into two long curved pick tips, stepped green leaf collar surrounding the socket, deep red shaft wrapped in cream and green bands. Distinct raised golden square seed studs on red head faces, green square studs on leaf blocks. One cohesive berry weapon, no face, no eyes, no separate fruit. More interesting silhouette than plain diamond.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A playful powerful strawberry pickaxe with a broad red angular berry cross-head shaped into two long curved pick tips, stepped green leaf collar surrounding the socket, deep red shaft wrapped in cream and green bands. Distinct raised golden square seed studs on red head faces, green square studs on leaf blocks. One cohesive berry weapon, no face, no eyes, no separate fruit. More interesting silhouette than plain diamond.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          9,
+          51,
+          1222,
+          1219
+        ],
+        "boundsAboveAlpha32": [
+          78,
+          54,
+          1210,
+          1216
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-8a27128a-7e6a-4f4d-b76e-55d6e5a89b22.png",
+      "imageStatus": "awaiting-user-approval",
+      "folder": "06-strawberry",
+      "referenceImage": "06-strawberry/references/06-strawberry-pickaxe-studs-v01.png",
+      "modelsDirectory": "06-strawberry/models",
+      "texturesDirectory": "06-strawberry/textures",
+      "iconsDirectory": "06-strawberry/icons",
+      "exportsDirectory": "06-strawberry/exports",
+      "modelStatus": "early-draft-not-finalized",
+      "draftSource": "pack/models/pickaxes-asset-pack-v01.blend: Pickaxe_Asset_Pack_v01"
+    },
+    {
+      "tier": 7,
+      "key": "Cactus",
+      "nameRu": "Кактусовая",
+      "filename": "07-cactus/references/07-cactus-pickaxe-studs-v01.png",
+      "description": "A distinctive cactus pickaxe. Thick bright green block cactus cross-head with a long pointed curved branch to the left and a hooked raised branch to the right, chunky angular cream spikes attached to sides, orange desert copper central collar. Green ribbed shaft and stacked copper grip rings. Clear raised square Roblox studs along green broad surfaces. More complex branch silhouette than strawberry. Spikes moderate and readable.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A distinctive cactus pickaxe. Thick bright green block cactus cross-head with a long pointed curved branch to the left and a hooked raised branch to the right, chunky angular cream spikes attached to sides, orange desert copper central collar. Green ribbed shaft and stacked copper grip rings. Clear raised square Roblox studs along green broad surfaces. More complex branch silhouette than strawberry. Spikes moderate and readable.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          0,
+          21,
+          1232,
+          1212
+        ],
+        "boundsAboveAlpha32": [
+          101,
+          106,
+          1215,
+          1195
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-768cee88-5252-47a5-a676-aa1f6e284136.png",
+      "imageStatus": "awaiting-user-approval",
+      "folder": "07-cactus",
+      "referenceImage": "07-cactus/references/07-cactus-pickaxe-studs-v01.png",
+      "modelsDirectory": "07-cactus/models",
+      "texturesDirectory": "07-cactus/textures",
+      "iconsDirectory": "07-cactus/icons",
+      "exportsDirectory": "07-cactus/exports",
+      "modelStatus": "not-modeled"
+    },
+    {
+      "tier": 8,
+      "key": "Lightning",
+      "nameRu": "Молния",
+      "filename": "08-lightning/references/08-lightning-pickaxe-studs-v01.png",
+      "description": "An electric pickaxe with two oversized opposing angular yellow lightning bolt blades forming the pick head, dark navy armored central transformer socket surrounding one bright cyan square energy core. Long navy and cyan shaft with yellow conductor bands and angular pommel. Clearly raised square Roblox studs on the flat bolt faces and armor. Restrained tiny cyan glow localized on core, no storm, no detached sparks. Powerful clear zigzag silhouette.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: An electric pickaxe with two oversized opposing angular yellow lightning bolt blades forming the pick head, dark navy armored central transformer socket surrounding one bright cyan square energy core. Long navy and cyan shaft with yellow conductor bands and angular pommel. Clearly raised square Roblox studs on the flat bolt faces and armor. Restrained tiny cyan glow localized on core, no storm, no detached sparks. Powerful clear zigzag silhouette.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          0,
+          21,
+          1240,
+          1254
+        ],
+        "boundsAboveAlpha32": [
+          38,
+          51,
+          1236,
+          1210
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-c790d214-3765-430f-a610-348f4d22d2f6.png",
+      "imageStatus": "awaiting-user-approval",
+      "folder": "08-lightning",
+      "referenceImage": "08-lightning/references/08-lightning-pickaxe-studs-v01.png",
+      "modelsDirectory": "08-lightning/models",
+      "texturesDirectory": "08-lightning/textures",
+      "iconsDirectory": "08-lightning/icons",
+      "exportsDirectory": "08-lightning/exports",
+      "modelStatus": "not-modeled"
+    },
+    {
+      "tier": 9,
+      "key": "Candy",
+      "nameRu": "Конфетная",
+      "filename": "09-candy/references/09-candy-pickaxe-studs-v02.png",
+      "description": "An extravagant candy pickaxe with a large double-hook head made of angular pink-and-white striped candy cane blocks, two peppermint disc sockets attached to the central turquoise collar, pink shaft with turquoise wrapper-like chunky fins and a faceted candy pommel. Raised square Roblox studs on broad pink panels and peppermint hubs. Bigger and more ornamented than the lightning pickaxe, still one cohesive functional mining weapon. No loose sweets or scene.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: An extravagant candy pickaxe with a large double-hook head made of angular pink-and-white striped candy cane blocks, two peppermint disc sockets attached to the central turquoise collar, pink shaft with turquoise wrapper-like chunky fins and a faceted candy pommel. Raised square Roblox studs on broad pink panels and peppermint hubs. Bigger and more ornamented than the lightning pickaxe, still one cohesive functional mining weapon. No loose sweets or scene.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          41,
+          21,
+          1214,
+          1210
+        ],
+        "boundsAboveAlpha32": [
+          134,
+          53,
+          1189,
+          1208
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-0363afd4-5d64-4cde-bf59-27a5b8d1dd5f.png",
+      "imageStatus": "awaiting-user-approval",
+      "generationPrompt": "Change ONLY framing of this existing candy pickaxe icon. Preserve the exact pink-white striped double-hook head, peppermint discs, turquoise fittings, square Roblox studs, pose, colors, dark contour and clean bevelled 3D cartoon style. Zoom out enough that the entire upper candy arch is completely visible, reconstruct the tiny cropped top of the left arch. Leave 9 percent transparent padding around the whole tool on ALL sides. Exactly one complete pickaxe, full head and handle inside the canvas, true transparent alpha background, no new decoration, no text or external shadow. Do not redesign the weapon.\n",
+      "folder": "09-candy",
+      "referenceImage": "09-candy/references/09-candy-pickaxe-studs-v02.png",
+      "modelsDirectory": "09-candy/models",
+      "texturesDirectory": "09-candy/textures",
+      "iconsDirectory": "09-candy/icons",
+      "exportsDirectory": "09-candy/exports",
+      "modelStatus": "not-modeled"
+    },
+    {
+      "tier": 10,
+      "key": "Rainbow",
+      "nameRu": "Радужная",
+      "filename": "10-rainbow/references/10-rainbow-pickaxe-studs-v01.png",
+      "description": "A powerful rainbow pickaxe. A large double-tipped crescent cross-head built from six thick stepped interlocking colored arcs red orange yellow green cyan violet, clean dark violet central socket with white square star-shaped core. Violet shaft wrapped by stacked colored metal segments and chunky rainbow pommel. Very visible square Roblox studs on the colored broad arc panels and socket. Distinct colorful architectural silhouette, no background rainbow, no loose particles.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A powerful rainbow pickaxe. A large double-tipped crescent cross-head built from six thick stepped interlocking colored arcs red orange yellow green cyan violet, clean dark violet central socket with white square star-shaped core. Violet shaft wrapped by stacked colored metal segments and chunky rainbow pommel. Very visible square Roblox studs on the colored broad arc panels and socket. Distinct colorful architectural silhouette, no background rainbow, no loose particles.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          41,
+          38,
+          1218,
+          1214
+        ],
+        "boundsAboveAlpha32": [
+          67,
+          40,
+          1213,
+          1209
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-2c2f56e3-a050-4722-b42c-302f162d108f.png",
+      "imageStatus": "awaiting-user-approval",
+      "folder": "10-rainbow",
+      "referenceImage": "10-rainbow/references/10-rainbow-pickaxe-studs-v01.png",
+      "modelsDirectory": "10-rainbow/models",
+      "texturesDirectory": "10-rainbow/textures",
+      "iconsDirectory": "10-rainbow/icons",
+      "exportsDirectory": "10-rainbow/exports",
+      "modelStatus": "not-modeled"
+    },
+    {
+      "tier": 11,
+      "key": "Crystal",
+      "nameRu": "Кристальная",
+      "filename": "11-crystal/references/11-crystal-pickaxe-studs-v01.png",
+      "description": "A high-tier crystal pickaxe: large asymmetric crown-like cluster of icy cyan and violet angular crystal spikes arranged horizontally as two usable pick tips around a navy socket, three small floating faceted crystal shards very close to the head, crystal shaft with navy rings and one prism pommel. Clearly raised square Roblox studs on select large crystal planes and metal collar, facets remain broad. More monumental sculptural silhouette than rainbow, restrained glow only on core, no particle cloud.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A high-tier crystal pickaxe: large asymmetric crown-like cluster of icy cyan and violet angular crystal spikes arranged horizontally as two usable pick tips around a navy socket, three small floating faceted crystal shards very close to the head, crystal shaft with navy rings and one prism pommel. Clearly raised square Roblox studs on select large crystal planes and metal collar, facets remain broad. More monumental sculptural silhouette than rainbow, restrained glow only on core, no particle cloud.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          0,
+          19,
+          1212,
+          1225
+        ],
+        "boundsAboveAlpha32": [
+          113,
+          31,
+          1208,
+          1223
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-3cd8166d-d8c9-40ef-80ee-1913e82a3267.png",
+      "imageStatus": "awaiting-user-approval",
+      "folder": "11-crystal",
+      "referenceImage": "11-crystal/references/11-crystal-pickaxe-studs-v01.png",
+      "modelsDirectory": "11-crystal/models",
+      "texturesDirectory": "11-crystal/textures",
+      "iconsDirectory": "11-crystal/icons",
+      "exportsDirectory": "11-crystal/exports",
+      "modelStatus": "not-modeled"
+    },
+    {
+      "tier": 12,
+      "key": "Demon",
+      "nameRu": "Демоническая",
+      "filename": "12-demon/references/12-demon-pickaxe-studs-v01.png",
+      "description": "A menacing but child-friendly demon pickaxe. Oversized obsidian and crimson double-curved hooked head shaped like two blocky demon horns, deep red angular carved center socket with a single orange diamond lava core, two tiny black horn blocks on top. Charcoal armored shaft with crimson grip bands and pointed orange pommel. Broad black and red armor faces carry clear raised square Roblox studs; controlled orange molten seams across head. No gore, no skull, no character, no floating flame cloud. More aggressive elaborate silhouette than crystal.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A menacing but child-friendly demon pickaxe. Oversized obsidian and crimson double-curved hooked head shaped like two blocky demon horns, deep red angular carved center socket with a single orange diamond lava core, two tiny black horn blocks on top. Charcoal armored shaft with crimson grip bands and pointed orange pommel. Broad black and red armor faces carry clear raised square Roblox studs; controlled orange molten seams across head. No gore, no skull, no character, no floating flame cloud. More aggressive elaborate silhouette than crystal.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          19,
+          21,
+          1240,
+          1254
+        ],
+        "boundsAboveAlpha32": [
+          125,
+          76,
+          1177,
+          1182
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-74beefb5-df96-4d9d-bb6b-d9878c979eca.png",
+      "imageStatus": "awaiting-user-approval",
+      "generationPrompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A menacing but child-friendly demon pickaxe. Oversized obsidian and crimson double-curved hooked head shaped like two blocky demon horns, deep red angular carved center socket with a single orange diamond lava core, two tiny black horn blocks on top. Charcoal armored shaft with crimson grip bands and pointed orange pommel. Broad black and red armor faces carry clear raised square Roblox studs; controlled orange molten seams across head. No gore, no skull, no character, no floating flame cloud. More aggressive elaborate silhouette than crystal.\nFraming priority: zoom out slightly. Keep ALL tips, horns and pommel completely inside the central 78 percent of the square image. Leave at least 9 percent completely transparent padding on every side. No cropped geometry.\n",
+      "folder": "12-demon",
+      "referenceImage": "12-demon/references/12-demon-pickaxe-studs-v01.png",
+      "modelsDirectory": "12-demon/models",
+      "texturesDirectory": "12-demon/textures",
+      "iconsDirectory": "12-demon/icons",
+      "exportsDirectory": "12-demon/exports",
+      "modelStatus": "not-modeled"
+    },
+    {
+      "tier": 13,
+      "key": "Hacker",
+      "nameRu": "Хакерская",
+      "filename": "13-hacker/references/13-hacker-pickaxe-studs-v01.png",
+      "description": "A unique high-tech hacker pickaxe. Oversized black angular cross-head with acid-green luminous stepped pixel cutting edges, head has two geometric open gaps and several chunky detached cube segments aligned very close as a broken digital blade. Large square black center hub surrounds a green circuit core; black shaft with a few broad neon green circuit strips, green block pommel. Clear raised square Roblox studs on dark head armor and shaft panels. Pixel breakup forms silhouette, not background noise. No text, no numbers, no code.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A unique high-tech hacker pickaxe. Oversized black angular cross-head with acid-green luminous stepped pixel cutting edges, head has two geometric open gaps and several chunky detached cube segments aligned very close as a broken digital blade. Large square black center hub surrounds a green circuit core; black shaft with a few broad neon green circuit strips, green block pommel. Clear raised square Roblox studs on dark head armor and shaft panels. Pixel breakup forms silhouette, not background noise. No text, no numbers, no code.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          0,
+          21,
+          1238,
+          1222
+        ],
+        "boundsAboveAlpha32": [
+          100,
+          112,
+          1184,
+          1146
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-562684ee-770d-4c6b-b29c-fe22d612cc4f.png",
+      "imageStatus": "awaiting-user-approval",
+      "generationPrompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A unique high-tech hacker pickaxe. Oversized black angular cross-head with acid-green luminous stepped pixel cutting edges, head has two geometric open gaps and several chunky detached cube segments aligned very close as a broken digital blade. Large square black center hub surrounds a green circuit core; black shaft with a few broad neon green circuit strips, green block pommel. Clear raised square Roblox studs on dark head armor and shaft panels. Pixel breakup forms silhouette, not background noise. No text, no numbers, no code.\nFraming priority: zoom out slightly. Keep ALL tips, horns and pommel completely inside the central 78 percent of the square image. Leave at least 9 percent completely transparent padding on every side. No cropped geometry.\n",
+      "folder": "13-hacker",
+      "referenceImage": "13-hacker/references/13-hacker-pickaxe-studs-v01.png",
+      "modelsDirectory": "13-hacker/models",
+      "texturesDirectory": "13-hacker/textures",
+      "iconsDirectory": "13-hacker/icons",
+      "exportsDirectory": "13-hacker/exports",
+      "modelStatus": "not-modeled"
+    },
+    {
+      "tier": 14,
+      "key": "UFO",
+      "nameRu": "НЛО",
+      "filename": "14-ufo/references/14-ufo-pickaxe-studs-v01.png",
+      "description": "A powerful alien UFO pickaxe. Central chunky silver and dark teal flying-saucer socket with a lime green translucent dome, two huge opposing crescent blade arms extend sideways and curve down from saucer rim, stepped silver armor faces and turquoise luminous edges. Dark teal shaft built from ringed alien machinery with a faceted emerald reactor pommel. Square Roblox studs on saucer armor and blade planes. More advanced layered silhouette than hacker, restrained glow. One pickaxe, no detached UFO vehicle, no alien character.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A powerful alien UFO pickaxe. Central chunky silver and dark teal flying-saucer socket with a lime green translucent dome, two huge opposing crescent blade arms extend sideways and curve down from saucer rim, stepped silver armor faces and turquoise luminous edges. Dark teal shaft built from ringed alien machinery with a faceted emerald reactor pommel. Square Roblox studs on saucer armor and blade planes. More advanced layered silhouette than hacker, restrained glow. One pickaxe, no detached UFO vehicle, no alien character.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          41,
+          21,
+          1224,
+          1221
+        ],
+        "boundsAboveAlpha32": [
+          82,
+          57,
+          1198,
+          1194
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-3b17ef78-3a47-4763-9e9c-0ec9e4e45b98.png",
+      "imageStatus": "awaiting-user-approval",
+      "generationPrompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A powerful alien UFO pickaxe. Central chunky silver and dark teal flying-saucer socket with a lime green translucent dome, two huge opposing crescent blade arms extend sideways and curve down from saucer rim, stepped silver armor faces and turquoise luminous edges. Dark teal shaft built from ringed alien machinery with a faceted emerald reactor pommel. Square Roblox studs on saucer armor and blade planes. More advanced layered silhouette than hacker, restrained glow. One pickaxe, no detached UFO vehicle, no alien character.\nFraming priority: zoom out slightly. Keep ALL tips, horns and pommel completely inside the central 78 percent of the square image. Leave at least 9 percent completely transparent padding on every side. No cropped geometry.\n",
+      "folder": "14-ufo",
+      "referenceImage": "14-ufo/references/14-ufo-pickaxe-studs-v01.png",
+      "modelsDirectory": "14-ufo/models",
+      "texturesDirectory": "14-ufo/textures",
+      "iconsDirectory": "14-ufo/icons",
+      "exportsDirectory": "14-ufo/exports",
+      "modelStatus": "not-modeled"
+    },
+    {
+      "tier": 15,
+      "key": "Secret",
+      "nameRu": "Тайная",
+      "filename": "15-secret/references/15-secret-pickaxe-studs-v01.png",
+      "description": "A very high-tier secret void pickaxe. Huge asymmetric black-violet jaw-like crescent pick head enclosing a magenta square void core; two jagged hooked blade tips with chunky ivory-purple fangs, three small floating black armor plates very close to the outer arc. Violet armored shaft with black collars, magenta inlays, faceted dark pommel. Raised square Roblox studs on broad obsidian armor surfaces. Mysterious strong silhouette more imposing than UFO. No character face, no eyes, no text, restrained core glow.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A very high-tier secret void pickaxe. Huge asymmetric black-violet jaw-like crescent pick head enclosing a magenta square void core; two jagged hooked blade tips with chunky ivory-purple fangs, three small floating black armor plates very close to the outer arc. Violet armored shaft with black collars, magenta inlays, faceted dark pommel. Raised square Roblox studs on broad obsidian armor surfaces. Mysterious strong silhouette more imposing than UFO. No character face, no eyes, no text, restrained core glow.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          0,
+          21,
+          1230,
+          1254
+        ],
+        "boundsAboveAlpha32": [
+          139,
+          61,
+          1164,
+          1191
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-17c56f59-bd05-448d-87b6-7aa368905375.png",
+      "imageStatus": "awaiting-user-approval",
+      "generationPrompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A very high-tier secret void pickaxe. Huge asymmetric black-violet jaw-like crescent pick head enclosing a magenta square void core; two jagged hooked blade tips with chunky ivory-purple fangs, three small floating black armor plates very close to the outer arc. Violet armored shaft with black collars, magenta inlays, faceted dark pommel. Raised square Roblox studs on broad obsidian armor surfaces. Mysterious strong silhouette more imposing than UFO. No character face, no eyes, no text, restrained core glow.\nFraming priority: zoom out slightly. Keep ALL tips, horns, orbital rings, halo rings, wings and pommel completely inside the central 78 percent of the square image. Leave at least 9 percent completely transparent padding on every side. No cropped geometry. Maintain a bold clear near-black contour matching the approved simple wooden pickaxe, chunky square Roblox studs and clean bevelled 3D cartoon rendering; no photorealism or realistic grime.\n",
+      "folder": "15-secret",
+      "referenceImage": "15-secret/references/15-secret-pickaxe-studs-v01.png",
+      "modelsDirectory": "15-secret/models",
+      "texturesDirectory": "15-secret/textures",
+      "iconsDirectory": "15-secret/icons",
+      "exportsDirectory": "15-secret/exports",
+      "modelStatus": "not-modeled"
+    },
+    {
+      "tier": 16,
+      "key": "Cool",
+      "nameRu": "Ледяной дракон",
+      "filename": "16-cool/references/16-cool-pickaxe-studs-v01.png",
+      "description": "An extremely powerful blue frost-dragon pickaxe, much more monumental than secret tier. Head is an armored cobalt angular dragon-like center socket with two large swept ice-blue blade wings and several stepped icy teeth along each lower cutting edge, one cyan square reactor gem. Heavy navy shaft with silver-blue scale-like armor plates and a large faceted ice pommel. Clearly raised square Roblox studs on broad cobalt dragon armor and wing blade panels. Heroic wide layered silhouette, precise ice details, no actual animal body, no scene, no loose snow.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: An extremely powerful blue frost-dragon pickaxe, much more monumental than secret tier. Head is an armored cobalt angular dragon-like center socket with two large swept ice-blue blade wings and several stepped icy teeth along each lower cutting edge, one cyan square reactor gem. Heavy navy shaft with silver-blue scale-like armor plates and a large faceted ice pommel. Clearly raised square Roblox studs on broad cobalt dragon armor and wing blade panels. Heroic wide layered silhouette, precise ice details, no actual animal body, no scene, no loose snow.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          0,
+          9,
+          1240,
+          1254
+        ],
+        "boundsAboveAlpha32": [
+          44,
+          24,
+          1214,
+          1229
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-87f144bb-c2a4-4a7e-b90f-86239d17d1e4.png",
+      "imageStatus": "awaiting-user-approval",
+      "generationPrompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: An extremely powerful blue frost-dragon pickaxe, much more monumental than secret tier. Head is an armored cobalt angular dragon-like center socket with two large swept ice-blue blade wings and several stepped icy teeth along each lower cutting edge, one cyan square reactor gem. Heavy navy shaft with silver-blue scale-like armor plates and a large faceted ice pommel. Clearly raised square Roblox studs on broad cobalt dragon armor and wing blade panels. Heroic wide layered silhouette, precise ice details, no actual animal body, no scene, no loose snow.\nFraming priority: zoom out slightly. Keep ALL tips, horns, orbital rings, halo rings, wings and pommel completely inside the central 78 percent of the square image. Leave at least 9 percent completely transparent padding on every side. No cropped geometry. Maintain a bold clear near-black contour matching the approved simple wooden pickaxe, chunky square Roblox studs and clean bevelled 3D cartoon rendering; no photorealism or realistic grime.\n",
+      "folder": "16-cool",
+      "referenceImage": "16-cool/references/16-cool-pickaxe-studs-v01.png",
+      "modelsDirectory": "16-cool/models",
+      "texturesDirectory": "16-cool/textures",
+      "iconsDirectory": "16-cool/icons",
+      "exportsDirectory": "16-cool/exports",
+      "modelStatus": "not-modeled"
+    },
+    {
+      "tier": 17,
+      "key": "Galaxy",
+      "nameRu": "Галактическая",
+      "filename": "17-galaxy/references/17-galaxy-pickaxe-studs-v01.png",
+      "description": "A penultimate cosmic galaxy pickaxe. Huge double-pointed violet and midnight-blue crescent head encloses a brilliant cyan faceted planet reactor orb with one tilted thick golden orbital ring. Broad angular blade armor carries simple magenta and cyan nebula-like color patches, two short geometric star-shaped fin tips. Armored violet shaft with alternating cyan and gold collars, star-shaped pommel. Clearly raised square Roblox studs on large purple armor faces. More majestic than frost-dragon, restrained localized cyan glow, no background stars or particle field.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A penultimate cosmic galaxy pickaxe. Huge double-pointed violet and midnight-blue crescent head encloses a brilliant cyan faceted planet reactor orb with one tilted thick golden orbital ring. Broad angular blade armor carries simple magenta and cyan nebula-like color patches, two short geometric star-shaped fin tips. Armored violet shaft with alternating cyan and gold collars, star-shaped pommel. Clearly raised square Roblox studs on large purple armor faces. More majestic than frost-dragon, restrained localized cyan glow, no background stars or particle field.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          63,
+          21,
+          1220,
+          1230
+        ],
+        "boundsAboveAlpha32": [
+          83,
+          94,
+          1214,
+          1190
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-cf51865a-b39e-48b6-a214-5379686afcb8.png",
+      "imageStatus": "awaiting-user-approval",
+      "generationPrompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: A penultimate cosmic galaxy pickaxe. Huge double-pointed violet and midnight-blue crescent head encloses a brilliant cyan faceted planet reactor orb with one tilted thick golden orbital ring. Broad angular blade armor carries simple magenta and cyan nebula-like color patches, two short geometric star-shaped fin tips. Armored violet shaft with alternating cyan and gold collars, star-shaped pommel. Clearly raised square Roblox studs on large purple armor faces. More majestic than frost-dragon, restrained localized cyan glow, no background stars or particle field.\nFraming priority: zoom out slightly. Keep ALL tips, horns, orbital rings, halo rings, wings and pommel completely inside the central 78 percent of the square image. Leave at least 9 percent completely transparent padding on every side. No cropped geometry. Maintain a bold clear near-black contour matching the approved simple wooden pickaxe, chunky square Roblox studs and clean bevelled 3D cartoon rendering; no photorealism or realistic grime.\n",
+      "folder": "17-galaxy",
+      "referenceImage": "17-galaxy/references/17-galaxy-pickaxe-studs-v01.png",
+      "modelsDirectory": "17-galaxy/models",
+      "texturesDirectory": "17-galaxy/textures",
+      "iconsDirectory": "17-galaxy/icons",
+      "exportsDirectory": "17-galaxy/exports",
+      "modelStatus": "not-modeled"
+    },
+    {
+      "tier": 18,
+      "key": "Celestial",
+      "nameRu": "Небесная",
+      "filename": "18-celestial/references/18-celestial-pickaxe-studs-v01.png",
+      "description": "The ultimate celestial pickaxe, the strongest most unique item of an eighteen-tier Roblox weapon set. Monumental double-pointed white and gold cross-head with two large layered angular angelic wing blades sweeping upward and then hooking down at their ends, a bright cyan faceted star reactor in the center, two thick nested golden halo rings attached behind the socket. White and gold long armored shaft, gold collars, a large eight-point faceted star pommel. Very clear raised square Roblox studs on broad gold and ivory wing armor faces. Majestic readable wing silhouette more elaborate than the galaxy weapon, limited localized star glow. One functional complete pickaxe, no scene, no angel person, no floating feathers.",
+      "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: The ultimate celestial pickaxe, the strongest most unique item of an eighteen-tier Roblox weapon set. Monumental double-pointed white and gold cross-head with two large layered angular angelic wing blades sweeping upward and then hooking down at their ends, a bright cyan faceted star reactor in the center, two thick nested golden halo rings attached behind the socket. White and gold long armored shaft, gold collars, a large eight-point faceted star pommel. Very clear raised square Roblox studs on broad gold and ivory wing armor faces. Majestic readable wing silhouette more elaborate than the galaxy weapon, limited localized star glow. One functional complete pickaxe, no scene, no angel person, no floating feathers.",
+      "imageProperties": {
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "alphaExtrema": [
+          0,
+          255
+        ],
+        "visibleBounds": [
+          31,
+          21,
+          1234,
+          1204
+        ],
+        "boundsAboveAlpha32": [
+          84,
+          59,
+          1205,
+          1199
+        ]
+      },
+      "source": "C:\\Users\\dakem\\.codex\\generated_images\\01a1133b-c6db-7593-bf33-3dc271ab9a31\\exec-a6d1ab5e-1a5e-4714-ad10-92949bb93ee2.png",
+      "imageStatus": "awaiting-user-approval",
+      "generationPrompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: The ultimate celestial pickaxe, the strongest most unique item of an eighteen-tier Roblox weapon set. Monumental double-pointed white and gold cross-head with two large layered angular angelic wing blades sweeping upward and then hooking down at their ends, a bright cyan faceted star reactor in the center, two thick nested golden halo rings attached behind the socket. White and gold long armored shaft, gold collars, a large eight-point faceted star pommel. Very clear raised square Roblox studs on broad gold and ivory wing armor faces. Majestic readable wing silhouette more elaborate than the galaxy weapon, limited localized star glow. One functional complete pickaxe, no scene, no angel person, no floating feathers.\nFraming priority: zoom out slightly. Keep ALL tips, horns, orbital rings, halo rings, wings and pommel completely inside the central 78 percent of the square image. Leave at least 9 percent completely transparent padding on every side. No cropped geometry. Maintain a bold clear near-black contour matching the approved simple wooden pickaxe, chunky square Roblox studs and clean bevelled 3D cartoon rendering; no photorealism or realistic grime.\n",
+      "folder": "18-celestial",
+      "referenceImage": "18-celestial/references/18-celestial-pickaxe-studs-v01.png",
+      "modelsDirectory": "18-celestial/models",
+      "texturesDirectory": "18-celestial/textures",
+      "iconsDirectory": "18-celestial/icons",
+      "exportsDirectory": "18-celestial/exports",
+      "modelStatus": "not-modeled"
+    }
+  ]
+}

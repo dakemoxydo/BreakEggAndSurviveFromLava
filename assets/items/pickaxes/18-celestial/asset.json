@@ -1,0 +1,52 @@
+{
+  "tier": 18,
+  "key": "Celestial",
+  "nameRu": "Небесная",
+  "referenceImage": "references/18-celestial-pickaxe-studs-v01.png",
+  "imageStatus": "awaiting-user-approval",
+  "modelStatus": "ready-for-user-review",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: The ultimate celestial pickaxe, the strongest most unique item of an eighteen-tier Roblox weapon set. Monumental double-pointed white and gold cross-head with two large layered angular angelic wing blades sweeping upward and then hooking down at their ends, a bright cyan faceted star reactor in the center, two thick nested golden halo rings attached behind the socket. White and gold long armored shaft, gold collars, a large eight-point faceted star pommel. Very clear raised square Roblox studs on broad gold and ivory wing armor faces. Majestic readable wing silhouette more elaborate than the galaxy weapon, limited localized star glow. One functional complete pickaxe, no scene, no angel person, no floating feathers.\nFraming priority: zoom out slightly. Keep ALL tips, horns, orbital rings, halo rings, wings and pommel completely inside the central 78 percent of the square image. Leave at least 9 percent completely transparent padding on every side. No cropped geometry. Maintain a bold clear near-black contour matching the approved simple wooden pickaxe, chunky square Roblox studs and clean bevelled 3D cartoon rendering; no photorealism or realistic grime.\n",
+  "directories": {
+    "models": "models",
+    "textures": "textures",
+    "icons": "icons",
+    "exports": "exports"
+  },
+  "reviewModel": {
+    "version": "v01",
+    "status": "awaiting-user-review",
+    "scene": "Pickaxe_Pack_Review",
+    "collection": "18_Celestial_Review_v01",
+    "texture": "../pack/textures/celestial-dark-studs-v01.png",
+    "detailPreview": "../pack/previews/celestial-detail-review-v01.png",
+    "raisedStudGeometry": false,
+    "runtimeReplaced": true,
+    "descriptionRu": "Светлые ступенчатые секции, широкие закреплённые перья, двойной золотой нимб, корона и голубые звёздные вставки.",
+    "blend": "../pack/models/pickaxes-asset-pack-review-v20.blend",
+    "preview": "../pack/previews/pack-full-18-review-v02.png",
+    "attachmentAudit": "../pack/previews/pack-attachment-audit-v20.json",
+    "attachmentStatus": "passed"
+  },
+  "studioImportPackage": {
+    "version": "v03",
+    "fbx": "../pack/exports/roblox-import-v03/models/CelestialPickaxe.fbx",
+    "texture": "../pack/exports/roblox-import-v03/textures/Celestial_Color.png",
+    "meshName": "CelestialPickaxe",
+    "runtimeKey": "Celestial",
+    "triangles": 2438,
+    "sizeStuds": [
+      5.603286266326904,
+      6.107349872589111,
+      1.4700000286102295
+    ],
+    "materialCount": 1,
+    "uvSets": 1,
+    "importedToRoblox": true,
+    "manifest": "../pack/exports/roblox-import-v03/manifest.json",
+    "meshId": "rbxassetid://122808458320112",
+    "textureId": "rbxassetid://84667052348530",
+    "templatePath": "ReplicatedStorage.PickaxeModels.Celestial",
+    "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.CelestialPickaxe"
+  }
+}

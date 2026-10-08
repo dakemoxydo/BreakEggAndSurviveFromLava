@@ -1,0 +1,51 @@
+{
+  "tier": 8,
+  "key": "Lightning",
+  "nameRu": "Молния",
+  "referenceImage": "references/08-lightning-pickaxe-studs-v01.png",
+  "imageStatus": "awaiting-user-approval",
+  "modelStatus": "ready-for-user-review",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: stylized-concept.\nAsset type: individual transparent PNG item icon for a Roblox pickaxe shop, also an approval concept for later Blender modeling.\nStyle: cohesive polished blocky low-poly 3D cartoon collectible weapon, bold clean near-black outline about 18px on a 1024 canvas, chunky bevelled geometry, saturated palette, crisp small highlights, limited large color planes; match bright classic Roblox simulator aesthetics. Real geometric raised SQUARE/RECTANGULAR Roblox studs integrated into broad object faces, NOT circular LEGO studs, NOT flat dot pattern. Studs large enough to see at 160px shop icon scale. All design should be achievable as a Blender mesh.\nComposition: exactly ONE complete pickaxe, same front three-quarter orthographic camera, entire shaft tilted gently from lower-left to upper-right about 22 degrees from vertical, head lies across upper half, handle tip near lower-left. Center whole silhouette, occupy about 82 percent square canvas with generous transparent padding. Both opposing mining tips plainly visible. No cropping.\nLighting: soft studio key from upper-left, clear dimensional shading and dark bevel edges.\nBackground: true transparent alpha, no floor, no backdrop, no checkerboard drawn into image, no ground shadow, no external drop shadow.\nConstraints: no text, letters, logo, watermark, price, badge, frame, character, UI card or extra unrelated objects. Keep detail clean at 160x160 and preserve a recognizable pickaxe.\nSubject: An electric pickaxe with two oversized opposing angular yellow lightning bolt blades forming the pick head, dark navy armored central transformer socket surrounding one bright cyan square energy core. Long navy and cyan shaft with yellow conductor bands and angular pommel. Clearly raised square Roblox studs on the flat bolt faces and armor. Restrained tiny cyan glow localized on core, no storm, no detached sparks. Powerful clear zigzag silhouette.",
+  "directories": {
+    "models": "models",
+    "textures": "textures",
+    "icons": "icons",
+    "exports": "exports"
+  },
+  "reviewModel": {
+    "version": "v01",
+    "status": "accepted-for-continuation",
+    "blend": "../pack/models/pickaxes-asset-pack-review-v20.blend",
+    "scene": "Pickaxe_Pack_Review",
+    "collection": "08_Lightning_Review_v01",
+    "texture": "../pack/textures/lightning-dark-studs-v01.png",
+    "preview": "../pack/previews/pack-full-18-review-v02.png",
+    "detailPreview": "../pack/previews/lightning-detail-review-v01.png",
+    "raisedStudGeometry": false,
+    "runtimeReplaced": true,
+    "attachmentAudit": "../pack/previews/pack-attachment-audit-v20.json",
+    "attachmentStatus": "passed"
+  },
+  "studioImportPackage": {
+    "version": "v03",
+    "fbx": "../pack/exports/roblox-import-v03/models/LightningPickaxe.fbx",
+    "texture": "../pack/exports/roblox-import-v03/textures/Lightning_Color.png",
+    "meshName": "LightningPickaxe",
+    "runtimeKey": "Lightning",
+    "triangles": 1288,
+    "sizeStuds": [
+      5.542270660400391,
+      5.084999680519104,
+      1.1750000715255737
+    ],
+    "materialCount": 1,
+    "uvSets": 1,
+    "importedToRoblox": true,
+    "manifest": "../pack/exports/roblox-import-v03/manifest.json",
+    "meshId": "rbxassetid://82685402077422",
+    "textureId": "rbxassetid://96888424705402",
+    "templatePath": "ReplicatedStorage.PickaxeModels.Lightning",
+    "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.LightningPickaxe"
+  }
+}

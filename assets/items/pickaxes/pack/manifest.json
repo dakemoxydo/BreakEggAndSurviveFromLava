@@ -52,10 +52,9 @@
   "draftScene": "Pickaxe_Asset_Pack_v01",
   "note": "The earlier batch remains as drafts. Do not continue before user feedback.",
   "importPackage": {
-    "status": "prepared-for-import",
-    "archive": "pack/exports/pickaxes-wooden-stone-roblox-v01.zip",
-    "fbx": "pack/exports/roblox-import-v01/Pickaxes_Wooden_Stone.fbx",
-    "instructions": "pack/exports/roblox-import-v01/README_IMPORT.md",
+    "status": "removed-superseded-by-v03",
+    "removedOn": "2026-10-09",
+    "gitCommit": "97932cd",
     "assetKeys": [
       "Wooden",
       "Stone"

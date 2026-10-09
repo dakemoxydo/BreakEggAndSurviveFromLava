@@ -1,0 +1,90 @@
+{
+  "date": "2026-10-09",
+  "note": "Audio assets referenced by src/gameplay/SoundLibrary.luau. All free Creator Store assets; load verified in place 119583219290326.",
+  "sounds": [
+    {
+      "key": "SwingWhoosh",
+      "assetId": "12222200",
+      "name": "swoosh.wav",
+      "creator": "Roblox"
+    },
+    {
+      "key": "EggHit",
+      "assetId": "9113959343",
+      "name": "Crack Egg Crunchy 11 (SFX)",
+      "creator": "ProSoundEffects"
+    },
+    {
+      "key": "EggHit",
+      "assetId": "9113959332",
+      "name": "Crack Egg Crunchy 9 (SFX)",
+      "creator": "ProSoundEffects"
+    },
+    {
+      "key": "EggHit",
+      "assetId": "9113959737",
+      "name": "Crack Egg Crunchy 15 (SFX)",
+      "creator": "ProSoundEffects"
+    },
+    {
+      "key": "EggCrack",
+      "assetId": "9113959071",
+      "name": "Crack Egg Crunchy 6 (SFX)",
+      "creator": "ProSoundEffects"
+    },
+    {
+      "key": "EggCrack",
+      "assetId": "9113958797",
+      "name": "Crack Egg Crunchy 4 (SFX)",
+      "creator": "ProSoundEffects"
+    },
+    {
+      "key": "EggBreak",
+      "assetId": "94978851787238",
+      "name": "Deep Impact Boom - Daily Sounds",
+      "creator": "DailySoundsFX"
+    },
+    {
+      "key": "EggHitCrit, HatchTierUp, HatchTease",
+      "assetId": "130378474223829",
+      "name": "Coin Pickup - Daily Sounds",
+      "creator": "DailySoundsFX"
+    },
+    {
+      "key": "HatchCharge, UIClick",
+      "assetId": "106623224876186",
+      "name": "Tiny Click - Daily Sounds",
+      "creator": "DailySoundsFX"
+    },
+    {
+      "key": "UIHover",
+      "assetId": "138409154614452",
+      "name": "Toggle Click - Daily Sounds",
+      "creator": "DailySoundsFX"
+    },
+    {
+      "key": "HatchPop",
+      "assetId": "106984966606682",
+      "name": "Cartoon Pop - Daily Sounds",
+      "creator": "DailySoundsFX"
+    },
+    {
+      "key": "RevealCommon",
+      "assetId": "9116394545",
+      "name": "Magic Glows Soft Clusters Of Chiming Hits 1 (SFX)",
+      "creator": "ProSoundEffects"
+    },
+    {
+      "key": "RevealRare",
+      "assetId": "9116395089",
+      "name": "Magic Glows Soft Clusters Of Chiming Hits 4 (SFX)",
+      "creator": "ProSoundEffects"
+    },
+    {
+      "key": "RevealLegendary",
+      "assetId": "1839881844",
+      "name": "Spinning Around (b)",
+      "creator": "APMOfficial"
+    }
+  ]
+}

@@ -58,6 +58,9 @@ local function snapshot(instance)
   if ok and v~=nil then local value=encode(v);if value then if contentNames[name] then value.type="Content" end;node.properties[name=="Color" and instance:IsA("BasePart") and "Color3" or name]=value end end
  end end end
  for name,value in instance:GetAttributes() do node.attributes[name]=encode(value) end
+ if instance:IsA("Model") then
+  node.properties.WorldPivotData={type="OptionalCoordinateFrame",value={instance:GetPivot():GetComponents()}}
+ end
  for _,child in instance:GetChildren() do if child.Archivable and not child:IsA("LuaSourceContainer") then table.insert(node.children,snapshot(child)) end end
  return node
 end

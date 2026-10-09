@@ -3,11 +3,15 @@ import base64
 import copy
 import json
 import struct
+import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 project=Path(__file__).resolve().parents[1]
-roots=json.loads((project/'.tools/world-snapshot.json').read_text(encoding='utf-8'))
+snapshot_path = project / '.tools/world-snapshot.json'
+if '--snapshot' in sys.argv:
+    snapshot_path = Path(sys.argv[sys.argv.index('--snapshot') + 1])
+roots=json.loads(snapshot_path.read_text(encoding='utf-8'))
 
 def attribute_blob(attributes):
     if not attributes:
@@ -29,7 +33,11 @@ def property_element(name,entry):
     t,v=entry['type'],entry['value']
     element=ET.Element(t,{'name':name})
     tags={'CoordinateFrame':['X','Y','Z','R00','R01','R02','R10','R11','R12','R20','R21','R22'], 'Vector3':['X','Y','Z'], 'Vector2':['X','Y'], 'Color3':['R','G','B'], 'UDim2':['XS','XO','YS','YO'], 'UDim':['S','O']}
-    if t in tags:
+    if t == 'OptionalCoordinateFrame':
+        frame = ET.SubElement(element, 'CFrame')
+        for tag, value in zip(tags['CoordinateFrame'], v):
+            ET.SubElement(frame, tag).text = str(value)
+    elif t in tags:
         for tag,value in zip(tags[t],v):ET.SubElement(element,tag).text=str(value)
     elif t=='Content':ET.SubElement(element,'url').text=v
     elif t=='bool':element.text='true' if v else 'false'
@@ -66,6 +74,9 @@ def model_file(filename,nodes):
     return path
 
 model_file('ReferenceMap.rbxmx',[roots[0]])
+if '--map-only' in sys.argv:
+    print('Map export updated: assets/environment/maps/exports/ReferenceMap.rbxmx')
+    sys.exit(0)
 model_file('AssetTemplates.rbxmx',[roots[1]])
 model_file('HDStudsMaterial.rbxmx',[roots[2]])
 model_file('ReferenceLighting.rbxmx',[roots[3]])

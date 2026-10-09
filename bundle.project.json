@@ -1,4 +1,4 @@
 {
  "name": "ShopUIBundle",
- "tree": {"$className": "Folder", "Packages": {"$path": "Packages"}, "GameConfig":{"$path":"src/gameplay/GameConfig.luau"}, "PetVisuals":{"$path":"src/gameplay/PetVisuals.luau"}, "ShopUI": {"$path": "src/shared"}, "ShopUIBootstrap": {"$path": "src/client/ShopUI.client.luau"}}
+ "tree": {"$className": "Folder", "Packages": {"$path": "Packages"}, "GameConfig":{"$path":"src/gameplay/GameConfig.luau"}, "PetVisuals":{"$path":"src/gameplay/PetVisuals.luau"}, "Audio":{"$path":"src/gameplay/Audio.luau"}, "SoundLibrary":{"$path":"src/gameplay/SoundLibrary.luau"}, "ShopUI": {"$path": "src/shared"}, "ShopUIBootstrap": {"$path": "src/client/ShopUI.client.luau"}}
 }

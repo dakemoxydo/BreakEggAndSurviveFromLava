@@ -26,6 +26,15 @@
       "HatchEffects": {
         "$path": "src/gameplay/HatchEffects.luau"
       },
+      "Audio": {
+        "$path": "src/gameplay/Audio.luau"
+      },
+      "SoundLibrary": {
+        "$path": "src/gameplay/SoundLibrary.luau"
+      },
+      "GameFeel": {
+        "$path": "src/gameplay/GameFeel.luau"
+      },
       "PetVisuals": {
         "$path": "src/gameplay/PetVisuals.luau"
       },
@@ -58,6 +67,9 @@
       },
       "PetGameplay": {
         "$path": "src/server/Pets.server.luau"
+      },
+      "MergeSelection": {
+        "$path": "src/server/MergeSelection.luau"
       },
       "PetWorld": {
         "$path": "src/server/PetWorld.luau"

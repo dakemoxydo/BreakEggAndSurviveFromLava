@@ -8,6 +8,7 @@ local Config = require(RS:WaitForChild("PetConfig"))
 local World = require(script.Parent.PetWorld)
 local Game = require(RS:WaitForChild("GameConfig"))
 local Adventure = require(script.Parent.Adventure)
+local MergeSelection = require(script.Parent.MergeSelection)
 local bases = workspace:WaitForChild("Map"):WaitForChild("StartZone"):WaitForChild("PlayerBases")
 local states = {}
 local remote = Instance.new("RemoteFunction")
@@ -16,6 +17,46 @@ assert(not RS:FindFirstChild(remote.Name), "UIAction already exists")
 remote.Parent = RS
 local random = Random.new()
 local PET_EDGE_MARGIN = Config.PetEdgeMargin
+local function inventoryCount(state)
+	return #state.pets + #state.eggs + #state.backpackEggs
+end
+-- Tool instances are a view of saved ownership, never the source of ownership.
+local function reconcileTools(player, state)
+	local backpack, character = player:FindFirstChildOfClass("Backpack"), player.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	if not state.ready or not backpack or not humanoid or humanoid.Health <= 0 then
+		return
+	end
+	local wanted, present = {}, {}
+	for _, pet in state.pets do
+		if not pet.equipped then
+			wanted[pet.id] = { kind = "Pet", data = pet }
+		end
+	end
+	for _, egg in state.backpackEggs do
+		wanted[egg.id] = { kind = "Egg", data = egg }
+	end
+	for _, container in { backpack, character } do
+		for _, tool in container:GetChildren() do
+			if tool:IsA("Tool") and tool:GetAttribute("PlacementKind") then
+				local id = tool:GetAttribute("InventoryId")
+				local item = id and wanted[id]
+				if item and item.kind == tool:GetAttribute("PlacementKind") and not present[id] then
+					present[id] = tool
+				else
+					tool:Destroy()
+				end
+			end
+		end
+	end
+	for id, item in wanted do
+		if not present[id] then
+			local tool = World.tool(item.kind, item.data)
+			tool:SetAttribute("InventoryId", id)
+			tool.Parent = backpack
+		end
+	end
+end
 
 local function cleanup(player)
 	local state = states[player]
@@ -51,12 +92,22 @@ local function equippedCount(state)
 	return count
 end
 local function sync(player, state)
+	reconcileTools(player, state)
 	local inventory, eggs, income = {}, {}, 0
 	for _, pet in state.pets do
-		local info=Game.pet(pet.kind)
+		local info = Game.pet(pet.kind)
 		table.insert(
 			inventory,
-			{ id = pet.id, kind=pet.kind or "TestChick",weight=pet.weight or 1,name = info.name, icon = info.icon, rarity=info.rarity,income = math.floor(Game.income(pet)), equipped = pet.equipped }
+			{
+				id = pet.id,
+				kind = pet.kind or "TestChick",
+				weight = pet.weight or 1,
+				name = info.name,
+				icon = info.icon,
+				rarity = info.rarity,
+				income = math.floor(Game.income(pet)),
+				equipped = pet.equipped,
+			}
 		)
 		if pet.equipped then
 			income += Game.income(pet)
@@ -64,7 +115,15 @@ local function sync(player, state)
 	end
 	for _, egg in state.eggs do
 		local remaining = math.max(0, math.ceil(egg.hatchesAt - os.time()))
-		table.insert(eggs, { id = egg.id, name = Game.pet(egg.kind).name.." Egg", icon = "egg", status = "Hatches in " .. remaining .. "s" })
+		table.insert(
+			eggs,
+			{
+				id = egg.id,
+				name = Game.pet(egg.kind).name .. " Egg",
+				icon = "egg",
+				status = "Hatches in " .. remaining .. "s",
+			}
+		)
 	end
 	state.income = income
 	player:SetAttribute("PetInventory", Http:JSONEncode(inventory))
@@ -75,13 +134,28 @@ local function sync(player, state)
 	player:SetAttribute("Cash", state.cash)
 	player:SetAttribute("Income", income)
 	player:SetAttribute("OfflineCash", state.offline)
-	local discoveries={}
-	for key in state.discoveries do table.insert(discoveries,Game.pet(key).name) end
+	local discoveries = {}
+	for key in state.discoveries do
+		table.insert(discoveries, Game.pet(key).name)
+	end
 	player:SetAttribute("DiscoveredPets", Http:JSONEncode(discoveries))
 	player:SetAttribute("UnlockedPets", #discoveries)
 	player:SetAttribute("TotalPets", #Game.Pets)
-	player:SetAttribute("OwnedPickaxes",Http:JSONEncode(state.ownedPickaxes));player:SetAttribute("OwnedTrails",Http:JSONEncode(state.ownedTrails))
-	for key,value in {PickaxeLevel=state.pickaxe,TrailLevel=state.trail,PenLevel=state.penLevel,TreadmillLevel=state.treadmillLevel,SatchelLevel=state.satchelLevel,Playtime=state.playtime,Multiplier=Game.Trails[state.trail].multiplier} do player:SetAttribute(key,value) end
+	player:SetAttribute("OwnedPickaxes", Http:JSONEncode(state.ownedPickaxes))
+	player:SetAttribute("OwnedTrails", Http:JSONEncode(state.ownedTrails))
+	for key, value in
+		{
+			PickaxeLevel = state.pickaxe,
+			TrailLevel = state.trail,
+			PenLevel = state.penLevel,
+			TreadmillLevel = state.treadmillLevel,
+			SatchelLevel = state.satchelLevel,
+			Playtime = state.playtime,
+			Multiplier = Game.Trails[state.trail].multiplier,
+		}
+	do
+		player:SetAttribute(key, value)
+	end
 	player:SetAttribute("CollectionRewardClaimed", state.rewardClaimed)
 end
 local function position(state, x, z)
@@ -107,18 +181,18 @@ local function spawnPet(player, state, pet, at, placedYaw)
 		math.clamp(localStart.Z, -Config.PenHalfDepth + PET_EDGE_MARGIN, Config.PenHalfDepth - PET_EDGE_MARGIN)
 	)
 	local yaw = placedYaw or random:NextNumber(-math.pi, math.pi)
-	local model = World.pet(pet.kind,pet.weight)
+	local model = World.pet(pet.kind, pet.weight)
 	model:SetAttribute("OwnerUserId", player.UserId)
 	model:SetAttribute("PetId", pet.id)
-	model:SetAttribute("PetKind",pet.kind or "TestChick")
+	model:SetAttribute("PetKind", pet.kind or "TestChick")
 	model:SetAttribute("PetVisual", true)
 	model:SetAttribute("PetPosition", start)
 	model:SetAttribute("PetYaw", yaw)
 	model:SetAttribute("PetWalking", false)
 	model:SetAttribute("AnimationOffset", random:NextNumber(0, math.pi * 2))
 	model:PivotTo(CFrame.new(start) * CFrame.Angles(0, yaw, 0))
-	local label=World.label(model, "+$" .. Game.number(Game.income(pet)).."/s")
-	label.TextColor3=Color3.fromRGB(110,255,0)
+	local label = World.label(model, "+$" .. Game.number(Game.income(pet)) .. "/s")
+	label.TextColor3 = Color3.fromRGB(110, 255, 0)
 	model.Parent = state.contents
 	pet.model = model
 	pet.position = start
@@ -127,10 +201,15 @@ local function spawnPet(player, state, pet, at, placedYaw)
 	pet.restUntil = 0
 end
 local function addPet(player, state, at, placedYaw, kind, weight, shouldEquip)
-	local pet = { id = Http:GenerateGUID(false),kind=kind or "TestChick",weight=weight or 1, equipped = shouldEquip~=false and equippedCount(state) < state.capacity }
+	local pet = {
+		id = Http:GenerateGUID(false),
+		kind = kind or "TestChick",
+		weight = weight or 1,
+		equipped = shouldEquip ~= false and equippedCount(state) < state.capacity,
+	}
 	table.insert(state.pets, pet)
 	state.discovered = true
-	state.discoveries[pet.kind=="TestChick" and "Chicken" or pet.kind]=true
+	state.discoveries[pet.kind == "TestChick" and "Chicken" or pet.kind] = true
 	if pet.equipped then
 		spawnPet(player, state, pet, at, placedYaw)
 	end
@@ -140,7 +219,7 @@ local function hatch(player, state, index)
 	local egg = table.remove(state.eggs, index)
 	local at = egg.position
 	egg.model:Destroy()
-	addPet(player, state, at,nil,egg.kind,egg.weight)
+	addPet(player, state, at, nil, egg.kind, egg.weight)
 end
 local function findPlacementTool(player)
 	local character = player.Character
@@ -161,31 +240,32 @@ local function giveTool(player, state, kind, petData)
 	if not state.base then
 		return reply(false, "All bases are occupied. Try another server.")
 	end
-	if #state.pets + #state.eggs >= Config.MaxPets and not (kind=="Pet" and petData and petData.id) then
+	if inventoryCount(state) >= Config.MaxPets and not (kind == "Pet" and petData and petData.id) then
 		return reply(false, "Your pet inventory is full.")
-	end
-	if kind == "Egg" and #state.eggs >= Config.MaxEggs then
-		return reply(false, "Hatch your growing eggs first.")
 	end
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.Health <= 0 then
 		return reply(false, "Wait until you respawn.")
 	end
-	for _, container in { player.Backpack, character } do
-		for _, tool in container:GetChildren() do
-			if tool:IsA("Tool") and tool:GetAttribute("PlacementKind") then
-				tool:Destroy()
-			end
+	petData = petData or { kind = "TestChick", weight = 1 }
+	if kind == "Egg" then
+		petData = { id = Http:GenerateGUID(false), kind = petData.kind, weight = petData.weight or 1 }
+		table.insert(state.backpackEggs, petData)
+	else
+		petData.equipped = false
+		if petData.model then
+			petData.model:Destroy()
+			petData.model = nil
 		end
 	end
-	petData=petData or {kind="TestChick",weight=1}
-	local tool = World.tool(kind,petData)
-	tool.Parent = player.Backpack
-	humanoid:EquipTool(tool)
-	state.carriedKind = kind
-	state.carriedPet={kind=petData.kind,weight=petData.weight or 1,id=petData.id}
-	DataService.Commit(player)
+	reconcileTools(player, state)
+	for _, tool in player.Backpack:GetChildren() do
+		if tool:IsA("Tool") and tool:GetAttribute("InventoryId") == petData.id then
+			humanoid:EquipTool(tool)
+			break
+		end
+	end
 	return reply(true)
 end
 local function validPlacement(player, state, at, kind)
@@ -221,7 +301,10 @@ end
 local function applySpeed(player)
 	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 	if humanoid and not player:GetAttribute("OnTreadmill") then
-		humanoid.WalkSpeed = Game.walkSpeed((player:GetAttribute("Speed") or 16)*Game.Trails[states[player] and states[player].trail or 1].multiplier,player:GetAttribute("SlowMode"))
+		humanoid.WalkSpeed = Game.walkSpeed(
+			(player:GetAttribute("Speed") or 16) * Game.Trails[states[player] and states[player].trail or 1].multiplier,
+			player:GetAttribute("SlowMode")
+		)
 	end
 end
 local function perform(player, state, name, payload)
@@ -234,11 +317,20 @@ local function perform(player, state, name, payload)
 		if not tool or tool:GetAttribute("PlacementKind") ~= kind then
 			return reply(false, "Take an egg or pet first.")
 		end
+		local item, itemIndex
+		local items = kind == "Pet" and state.pets or state.backpackEggs
+		for index, candidate in items do
+			if candidate.id == tool:GetAttribute("InventoryId") then
+				item = candidate
+				itemIndex = index
+				break
+			end
+		end
+		if not item or (kind == "Pet" and item.equipped) then
+			return reply(false, "Item is no longer in your backpack.")
+		end
 		if not validPlacement(player, state, payload.position, kind) then
 			return reply(false, "Place inside your base, away from other eggs.")
-		end
-		if #state.pets + #state.eggs >= Config.MaxPets and not (kind=="Pet" and state.carriedPet and state.carriedPet.id) then
-			return reply(false, "Your pet inventory is full.")
 		end
 		if kind == "Egg" then
 			if #state.eggs >= Config.MaxEggs then
@@ -250,27 +342,26 @@ local function perform(player, state, name, payload)
 			model:PivotTo(CFrame.new(payload.position.X, state.floor, payload.position.Z))
 			model.Parent = state.contents
 			table.insert(state.eggs, {
-				id = Http:GenerateGUID(false),
+				id = item.id,
 				position = Vector3.new(payload.position.X, state.floor, payload.position.Z),
 				hatchesAt = os.time() + Config.HatchSeconds,
-				kind=state.carriedPet and state.carriedPet.kind or "TestChick",
-				weight=state.carriedPet and state.carriedPet.weight or 1,
+				kind = item.kind,
+				weight = item.weight or 1,
 				model = model,
 				label = World.label(model, "Hatches in " .. Config.HatchSeconds .. "s"),
 			})
+			table.remove(state.backpackEggs, itemIndex)
 		else
 			local yaw = payload.yaw
 			if typeof(yaw) ~= "number" or yaw ~= yaw or math.abs(yaw) > math.pi * 2 then
 				yaw = nil
 			end
-			local existing
-			for _,pet in state.pets do if state.carriedPet and pet.id==state.carriedPet.id then existing=pet;break end end
-			if existing then existing.equipped=true;spawnPet(player,state,existing,payload.position,yaw)
-			else addPet(player, state, payload.position, yaw,state.carriedPet and state.carriedPet.kind,state.carriedPet and state.carriedPet.weight) end
+			item.equipped = true
+			spawnPet(player, state, item, payload.position, yaw)
 		end
 		tool:Destroy()
 		state.carriedKind = ""
-		state.carriedPet=false
+		state.carriedPet = false
 		return reply(true, kind == "Egg" and "Egg placed!" or "Pet placed!")
 	elseif name == "EquipPet" or name == "UnequipPet" then
 		for _, pet in state.pets do
@@ -299,8 +390,8 @@ local function perform(player, state, name, payload)
 		end
 		-- Income ranks pets; IDs make ties stable.
 		table.sort(state.pets, function(a, b)
-			local first,second=Game.income(a),Game.income(b)
-			return first==second and a.id<b.id or first>second
+			local first, second = Game.income(a), Game.income(b)
+			return first == second and a.id < b.id or first > second
 		end)
 		for i, pet in state.pets do
 			pet.equipped = i <= state.capacity
@@ -342,7 +433,11 @@ local function perform(player, state, name, payload)
 		state.offline = 0
 		return reply(true)
 	elseif name == "ClaimCollectionReward" then
-		for _,pet in Game.Pets do if pet.biome=="Forest" and not state.discoveries[pet.key] then return reply(false,"Discover all 8 Forest animals first.") end end
+		for _, pet in Game.Pets do
+			if pet.biome == "Forest" and not state.discoveries[pet.key] then
+				return reply(false, "Discover all 8 Forest animals first.")
+			end
+		end
 		if state.rewardClaimed then
 			return reply(false, "Reward already claimed.")
 		end
@@ -350,67 +445,122 @@ local function perform(player, state, name, payload)
 		state.cash += 100
 		player:SetAttribute("Speed", (player:GetAttribute("Speed") or 16) + 60)
 		return reply(true, "Received $100 and +60 speed!")
-	elseif name=="BuyPickaxe" or name=="BuyTrail" then
-		local index=payload.index
-		local list=name=="BuyPickaxe" and Game.Pickaxes or Game.Trails
-		local owned=name=="BuyPickaxe" and state.ownedPickaxes or state.ownedTrails
-		if type(index)~="number" or index%1~=0 or not list[index] then return reply(false,"Item not found.") end
-		if not table.find(owned,index) then
-			if state.cash<list[index].cost then return reply(false,"Need $"..Game.number(list[index].cost-state.cash).." more.") end
-			state.cash-=list[index].cost;table.insert(owned,index)
+	elseif name == "BuyPickaxe" or name == "BuyTrail" then
+		local index = payload.index
+		local list = name == "BuyPickaxe" and Game.Pickaxes or Game.Trails
+		local owned = name == "BuyPickaxe" and state.ownedPickaxes or state.ownedTrails
+		if type(index) ~= "number" or index % 1 ~= 0 or not list[index] then
+			return reply(false, "Item not found.")
 		end
-		if name=="BuyPickaxe" then
-			state.pickaxe=index;Adventure.equipPickaxe(player,index)
-		else state.trail=index;Adventure.applyTrail(player,state);applySpeed(player) end
-		return reply(true,"Equipped "..list[index].name.."!")
-	elseif name=="UpgradePen" then
-		local cost=Game.PenCosts[state.penLevel]
-		if not cost then return reply(false,"Your pen is fully upgraded.") end
-		if state.cash<cost then return reply(false,"Need $"..Game.number(cost-state.cash).." more.") end
-		state.cash-=cost;state.penLevel+=1;state.capacity=math.min(Config.MaxCapacity,math.max(state.capacity,8+(state.penLevel-1)*4))
-		World.updateBase(player,state)
-		return reply(true,"Pen upgraded! "..state.capacity.." active pets.")
-	elseif name=="UpgradeTreadmill" then
-		local tier=Game.Treadmills[state.treadmillLevel+1]
-		if not tier then return reply(false,"Your treadmill is fully upgraded.") end
-		if state.cash<tier.cost then return reply(false,"Need $"..Game.number(tier.cost-state.cash).." more.") end
-		state.cash-=tier.cost;state.treadmillLevel+=1;World.updateBase(player,state)
-		return reply(true,"Treadmill upgraded! +"..Game.number(tier.gain).."/Step")
-	elseif name=="UpgradeSatchel" then
-		if state.satchelLevel>=8 then return reply(false,"Maximum satchel reached.") end
-		local cost=1000*25^(state.satchelLevel-1)
-		if state.cash<cost then return reply(false,"Need $"..Game.number(cost-state.cash).." more.") end
-		state.cash-=cost;state.satchelLevel+=1;return reply(true,"Carry up to "..state.satchelLevel.." animals per run!")
-	elseif name=="CarryPet" then
-		for _,pet in state.pets do if pet.id==payload.pet then
-			if state.carriedKind~="" then return reply(false,"Place your current item first.") end
-			local result=giveTool(player,state,"Pet",pet)
-			if not result.success then return result end
-			pet.equipped=false;if pet.model then pet.model:Destroy();pet.model=nil end
-			return result
-		end end
-		return reply(false,"Pet not found.")
-	elseif name=="MergePets" then
-		if state.carriedKind~="" then return reply(false,"Place your current item first.") end
-		if #state.eggs>=Config.MaxEggs then return reply(false,"Hatch your growing eggs first.") end
-		local humanoid=player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-		if not humanoid or humanoid.Health<=0 then return reply(false,"Wait until you respawn.") end
-		local matches={};local kind=payload.kind
-		if not Game.ByPet[kind] then return reply(false,"Select a pet to merge.") end
-		for i,pet in state.pets do if (pet.kind or "TestChick")==kind then table.insert(matches,{index=i,pet=pet}) end end
-		if #matches<3 then return reply(false,"Need 3 matching animals.") end
-		local weight=0
-		for i=3,1,-1 do local item=matches[i];weight+=(item.pet.weight or 1);if item.pet.model then item.pet.model:Destroy() end;table.remove(state.pets,item.index) end
-		return giveTool(player,state,"Egg",{kind=kind,weight=weight*1.15})
-	elseif name=="ClaimFreeReward" then
-		if state.freeRewardClaimed then return reply(false,"Reward already claimed.") end
-		state.freeRewardClaimed=true;state.cash+=100;player:SetAttribute("Speed",(player:GetAttribute("Speed") or 16)+60)
-		return reply(true,"Received $100 and +60 speed!")
-	elseif name=="ReturnBase" then
-		if Adventure.hasCargo(player) then return reply(false,"Carry stolen animals back through the Safe Zone first.") end
-		local root=player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-		if not root or player:GetAttribute("OnTreadmill") then return reply(false,"Leave the treadmill first.") end
-		root.CFrame=CFrame.new(state.base.BaseAnchor.Position+Vector3.new(0,4,-44));return reply(true)
+		if not table.find(owned, index) then
+			if state.cash < list[index].cost then
+				return reply(false, "Need $" .. Game.number(list[index].cost - state.cash) .. " more.")
+			end
+			state.cash -= list[index].cost
+			table.insert(owned, index)
+		end
+		if name == "BuyPickaxe" then
+			state.pickaxe = index
+			Adventure.equipPickaxe(player, index)
+		else
+			state.trail = index
+			Adventure.applyTrail(player, state)
+			applySpeed(player)
+		end
+		return reply(true, "Equipped " .. list[index].name .. "!")
+	elseif name == "UpgradePen" then
+		local cost = Game.PenCosts[state.penLevel]
+		if not cost then
+			return reply(false, "Your pen is fully upgraded.")
+		end
+		if state.cash < cost then
+			return reply(false, "Need $" .. Game.number(cost - state.cash) .. " more.")
+		end
+		state.cash -= cost
+		state.penLevel += 1
+		state.capacity = math.min(Config.MaxCapacity, math.max(state.capacity, 8 + (state.penLevel - 1) * 4))
+		World.updateBase(player, state)
+		return reply(true, "Pen upgraded! " .. state.capacity .. " active pets.")
+	elseif name == "UpgradeTreadmill" then
+		local tier = Game.Treadmills[state.treadmillLevel + 1]
+		if not tier then
+			return reply(false, "Your treadmill is fully upgraded.")
+		end
+		if state.cash < tier.cost then
+			return reply(false, "Need $" .. Game.number(tier.cost - state.cash) .. " more.")
+		end
+		state.cash -= tier.cost
+		state.treadmillLevel += 1
+		World.updateBase(player, state)
+		return reply(true, "Treadmill upgraded! +" .. Game.number(tier.gain) .. "/Step")
+	elseif name == "UpgradeSatchel" then
+		if state.satchelLevel >= 8 then
+			return reply(false, "Maximum satchel reached.")
+		end
+		local cost = 1000 * 25 ^ (state.satchelLevel - 1)
+		if state.cash < cost then
+			return reply(false, "Need $" .. Game.number(cost - state.cash) .. " more.")
+		end
+		state.cash -= cost
+		state.satchelLevel += 1
+		return reply(true, "Carry up to " .. state.satchelLevel .. " animals per run!")
+	elseif name == "CarryPet" then
+		for _, pet in state.pets do
+			if pet.id == payload.pet then
+				local result = giveTool(player, state, "Pet", pet)
+				if not result.success then
+					return result
+				end
+				pet.equipped = false
+				if pet.model then
+					pet.model:Destroy()
+					pet.model = nil
+				end
+				return result
+			end
+		end
+		return reply(false, "Pet not found.")
+	elseif name == "MergePets" then
+		local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+		if not humanoid or humanoid.Health <= 0 then
+			return reply(false, "Wait until you respawn.")
+		end
+		local kind = payload.kind
+		if not Game.ByPet[kind] then
+			return reply(false, "Select a pet to merge.")
+		end
+		if not state.base then
+			return reply(false, "All bases are occupied. Try another server.")
+		end
+		local matches, weight = MergeSelection.resolve(state.pets, kind, payload.pets)
+		if not matches then
+			return reply(false, weight)
+		end
+		for _, item in matches do
+			if item.pet.model then
+				item.pet.model:Destroy()
+			end
+			table.remove(state.pets, item.index)
+		end
+		return giveTool(player, state, "Egg", { kind = kind, weight = weight })
+	elseif name == "ClaimFreeReward" then
+		if state.freeRewardClaimed then
+			return reply(false, "Reward already claimed.")
+		end
+		state.freeRewardClaimed = true
+		state.cash += 100
+		player:SetAttribute("Speed", (player:GetAttribute("Speed") or 16) + 60)
+		return reply(true, "Received $100 and +60 speed!")
+	elseif name == "ReturnBase" then
+		if Adventure.hasCargo(player) then
+			return reply(false, "Carry stolen animals back through the Safe Zone first.")
+		end
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		if not root or player:GetAttribute("OnTreadmill") then
+			return reply(false, "Leave the treadmill first.")
+		end
+		root.CFrame = CFrame.new(state.base.BaseAnchor.Position + Vector3.new(0, 4, -44))
+		return reply(true)
 	elseif name == "SetSlowMode" then
 		if typeof(payload.enabled) ~= "boolean" then
 			return reply(false)
@@ -469,6 +619,7 @@ local function join(player)
 	local state = {
 		pets = {},
 		eggs = {},
+		backpackEggs = {},
 		cash = Config.StartCash,
 		capacity = Config.StartCapacity,
 		offline = 0,
@@ -480,7 +631,17 @@ local function join(player)
 		ready = false,
 		connections = {},
 		carriedKind = "",
-		carriedPet=false,discoveries={},ownedPickaxes={1},ownedTrails={1},pickaxe=1,trail=1,penLevel=1,treadmillLevel=1,satchelLevel=1,playtime=0,freeRewardClaimed=false,
+		carriedPet = false,
+		discoveries = {},
+		ownedPickaxes = { 1 },
+		ownedTrails = { 1 },
+		pickaxe = 1,
+		trail = 1,
+		penLevel = 1,
+		treadmillLevel = 1,
+		satchelLevel = 1,
+		playtime = 0,
+		freeRewardClaimed = false,
 	}
 	states[player] = state
 	local list = bases:GetChildren()
@@ -517,16 +678,24 @@ local function join(player)
 		return
 	end
 	state.cash = saved.cash
-	state.capacity = math.max(8,saved.capacity)
+	state.capacity = math.max(8, saved.capacity)
 	state.discovered = saved.discovered
 	state.rewardClaimed = saved.rewardClaimed
 	state.settings = table.clone(saved.settings)
 	state.offline = saved.offline
 	state.carriedKind = saved.carriedKind
-	state.carriedPet=saved.carriedPet
-	for _,key in saved.discoveries do state.discoveries[key=="TestChick" and "Chicken" or key]=true end
-	for _,key in {"pickaxe","trail","penLevel","treadmillLevel","satchelLevel","playtime","freeRewardClaimed"} do state[key]=saved[key] end
-	state.ownedPickaxes=table.clone(saved.ownedPickaxes);state.ownedTrails=table.clone(saved.ownedTrails)
+	state.carriedPet = saved.carriedPet
+	for _, egg in saved.backpackEggs do
+		table.insert(state.backpackEggs, table.clone(egg))
+	end
+	for _, key in saved.discoveries do
+		state.discoveries[key == "TestChick" and "Chicken" or key] = true
+	end
+	for _, key in { "pickaxe", "trail", "penLevel", "treadmillLevel", "satchelLevel", "playtime", "freeRewardClaimed" } do
+		state[key] = saved[key]
+	end
+	state.ownedPickaxes = table.clone(saved.ownedPickaxes)
+	state.ownedTrails = table.clone(saved.ownedTrails)
 	player:SetAttribute("Speed", saved.speed)
 	player:SetAttribute("SlowMode", saved.slowMode)
 	for _, savedPet in saved.pets do
@@ -556,7 +725,7 @@ local function join(player)
 			math.clamp(egg.z, -Config.PenHalfDepth, Config.PenHalfDepth)
 		)
 		if egg.hatchesAt <= os.time() then
-			addPet(player, state, at,nil,egg.kind,egg.weight)
+			addPet(player, state, at, nil, egg.kind, egg.weight)
 		else
 			egg.model = World.egg()
 			egg.position = at
@@ -580,24 +749,7 @@ local function join(player)
 		return nil
 	end)
 	local function restoreCarried()
-		if not state.ready or not DataService.IsActive(player) or state.carriedKind == "" then
-			return
-		end
-		local character, backpack = player.Character, player:FindFirstChildOfClass("Backpack")
-		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-		if not backpack or not humanoid or humanoid.Health <= 0 then
-			return
-		end
-		for _, container in { backpack, character } do
-			for _, tool in container:GetChildren() do
-				if tool:IsA("Tool") and tool:GetAttribute("PlacementKind") then
-					return
-				end
-			end
-		end
-		local tool = World.tool(state.carriedKind,state.carriedPet or nil)
-		tool.Parent = backpack
-		humanoid:EquipTool(tool)
+		reconcileTools(player, state)
 	end
 	table.insert(
 		state.connections,
@@ -612,7 +764,8 @@ local function join(player)
 			character:WaitForChild("Humanoid", 10)
 			if player.Character == character and state.ready then
 				applySpeed(player)
-				Adventure.equipPickaxe(player,state.pickaxe);Adventure.applyTrail(player,state)
+				Adventure.equipPickaxe(player, state.pickaxe)
+				Adventure.applyTrail(player, state)
 				restoreCarried()
 			end
 		end)
@@ -621,12 +774,18 @@ local function join(player)
 	player:SetAttribute("PetDataReady", true)
 	applySpeed(player)
 	restoreCarried()
-	Adventure.equipPickaxe(player,state.pickaxe);Adventure.applyTrail(player,state)
-	World.setupBase(player,state,function(name)
-		if not state.ready or not DataService.IsActive(player) then return end
-		local result=perform(player,state,name,{})
-		if result.success then sync(player,state);DataService.Commit(player) end
-		Adventure.notice(player,result.message)
+	Adventure.equipPickaxe(player, state.pickaxe)
+	Adventure.applyTrail(player, state)
+	World.setupBase(player, state, function(name)
+		if not state.ready or not DataService.IsActive(player) then
+			return
+		end
+		local result = perform(player, state, name, {})
+		if result.success then
+			sync(player, state)
+			DataService.Commit(player)
+		end
+		Adventure.notice(player, result.message)
 	end)
 end
 Players.PlayerAdded:Connect(join)
@@ -654,24 +813,47 @@ task.spawn(function()
 			end
 			sync(player, state)
 			state.cash += state.income
-			state.playtime+=1
+			state.playtime += 1
 			player:SetAttribute("Cash", state.cash)
 			DataService.Commit(player)
 		end
 	end
 end)
-Adventure.start({states=states,world=World,sync=sync,commit=DataService.Commit,active=DataService.IsActive,
-	bank=function(player,kind,weight)
-		local state=states[player]
-		if not state or not state.ready or not DataService.IsActive(player) or #state.pets+#state.eggs>=Config.MaxPets then return false end
-		local pet=addPet(player,state,nil,nil,kind,weight,false)
-		if state.carriedKind=="" then giveTool(player,state,"Pet",pet) end
-		sync(player,state);DataService.Commit(player);return true
+Adventure.start({
+	states = states,
+	world = World,
+	sync = sync,
+	commit = DataService.Commit,
+	active = DataService.IsActive,
+	bank = function(player, kind, weight)
+		local state = states[player]
+		if
+			not state
+			or not state.ready
+			or not DataService.IsActive(player)
+			or inventoryCount(state) >= Config.MaxPets
+		then
+			return false
+		end
+		local pet = addPet(player, state, nil, nil, kind, weight, false)
+		reconcileTools(player, state)
+		sync(player, state)
+		DataService.Commit(player)
+		return true
 	end,
-	action=function(player,name,payload)
-		local state=states[player];if not state or not state.ready then return reply(false,"Loading...") end
-		local result=perform(player,state,name,payload or {});if result.success then sync(player,state);DataService.Commit(player) end;return result
-	end})
+	action = function(player, name, payload)
+		local state = states[player]
+		if not state or not state.ready then
+			return reply(false, "Loading...")
+		end
+		local result = perform(player, state, name, payload or {})
+		if result.success then
+			sync(player, state)
+			DataService.Commit(player)
+		end
+		return result
+	end,
+})
 local elapsed = 0
 RunService.Heartbeat:Connect(function(dt)
 	elapsed += dt

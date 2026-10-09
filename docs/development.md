@@ -4,17 +4,25 @@
 
 GitHub проекта: [dakemoxydo/BreakEggAndSurviveFromLava](https://github.com/dakemoxydo/BreakEggAndSurviveFromLava), основная ветка `main`. Бинарные модели, текстуры, архивы и Roblox-файлы хранятся через Git LFS; правила находятся в корневом `.gitattributes`. Перед клонированием установить Git LFS и выполнить `git lfs install`; после клонирования при необходимости выполнить `git lfs pull`. Папка `.tools/` и перечисленные в `.gitignore` сборочные артефакты не входят в репозиторий.
 
-Следовать `AGENTS.md`: Roblox Studio читать и изменять через RobloxMCP, исходники синхронизировать Rojo. Общая библиотека ассетов находится в `C:\Users\dakem\Documents\RobloxGames\Assets`; файлы конкретной игры — в локальном `assets/`.
+Правила работы агентов и граница Rojo/MCP — в `AGENTS.md`. Общая библиотека ассетов находится в `C:\Users\dakem\Documents\RobloxGames\Assets`; файлы конкретной игры — в локальном `assets/`.
 
 Исходники Luau находятся в `src/`. `docs/` содержит правила и техническую документацию. `.rbxlx`, `.rbxmx` UI-пакет и JSON-экспорты исходников — сборочные артефакты; изменение только артефакта не обновляет исходник.
 
 Не синхронизировать Markdown в DataModel: `docs/` не входит в проекты Rojo.
 
-Перед изменением UI, HUD, инвентаря или обработки ввода прочитать [ui.md](ui.md). Правые Pets/Eggs открывают собственные мини-панели с выездом справа; общий инвентарь имеет только два входа: Backquote и кнопку рядом с Settings. Переиспользование компонентов не разрешает менять эти маршруты. После правки навигации выполнить минимальный сценарий проверки из ui.md.
-
 ## Запуск и сборка
 
-Рабочая папка: `C:\Users\dakem\Documents\RobloxGames\BreakEggAndSurviveFromLava`. Нужны доступные команды Rojo и Wally; конкретные локальные версии инструментов здесь не зафиксированы. Зависимости перечислены в wally.toml и закреплены wally.lock. При отсутствии Packages выполнить `wally install`.
+Рабочая папка: `C:\Users\dakem\Documents\RobloxGames\BreakEggAndSurviveFromLava`. Версии инструментов закреплены в `rokit.toml` (rojo 7.7.0, selene 0.31.0, stylua 2.5.2); установка — `rokit install`. Если `selene`/`stylua` отвечают «Aftman error … no aftman.toml files list this tool», значит shim aftman стоит в PATH раньше rokit: вызывать `~/.rokit/bin/<tool>` или убрать `.aftman/bin` из PATH.
+
+React, ReactRoblox и Ripple подключены через Wally: `wally.toml`, `wally.lock`, готовая папка `Packages/` хранится в репозитории. Wally нужен только для обновления зависимостей (`wally install`).
+
+```powershell
+stylua src
+selene src
+rojo build default.project.json -o .tools/check.rbxlx
+```
+
+Конфигурация: `stylua.toml`, `.styluaignore` (сторонняя ProfileStore не форматируется), `selene.toml` (std roblox; правило Roact для `Name` выключено, так как React Luau здесь задаёт `Name` пропом).
 
 ```powershell
 rojo serve default.project.json --address 127.0.0.1
@@ -43,9 +51,9 @@ rojo build bundle.project.json -o ShopUIBundle.rbxmx
 1. Прочитать [gameplay.md](gameplay.md), [architecture.md](architecture.md) и соответствующий специализированный документ.
 2. Изменить канонические файлы в src; численные параметры вынести в существующий конфиг, где это соответствует системе.
 3. Обновить описание правил, таблицу [баланса](balance.md), [API](network-api.md) и схему сохранений при необходимости.
-4. Синхронизировать Rojo, проверить результат через RobloxMCP и выполнить подходящие сценарии [verification.md](verification.md).
+4. Синхронизировать Rojo, проверить результат через RobloxMCP и выполнить подходящие методы и сценарии [verification.md](verification.md).
 5. Для изменений карты обновить экспорт мира, если они должны попасть в release. Собрать нужный артефакт.
-6. Записать фактически проведённые проверки, дату и ограничения. Не переносить старую формулировку «проверено» на изменённое поведение без повторной проверки.
+6. Обновить строку статуса в [verification.md](verification.md). Подробности проверки — в ответ пользователю и сообщение коммита, не в документы систем.
 
 Не переименовывать DataStore при обычном обновлении. Не переставлять каталог оборудования без учёта сохранённых индексов. Не менять стабильные ключи животных без миграции. Модели, Instance, Vector3 и CFrame не добавлять в Profile.Data.
 
@@ -59,7 +67,7 @@ rojo build bundle.project.json -o ShopUIBundle.rbxmx
 
 Экспортные помощники: `tools/export-world.luau`, `tools/snapshot-server.py`, `tools/build-world.py`. Они обновляют снимки геометрии, используемые release.project.json. Перед запуском прочитать конкретный скрипт и его пути; обновление только сцены Studio не меняет автоматически сохранённый экспорт карты. Обычная сборка release не требует запуска snapshot HTTP-сервера.
 
-`tools/rojo-transfer.py` читает канонический XML из `.tools/reference-game.rbxlx` для MCP fallback при неприменившихся новых mappings. Это вспомогательный путь, не отдельный источник правды. Основной путь синхронизации остаётся Rojo.
+`tools/rojo-transfer.py` читает канонический XML из `.tools/reference-game.rbxlx` для переноса модулей через MCP. Не использовать вместо перезапуска `rojo serve` после нового mapping; только если пользователь явно попросил.
 
 ## Публикация
 

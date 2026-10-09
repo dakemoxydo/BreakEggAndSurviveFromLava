@@ -172,13 +172,25 @@ function Service.Load(player)
 		report(player, reason)
 		return nil
 	end
-	if profile.Data.discovered and #profile.Data.discoveries==0 then table.insert(profile.Data.discoveries,"TestChick") end
-	if profile.Data.carriedKind~="" and profile.Data.carriedPet==false then profile.Data.carriedPet={kind="TestChick",weight=1} end
+	if profile.Data.discovered and #profile.Data.discoveries == 0 then
+		table.insert(profile.Data.discoveries, "TestChick")
+	end
+	if profile.Data.carriedKind ~= "" and profile.Data.carriedPet == false then
+		profile.Data.carriedPet = { kind = "TestChick", weight = 1 }
+	end
 	local valid, invalidReason = Schema.Validate(profile.Data)
 	if not valid then
 		profile.Data = original
 		profile:EndSession()
 		report(player, invalidReason)
+		return nil
+	end
+	Schema.MigrateBackpack(profile.Data)
+	local migratedValid, migratedReason = Schema.Validate(profile.Data)
+	if not migratedValid then
+		profile.Data = original
+		profile:EndSession()
+		report(player, migratedReason)
 		return nil
 	end
 	if player.Parent ~= Players or not profile:IsActive() then

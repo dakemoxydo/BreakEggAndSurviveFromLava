@@ -45,15 +45,15 @@ local function getBase()
 	return nil
 end
 
-local function createPreview(kind,petKind,weight)
-	local key=kind..(petKind or "TestChick")..tostring(weight or 1)
+local function createPreview(kind, petKind, weight)
+	local key = kind .. (petKind or "TestChick") .. tostring(weight or 1)
 	if preview and previewKind == key then
 		return
 	end
 	if preview then
 		preview:Destroy()
 	end
-	preview = PetVisuals.placement(kind,petKind,weight)
+	preview = PetVisuals.placement(kind, petKind, weight)
 	preview.Name = "PlacementPreview"
 	previewKind = key
 	table.clear(previewParts)
@@ -107,7 +107,7 @@ local function update(screenPoint)
 		attribute("PlacementValid", false)
 		return
 	end
-	createPreview(kind,tool:GetAttribute("PetKind"),tool:GetAttribute("PetWeight"))
+	createPreview(kind, tool:GetAttribute("PetKind"), tool:GetAttribute("PetWeight"))
 	local camera = workspace.CurrentCamera
 	if not camera then
 		setPreviewVisible(false)
@@ -273,43 +273,63 @@ local function refreshVisibility()
 end
 local petVisuals = setmetatable({}, { __mode = "k" })
 -- Carry pose is cosmetic on every client; ownership and banking stay server-side.
-local carryPoses=setmetatable({},{__mode="k"})
+local carryPoses = setmetatable({}, { __mode = "k" })
 RunService.PreAnimation:Connect(function()
-	for character,state in carryPoses do
-		for _,item in state.joints do if item.joint.Parent then item.joint.Transform=item.base end end
+	for character, state in carryPoses do
+		for _, item in state.joints do
+			if item.joint.Parent then
+				item.joint.Transform = item.base
+			end
+		end
 	end
 end)
 RunService.PreSimulation:Connect(function(dt)
-	for _,owner in Players:GetPlayers()do
-		local character=owner.Character
-		local humanoid=character and character:FindFirstChildOfClass("Humanoid")
-		local carrying=humanoid and humanoid.Health>0 and (owner:GetAttribute("CarryingCount") or 0)>0
-		local state=character and carryPoses[character]
+	for _, owner in Players:GetPlayers() do
+		local character = owner.Character
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		local carrying = humanoid and humanoid.Health > 0 and (owner:GetAttribute("CarryingCount") or 0) > 0
+		local state = character and carryPoses[character]
 		if carrying and not state then
-			state={weight=0,joints={}};carryPoses[character]=state
-			for _,joint in character:GetDescendants()do
-				if joint:IsA("Motor6D") or joint:IsA("AnimationConstraint")then
-					local sign=({RightShoulder=1,["Right Shoulder"]=1,LeftShoulder=-1,["Left Shoulder"]=-1})[joint.Name]
-					local elbow=joint.Name=="RightElbow" or joint.Name=="LeftElbow"
-					if sign or elbow then table.insert(state.joints,{joint=joint,base=joint.Transform,sign=sign,elbow=elbow})end
+			state = { weight = 0, joints = {} }
+			carryPoses[character] = state
+			for _, joint in character:GetDescendants() do
+				if joint:IsA("Motor6D") or joint:IsA("AnimationConstraint") then
+					local sign = (
+						{ RightShoulder = 1, ["Right Shoulder"] = 1, LeftShoulder = -1, ["Left Shoulder"] = -1 }
+					)[joint.Name]
+					local elbow = joint.Name == "RightElbow" or joint.Name == "LeftElbow"
+					if sign or elbow then
+						table.insert(
+							state.joints,
+							{ joint = joint, base = joint.Transform, sign = sign, elbow = elbow }
+						)
+					end
 				end
 			end
 		end
 		if state then
-			state.weight+=( (carrying and 1 or 0)-state.weight)*(1-math.exp(-dt*18))
-			for _,item in state.joints do if item.joint.Parent then
-				local joint=item.joint;item.base=joint.Transform
-				local rotation=item.elbow and CFrame.Angles(math.rad(25),0,0) or CFrame.Angles(math.rad(155),0,math.rad(item.sign*12))
-				local basis=joint.C0.Rotation
-				local pose=CFrame.new(item.base.Position)*basis:Inverse()*rotation*basis
-				joint.Transform=item.base:Lerp(pose,state.weight)
-			end end
+			state.weight += ((carrying and 1 or 0) - state.weight) * (1 - math.exp(-dt * 18))
+			for _, item in state.joints do
+				if item.joint.Parent then
+					local joint = item.joint
+					item.base = joint.Transform
+					local rotation = item.elbow and CFrame.Angles(math.rad(25), 0, 0)
+						or CFrame.Angles(math.rad(155), 0, math.rad(item.sign * 12))
+					local basis = joint.C0.Rotation
+					local pose = CFrame.new(item.base.Position) * basis:Inverse() * rotation * basis
+					joint.Transform = item.base:Lerp(pose, state.weight)
+				end
+			end
 		end
 	end
-	for character,state in carryPoses do
-		if not character.Parent or state.weight<.001 then
-			for _,item in state.joints do if item.joint.Parent then item.joint.Transform=item.base end end
-			carryPoses[character]=nil
+	for character, state in carryPoses do
+		if not character.Parent or state.weight < 0.001 then
+			for _, item in state.joints do
+				if item.joint.Parent then
+					item.joint.Transform = item.base
+				end
+			end
+			carryPoses[character] = nil
 		end
 	end
 end)
@@ -319,9 +339,11 @@ local function attachPetVisual(model)
 	end
 	local rig = PetAnimation.bind(model)
 	if not rig then
-		local body=model.PrimaryPart or model:FindFirstChild("Body")
-		if not body or not body:IsA("BasePart") then return end
-		rig={Body=body,generic=true}
+		local body = model.PrimaryPart or model:FindFirstChild("Body")
+		if not body or not body:IsA("BasePart") then
+			return
+		end
+		rig = { Body = body, generic = true }
 	end
 	local initial = model:GetPivot()
 	local state = {
@@ -384,95 +406,116 @@ RunService.RenderStepped:Connect(function(dt)
 			state.phase = (state.phase + dt * PetAnimation.WalkCycleSpeed) % (math.pi * 2)
 		end
 		if state.rig.Body.Parent and state.rig.Body.LocalTransparencyModifier < 1 then
-			if state.rig.generic then model:PivotTo(state.current*CFrame.new(0,math.abs(math.sin(state.phase))*.12*state.walkWeight,0))
-			else PetAnimation.apply(model, state.rig, state.current, state.phase, state.walkWeight, state.idleTime) end
+			if state.rig.generic then
+				model:PivotTo(
+					state.current * CFrame.new(0, math.abs(math.sin(state.phase)) * 0.12 * state.walkWeight, 0)
+				)
+			else
+				PetAnimation.apply(model, state.rig, state.current, state.phase, state.walkWeight, state.idleTime)
+			end
 		end
 	end
 end)
 for _, key in { "ViewMyPets", "ViewOthersPets", "ViewMyEggs" } do
 	player:GetAttributeChangedSignal(key):Connect(refreshVisibility)
 end
-local weightGui=Instance.new("BillboardGui")
-weightGui.Name="PetWeightHover";weightGui.Size=UDim2.fromOffset(180,48)
-weightGui.AlwaysOnTop=true;weightGui.MaxDistance=140;weightGui.Enabled=false
-weightGui.Parent=player:WaitForChild("PlayerGui")
-local weightText=Instance.new("TextLabel");weightText.Size=UDim2.fromScale(1,1)
-weightText.BackgroundTransparency=1;weightText.Font=Enum.Font.GothamBlack;weightText.TextSize=28
-weightText.TextColor3=Color3.new(1,1,1);weightText.Parent=weightGui
-local weightStroke=Instance.new("UIStroke");weightStroke.Thickness=3
-weightStroke.Color=Color3.fromRGB(20,22,26);weightStroke.Parent=weightText
-local hoveredPet,hoverElapsed=nil,0
+local weightGui = Instance.new("BillboardGui")
+weightGui.Name = "PetWeightHover"
+weightGui.Size = UDim2.fromOffset(180, 48)
+weightGui.AlwaysOnTop = true
+weightGui.MaxDistance = 140
+weightGui.Enabled = false
+weightGui.Parent = player:WaitForChild("PlayerGui")
+local weightText = Instance.new("TextLabel")
+weightText.Size = UDim2.fromScale(1, 1)
+weightText.BackgroundTransparency = 1
+weightText.Font = Enum.Font.GothamBlack
+weightText.TextSize = 28
+weightText.TextColor3 = Color3.new(1, 1, 1)
+weightText.Parent = weightGui
+local weightStroke = Instance.new("UIStroke")
+weightStroke.Thickness = 3
+weightStroke.Color = Color3.fromRGB(20, 22, 26)
+weightStroke.Parent = weightText
+local hoveredPet, hoverElapsed = nil, 0
 -- Pet parts are non-queryable so placement rays still reach the pen floor.
 -- Intersect their visual bounds separately for the hover tooltip.
-local function rayBox(origin,direction,cf,size)
-	local o=cf:PointToObjectSpace(origin);local d=cf:VectorToObjectSpace(direction)
-	local half=size/2;local near,far=0,140
-	for _,axis in {"X","Y","Z"}do
-		if math.abs(d[axis])<1e-6 then
-			if math.abs(o[axis])>half[axis]then return end
+local function rayBox(origin, direction, cf, size)
+	local o = cf:PointToObjectSpace(origin)
+	local d = cf:VectorToObjectSpace(direction)
+	local half = size / 2
+	local near, far = 0, 140
+	for _, axis in { "X", "Y", "Z" } do
+		if math.abs(d[axis]) < 1e-6 then
+			if math.abs(o[axis]) > half[axis] then
+				return
+			end
 		else
-			local a=(-half[axis]-o[axis])/d[axis];local b=(half[axis]-o[axis])/d[axis]
-			near=math.max(near,math.min(a,b));far=math.min(far,math.max(a,b))
-			if near>far then return end
+			local a = (-half[axis] - o[axis]) / d[axis]
+			local b = (half[axis] - o[axis]) / d[axis]
+			near = math.max(near, math.min(a, b))
+			far = math.min(far, math.max(a, b))
+			if near > far then
+				return
+			end
 		end
 	end
 	return near
 end
-local hoverRayParams=RaycastParams.new();hoverRayParams.FilterType=Enum.RaycastFilterType.Exclude
+local hoverRayParams = RaycastParams.new()
+hoverRayParams.FilterType = Enum.RaycastFilterType.Exclude
 RunService.RenderStepped:Connect(function(dt)
-	hoverElapsed+=dt
-	if player:GetAttribute("UIWindowOpen") or not UIS.MouseEnabled then hoveredPet=nil end
-	if hoverElapsed>=.05 then
-		hoverElapsed=0;hoveredPet=nil
-		local camera=workspace.CurrentCamera
-		if camera and UIS.MouseEnabled and not player:GetAttribute("UIWindowOpen")then
-			local cursor=UIS:GetMouseLocation();local ray=camera:ScreenPointToRay(cursor.X,cursor.Y)
-			local closest=140
-			hoverRayParams.FilterDescendantsInstances=player.Character and {player.Character} or {}
-			local obstacle=workspace:Raycast(ray.Origin,ray.Direction*140,hoverRayParams)
-			if obstacle then closest=obstacle.Distance end
-			for model,state in petVisuals do
-				if model.Parent and model:IsDescendantOf(workspace.Map.StartZone.PlayerBases) and model.PrimaryPart and state.rig.Body.LocalTransparencyModifier<1 and typeof(model:GetAttribute("Weight"))=="number" then
-					local cf,size=model:GetBoundingBox();local distance=rayBox(ray.Origin,ray.Direction,cf,size)
-					if distance and distance<closest then closest=distance;hoveredPet=model end
+	hoverElapsed += dt
+	if player:GetAttribute("UIWindowOpen") or not UIS.MouseEnabled then
+		hoveredPet = nil
+	end
+	if hoverElapsed >= 0.05 then
+		hoverElapsed = 0
+		hoveredPet = nil
+		local camera = workspace.CurrentCamera
+		if camera and UIS.MouseEnabled and not player:GetAttribute("UIWindowOpen") then
+			local cursor = UIS:GetMouseLocation()
+			local ray = camera:ScreenPointToRay(cursor.X, cursor.Y)
+			local closest = 140
+			hoverRayParams.FilterDescendantsInstances = player.Character and { player.Character } or {}
+			local obstacle = workspace:Raycast(ray.Origin, ray.Direction * 140, hoverRayParams)
+			if obstacle then
+				closest = obstacle.Distance
+			end
+			for model, state in petVisuals do
+				if
+					model.Parent
+					and model:IsDescendantOf(workspace.Map.StartZone.PlayerBases)
+					and model.PrimaryPart
+					and state.rig.Body.LocalTransparencyModifier < 1
+					and typeof(model:GetAttribute("Weight")) == "number"
+				then
+					local cf, size = model:GetBoundingBox()
+					local distance = rayBox(ray.Origin, ray.Direction, cf, size)
+					if distance and distance < closest then
+						closest = distance
+						hoveredPet = model
+					end
 				end
 			end
 		end
 	end
 	if hoveredPet and hoveredPet.Parent and hoveredPet.PrimaryPart then
-		local cf,size=hoveredPet:GetBoundingBox()
-		weightGui.Adornee=hoveredPet.PrimaryPart
-		weightGui.StudsOffsetWorldSpace=Vector3.new(cf.Position.X,cf.Position.Y+size.Y/2+.65,cf.Position.Z)-hoveredPet.PrimaryPart.Position
-		local value=hoveredPet:GetAttribute("Weight")
-		weightText.Text=string.format("%.1f",value):gsub("%.0$","").." kg"
-		weightGui.Enabled=true
-	else weightGui.Enabled=false;weightGui.Adornee=nil end
-end)
-local soundVolumes = setmetatable({}, { __mode = "k" })
-local function refreshSound(sound)
-	if not soundVolumes[sound] then
-		soundVolumes[sound] = sound.Volume
-	end
-	local music = sound:GetAttribute("IsMusic") == true or (sound.SoundGroup and sound.SoundGroup.Name == "Music")
-	sound.Volume = soundVolumes[sound] * (player:GetAttribute(music and "MusicVolume" or "SFXVolume") or 1)
-end
-local function refreshSounds()
-	for _, v in game:GetDescendants() do
-		if v:IsA("Sound") then
-			refreshSound(v)
-		end
-	end
-end
-game.DescendantAdded:Connect(function(v)
-	if v:IsA("Sound") then
-		task.defer(refreshSound, v)
+		local cf, size = hoveredPet:GetBoundingBox()
+		weightGui.Adornee = hoveredPet.PrimaryPart
+		weightGui.StudsOffsetWorldSpace = Vector3.new(cf.Position.X, cf.Position.Y + size.Y / 2 + 0.65, cf.Position.Z)
+			- hoveredPet.PrimaryPart.Position
+		local value = hoveredPet:GetAttribute("Weight")
+		weightText.Text = string.format("%.1f", value):gsub("%.0$", "") .. " kg"
+		weightGui.Enabled = true
+	else
+		weightGui.Enabled = false
+		weightGui.Adornee = nil
 	end
 end)
-for _, key in { "MusicVolume", "SFXVolume" } do
-	player:GetAttributeChangedSignal(key):Connect(refreshSounds)
-end
+-- Settings volume is applied per SoundGroup by Audio.
+require(RS:WaitForChild("Audio")).start()
 refreshVisibility()
-refreshSounds()
 script.Destroying:Connect(function()
 	RunService:UnbindFromRenderStep(previewRenderName)
 	if preview then

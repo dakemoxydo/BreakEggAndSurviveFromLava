@@ -5,7 +5,9 @@ local ReactRoblox = require(ReplicatedStorage.Packages.ReactRoblox)
 local App = require(ReplicatedStorage.ShopUI.App)
 local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 local previous = playerGui:FindFirstChild("ShopReferenceUI")
-if previous then previous:Destroy() end
+if previous then
+	previous:Destroy()
+end
 local gui = Instance.new("ScreenGui")
 gui.Name = "ShopReferenceUI"
 gui.ResetOnSpawn = false
@@ -17,5 +19,8 @@ local root = ReactRoblox.createRoot(gui)
 local controller = Instance.new("BindableEvent")
 controller.Name = "UIController"
 controller.Parent = script
-root:render(React.createElement(App, {controller=controller}))
-script.Destroying:Connect(function() root:unmount(); gui:Destroy() end)
+root:render(React.createElement(App, { controller = controller }))
+script.Destroying:Connect(function()
+	root:unmount()
+	gui:Destroy()
+end)

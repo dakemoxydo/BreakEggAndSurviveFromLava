@@ -54,14 +54,19 @@ local function detach(player, jump)
 		end
 	end
 	if humanoid.Parent then
-		humanoid.WalkSpeed = Game.walkSpeed(speedValue(player,session.walkSpeed)*(player:GetAttribute("Multiplier") or 1),player:GetAttribute("SlowMode"))
+		humanoid.WalkSpeed = Game.walkSpeed(
+			speedValue(player, session.walkSpeed) * (player:GetAttribute("Multiplier") or 1),
+			player:GetAttribute("SlowMode")
+		)
 		humanoid.AutoRotate = session.autoRotate
 	end
 	player:SetAttribute("OnTreadmill", false)
 end
 
 local function attach(player, character, humanoid, root, station, center)
-	if station:GetAttribute("OwnerUserId") and station:GetAttribute("OwnerUserId")~=player.UserId then return end
+	if station:GetAttribute("OwnerUserId") and station:GetAttribute("OwnerUserId") ~= player.UserId then
+		return
+	end
 	if active[player] or occupied[station] or (cooldown[player] or 0) > os.clock() then
 		return
 	end
@@ -133,7 +138,8 @@ local function connectPlayer(player)
 		if humanoid and player.Character == character then
 			local speed = speedValue(player, humanoid.WalkSpeed)
 			player:SetAttribute("Speed", speed)
-			humanoid.WalkSpeed = Game.walkSpeed(speed*(player:GetAttribute("Multiplier") or 1),player:GetAttribute("SlowMode"))
+			humanoid.WalkSpeed =
+				Game.walkSpeed(speed * (player:GetAttribute("Multiplier") or 1), player:GetAttribute("SlowMode"))
 		end
 	end
 	player.CharacterAdded:Connect(characterAdded)
@@ -162,7 +168,13 @@ RunService.Heartbeat:Connect(function(dt)
 			local seconds = math.floor(session.elapsed)
 			if seconds > 0 then
 				session.elapsed -= seconds
-				player:SetAttribute("Speed", speedValue(player, session.walkSpeed) + seconds * (session.station:GetAttribute("TrainingGain") or Config.SpeedPerSecond) * (player:GetAttribute("Multiplier") or 1))
+				player:SetAttribute(
+					"Speed",
+					speedValue(player, session.walkSpeed)
+						+ seconds
+							* (session.station:GetAttribute("TrainingGain") or Config.SpeedPerSecond)
+							* (player:GetAttribute("Multiplier") or 1)
+				)
 			end
 		end
 	end

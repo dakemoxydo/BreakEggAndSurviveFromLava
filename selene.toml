@@ -1,0 +1,6 @@
+std = "roblox"
+exclude = ["src/serverPackages/*"]
+
+[lints]
+# React Luau here sets Name as a prop on purpose; tests look panels up by these names.
+roblox_incorrect_roact_usage = "allow"

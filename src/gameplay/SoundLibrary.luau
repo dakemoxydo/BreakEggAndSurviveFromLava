@@ -102,22 +102,14 @@ Library.Sounds = {
 	}, -- APM "Spinning Around (b)"
 
 	-- Interface
-	UIHover = {
-		ids = { id(138409154614452) },
-		group = "UI",
-		volume = 0.12,
-		pitch = { 1.4, 1.5 },
-		cooldown = 0.04,
-		voices = 2,
-	}, -- DailySounds "Toggle Click"
 	UIClick = {
-		ids = { id(106623224876186) },
+		ids = { id(88442833509532) },
 		group = "UI",
-		volume = 0.5,
+		volume = 1.5,
 		pitch = { 1, 1.05 },
 		cooldown = 0.03,
 		voices = 3,
-	}, -- DailySounds "Tiny Click"
+	}, -- "ui-simple-button-click" (assets/audio/sfx/ui-click.mp3)
 }
 
 -- Reveal sound by pet rarity; unknown rarities fall back to RevealCommon.

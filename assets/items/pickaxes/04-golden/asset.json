@@ -42,8 +42,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://126921251810443",
-    "textureId": "rbxassetid://117164328827111",
+    "meshId": "rbxassetid://104039194421199",
+    "textureId": "rbxassetid://99253376308553",
     "templatePath": "ReplicatedStorage.PickaxeModels.Golden",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.GoldenPickaxe"
   }

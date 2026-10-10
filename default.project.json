@@ -52,7 +52,10 @@
         "$className": "Folder",
         "$ignoreUnknownInstances": true,
         "ProfileStore": {
-          "$path": "src/serverPackages/ProfileStore.luau"
+          "$path": "src/serverPackages/ProfileStore.luau",
+          "$properties": {
+            "Sandboxed": false
+          }
         }
       }
     },

@@ -10,8 +10,10 @@
 | [feel.md](feel.md) | Замах, хват, эффекты попадания, трещины, анимацию вылупления | — |
 | [balance.md](balance.md) | Числа, формулы, каталоги кирок, следов, дорожек, животных | — |
 | [ui.md](ui.md) | Любой UI, HUD, окна, ввод | UI |
+| [ui-figma.md](ui-figma.md) | Окна, импортированные из Figma (FigBlox) | UI |
 | [inventory.md](inventory.md) | Инвентарь, Backpack, Tool, хотбар, переходы на базу | INV |
 | [pets.md](pets.md) | Питомцы, яйца на базе, Merge, видимость | — |
+| [pet-models.md](pet-models.md) | Модели и анимации питомцев: Blender, импорт, публикация | — |
 | [treadmills.md](treadmills.md) | Беговые дорожки | — |
 | [saves.md](saves.md) | ProfileStore, схему, офлайн-доход, миграцию | SAVE |
 | [architecture.md](architecture.md) | Разделение сервер/клиент, сцену, звук, модули | — |

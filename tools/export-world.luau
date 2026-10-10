@@ -52,6 +52,7 @@ local groups={
 }
 local contentNames={MeshId=true,TextureId=true,TextureID=true,Texture=true,Image=true,ColorMap=true,NormalMap=true,RoughnessMap=true,MetalnessMap=true,SkyboxBk=true,SkyboxDn=true,SkyboxFt=true,SkyboxLf=true,SkyboxRt=true,SkyboxUp=true}
 local function snapshot(instance)
+ if nextId > 0 and nextId % 1000 == 0 then task.wait() end
  local node={class=instance.ClassName,id=ref(instance),properties={Name=encode(instance.Name)},attributes={},children={}}
  for _,group in groups do if instance:IsA(group[1]) then for _,name in group[2] do
   local ok,v=pcall(function()return instance[name]end)
@@ -61,6 +62,7 @@ local function snapshot(instance)
  if instance:IsA("Model") then
   node.properties.WorldPivotData={type="OptionalCoordinateFrame",value={instance:GetPivot():GetComponents()}}
  end
+ if instance:IsA("MeshPart") then node.properties.InitialSize=encode(instance.MeshSize) end
  for _,child in instance:GetChildren() do if child.Archivable and not child:IsA("LuaSourceContainer") then table.insert(node.children,snapshot(child)) end end
  return node
 end

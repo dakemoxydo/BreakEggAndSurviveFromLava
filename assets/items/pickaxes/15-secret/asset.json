@@ -44,8 +44,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://104111583848672",
-    "textureId": "rbxassetid://119743413572887",
+    "meshId": "rbxassetid://98512882183451",
+    "textureId": "rbxassetid://139469039949130",
     "templatePath": "ReplicatedStorage.PickaxeModels.Secret",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.SecretPickaxe"
   }

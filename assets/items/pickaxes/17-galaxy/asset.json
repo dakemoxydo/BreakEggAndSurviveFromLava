@@ -44,8 +44,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://93772870146902",
-    "textureId": "rbxassetid://103388724931048",
+    "meshId": "rbxassetid://96984434463039",
+    "textureId": "rbxassetid://127693011531358",
     "templatePath": "ReplicatedStorage.PickaxeModels.Galaxy",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.GalaxyPickaxe"
   }

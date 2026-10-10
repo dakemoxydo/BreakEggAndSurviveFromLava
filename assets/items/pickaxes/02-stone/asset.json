@@ -70,8 +70,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://78726493939751",
-    "textureId": "rbxassetid://89919742798446",
+    "meshId": "rbxassetid://83361324585169",
+    "textureId": "rbxassetid://133292149711875",
     "templatePath": "ReplicatedStorage.PickaxeModels.Stone",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.StonePickaxe"
   }

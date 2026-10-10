@@ -69,7 +69,7 @@ PetContents создаётся для содержимого базы. `BaseAnch
 
 Adventure обращается к `Map.StartZone.Shops` и `Map.Biomes.<имя>.Floor` напрямую. Эти имена нельзя менять как косметические подписи. Объекты ReferenceDetails с атрибутом Interaction получают prompts; таблички рейтингов имеют ожидаемую иерархию Board/LeaderboardUI/Rows.
 
-Release дополнительно включает шаблоны `ServerStorage.Assets`, материал ReferenceHDStuds, освещение, облака, карту и Lava Bat в StarterPack. Модели кирок доступны как `ReplicatedStorage.PickaxeModels`.
+Release дополнительно включает шаблоны `ServerStorage.Assets`, материал ReferenceHDStuds, освещение, облака, карту и Lava Bat в StarterPack. Модели кирок доступны как `ReplicatedStorage.PickaxeModels`. Lava Bat в Studio собрана из 15 обычных Part: деревянное навершие и сужающийся ствол, тёмная рукоять с пятью полосами. Невидимый Handle и Grip сохранены, визуальные детали приварены к Handle, без массы и коллизий; внешние меши биты не используются. Повторяемый помощник — tools/create-studio-bat.luau. Экспорт этой новой геометрии в release пока ожидает разрешения.
 
 ## UI и визуальные модели
 

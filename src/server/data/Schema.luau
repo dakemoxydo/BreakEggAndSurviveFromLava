@@ -49,6 +49,12 @@ local function array(value, maximum)
 	end
 	return count == #value
 end
+function Schema.MigrateOffline(data)
+	local offline = data.offline
+	if typeof(offline) == "number" and offline > Game.MaxCash and offline < math.huge then
+		data.offline = Game.MaxCash
+	end
+end
 function Schema.Validate(data)
 	if type(data) ~= "table" or data.schemaVersion ~= Schema.Version then
 		return false, "Unsupported profile version"
@@ -215,6 +221,10 @@ function Schema.MigrateBackpack(data)
 			end
 		end
 		if not exists then
+			-- Keep the legacy item saved until a normal inventory slot becomes free.
+			if #data.pets + #data.eggs + #data.backpackEggs >= PetConfig.MaxPets then
+				return
+			end
 			local item = {
 				id = game:GetService("HttpService"):GenerateGUID(false),
 				kind = carried.kind,
@@ -230,6 +240,9 @@ function Schema.MigrateBackpack(data)
 	end
 	data.carriedKind = ""
 	data.carriedPet = false
+end
+function Schema.EggComesFirst(a, b)
+	return a.hatchesAt == b.hatchesAt and a.id < b.id or a.hatchesAt < b.hatchesAt
 end
 function Schema.AccrueOffline(data, now)
 	if data.lastSeen <= 0 then
@@ -251,16 +264,14 @@ function Schema.AccrueOffline(data, now)
 	end
 	-- Eggs finishing while away can fill free active slots and begin earning too.
 	local eggs = table.clone(data.eggs)
-	table.sort(eggs, function(a, b)
-		return a.hatchesAt < b.hatchesAt
-	end)
+	table.sort(eggs, Schema.EggComesFirst)
 	for _, egg in eggs do
 		if egg.hatchesAt <= now and equipped < data.capacity then
 			equipped += 1
 			reward += math.max(0, finish - math.max(data.lastSeen, egg.hatchesAt)) * Game.income(egg)
 		end
 	end
-	data.offline += reward
+	data.offline = math.min(Game.MaxCash, data.offline + reward)
 end
 function Schema.Snapshot(player, state)
 	local pets, eggs, backpackEggs = {}, {}, {}

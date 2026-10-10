@@ -42,7 +42,7 @@ rojo build bundle.project.json -o ShopUIBundle.rbxmx
 
 ## Studio и сохранения
 
-Для постоянных Studio-профилей требуется Enable Studio Access to API Services в настройках безопасности experience. По умолчанию StudioMode — Persistent; данные идут в отдельное Studio-хранилище. Для экспериментов можно явно выбрать Mock в `src/server/data/Config.luau` и синхронизировать Rojo. Mock не включается автоматически при ошибке API.
+Для постоянных Studio-профилей требуется Enable Studio Access to API Services в настройках безопасности experience. По умолчанию StudioMode — Persistent; данные идут в отдельное Studio-хранилище. Для экспериментов временно установить атрибут StudioMode="Mock" у ServerScriptService.PlayerData.Config в Edit до запуска Play и удалить после остановки. Исходники для этого не меняются; live игнорирует атрибут. Mock не включается автоматически при ошибке API.
 
 Перед проверкой через RobloxMCP получить список Studio и их режим, выбрать нужный place. Дерево Edit подходит для инспекции сцены и исходников; runtime-механики проверять в Server/Client после запуска Play. Останавливать Play и возвращать временные параметры событий после экспериментов. Для проверки ProfileStore использовать отдельный Mock-ключ из `tools/verify-profiles.luau`, не игровые ключи.
 
@@ -61,7 +61,9 @@ rojo build bundle.project.json -o ShopUIBundle.rbxmx
 
 Организация файлов описана в [assets/README.md](../assets/README.md). Для предмета хранить references, models, textures, icons и exports рядом. Roblox ID, источники и выбранные варианты фиксировать в манифестах, включая `assets/manifests/reference-assets.json` и каталог кирок.
 
-В Studio каталог шаблонов находится в ServerStorage.Assets: Items/Pickaxes/{Templates,SourceImports}, Items/Bats, Items/Eggs, Environment/Treadmills, Environment/Props и Pets. Исходные импорты не оставлять выставленными в Workspace. Runtime-копии кирок в ReplicatedStorage.PickaxeModels обслуживают UI и выдачу Tool. Старый Assets.Weapons перенесён в Assets.Items.Bats; TreadmillLvl1 находится в Assets.Environment.Treadmills. Помощники place-treadmills и equip-imported-bat используют эти пути. Экспорт каталога AssetTemplates.rbxmx используется release; default продолжает синхронизировать исходники и рабочие PickaxeModels, сохраняя ручное серверное хранилище.
+В Studio каталог шаблонов находится в ServerStorage.Assets: Items/Pickaxes/{Templates,SourceImports}, Items/Bats, Items/Eggs, Environment/Treadmills, Environment/Props и Pets. Исходные импорты не оставлять выставленными в Workspace. Runtime-копии кирок в ReplicatedStorage.PickaxeModels обслуживают UI и выдачу Tool. Шаблоны питомцев из Assets.Pets сервер копирует в ReplicatedStorage.PetModels при старте; Animation внутри шаблона требуют опубликованных AnimationId. После импорта FBX-анимации для костяного рига позы костей содержат и их исходный поворот, и Animator применяет его дважды (кости, направленные вниз, переворачиваются). Перед публикацией выполнить `tools/fix-bone-pose-rest.luau` для этих KeyframeSequence. Старый Assets.Weapons перенесён в Assets.Items.Bats; TreadmillLvl1 находится в Assets.Environment.Treadmills. Помощники place-treadmills и equip-imported-bat используют эти пути. Экспорт каталога AssetTemplates.rbxmx используется release; default продолжает синхронизировать исходники и рабочие PickaxeModels, сохраняя ручное серверное хранилище.
+
+Окна и HUD из Figma хранятся только в place: `ReplicatedStorage.UITemplates` (ScreenGui с `Enabled=false`, импорт FigBlox). Default-проект их сохраняет; release-сборка их не содержит, и там остаются старые React-окна. Подробнее — [ui-figma.md](ui-figma.md).
 
 `tools/apply-reference-details.luau` предназначен для повторяемых правок оформления в Edit с резервной копией в ServerStorage.WorldBackups. Скрипты размещения и организации карты в tools — операции над сценой, а не обязательные шаги каждого запуска игры.
 
@@ -70,5 +72,7 @@ rojo build bundle.project.json -o ShopUIBundle.rbxmx
 `tools/rojo-transfer.py` читает канонический XML из `.tools/reference-game.rbxlx` для переноса модулей через MCP. Не использовать вместо перезапуска `rojo serve` после нового mapping; только если пользователь явно попросил.
 
 ## Публикация
+
+Для нового аккаунта изображения из проекта повторно загружены; файлы, владелец и соответствие ID записаны в `assets/manifests/account-reimport.json`. `tools/rebind-local-images.py` обновляет ссылки в src, манифестах и пересоздаёт ссылки изображений в генерируемых XML карты и материалов. После повторного экспорта старых снимков выполнить этот скрипт перед сборкой, чтобы не вернуть прежние ID. Кирки и дорожки повторно импортированы; Lava Bat в Studio использует обычные Part, её release-экспорт ожидает разрешения. Локальное аудио требует отдельного импорта; порядок — `assets/IMPORT-TO-NEW-ACCOUNT.md`. Перенос изображений не означает завершённый перенос всех ассетов.
 
 Локальная сборка не означает публикацию. Дата и версия последнего опубликованного состояния здесь не подтверждены. Текущие Robux-предложения имеют ID=0; перед их включением нужны реальные продукты/пасы, серверная выдача и обработка чеков. Полный перечень непроверенного находится в [verification.md](verification.md).

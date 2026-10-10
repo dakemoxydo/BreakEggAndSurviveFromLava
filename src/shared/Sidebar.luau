@@ -27,10 +27,9 @@ local function Sidebar(p)
 	local headerH = stacked and 142 or 94
 	local isPets = p.kind == "Pets"
 	local footerSpace = isPets and 84 or 0
-	local panelH = compact and math.min(
-		430,
-		p.height - (short and 64 or 180) - (short and 16 or 105) - footerSpace - 32
-	) or math.min(408, p.height - footerSpace - 112)
+	local panelH = compact
+			and math.min(430, p.height - (short and 64 or 180) - (short and 16 or 105) - footerSpace - 32)
+		or math.min(408, p.height - footerSpace - 112)
 	panelH = math.max(headerH + 64, panelH)
 	local top = short and 64 or (compact and 180 or math.max(96, (p.height - panelH) / 2 - 16))
 	local equipped = 0
@@ -45,21 +44,18 @@ local function Sidebar(p)
 		end
 	end
 	local function button(label, x, y, w, h, color, callback, name, size, disabled)
-		return e(
-			UI.Button,
-			{
-				label = label,
-				x = x,
-				y = y,
-				w = w,
-				h = h,
-				color = color,
-				onClick = callback,
-				name = name,
-				textSize = size or 28,
-				disabled = p.busy or disabled,
-			}
-		)
+		return e(UI.Button, {
+			label = label,
+			x = x,
+			y = y,
+			w = w,
+			h = h,
+			color = color,
+			onClick = callback,
+			name = name,
+			textSize = size or 28,
+			disabled = p.busy or disabled,
+		})
 	end
 	local header = {}
 	local title = isPets and tostring(equipped) .. "/" .. p.capacity .. " Active" or "Growing Eggs"
@@ -109,15 +105,12 @@ local function Sidebar(p)
 	-- Warm wood tone of the reference rows; the gold header stays brighter above it.
 	local rowColor = C.gold:Lerp(C.red, 0.35):Lerp(C.ink, 0.2)
 	local rows = {
-		Padding = e(
-			"UIPadding",
-			{
-				PaddingTop = UDim.new(0, 12),
-				PaddingBottom = UDim.new(0, 16),
-				PaddingLeft = UDim.new(0, 16),
-				PaddingRight = UDim.new(0, 16),
-			}
-		),
+		Padding = e("UIPadding", {
+			PaddingTop = UDim.new(0, 12),
+			PaddingBottom = UDim.new(0, 16),
+			PaddingLeft = UDim.new(0, 16),
+			PaddingRight = UDim.new(0, 16),
+		}),
 		Layout = e("UIListLayout", { Padding = UDim.new(0, 16), SortOrder = Enum.SortOrder.LayoutOrder }),
 	}
 	if isPets then
@@ -162,110 +155,83 @@ local function Sidebar(p)
 					compact and 25 or 22
 				),
 			}
-			rows["Pet" .. i] = e(
-				"Frame",
-				{ Name = "InventoryPet" .. i, Size = UDim2.fromOffset(rowW, rowH), BackgroundTransparency = 1, LayoutOrder = i },
-				{
-					Card = e(
-						UI.Surface,
-						{ name = "PetRow", w = rowW, h = rowH, color = rowColor, children = contents }
-					),
-				}
-			)
+			rows["Pet" .. i] = e("Frame", {
+				Name = "InventoryPet" .. i,
+				Size = UDim2.fromOffset(rowW, rowH),
+				BackgroundTransparency = 1,
+				LayoutOrder = i,
+			}, {
+				Card = e(UI.Surface, { name = "PetRow", w = rowW, h = rowH, color = rowColor, children = contents }),
+			})
 		end
 	else
 		for i, egg in p.eggs do
-			rows["Egg" .. i] = e(
-				"Frame",
-				{ Name = "GrowingEgg" .. i, Size = UDim2.fromOffset(rowW, rowH), BackgroundTransparency = 1, LayoutOrder = i },
-				{
-					Card = e(
-						UI.Surface,
-						{
-							w = rowW,
-							h = rowH,
-							color = C.gold,
-							children = {
-								Image = UI.icon(egg.icon or "egg", 10, 12, 74, 78),
-								Name = UI.text(
-									egg.name or "Egg",
-									94,
-									8,
-									rowW - 108,
-									42,
-									24,
-									nil,
-									Enum.TextXAlignment.Left
-								),
-								Status = UI.text(
-									egg.status or "Growing",
-									94,
-									55,
-									rowW - 108,
-									32,
-									22,
-									C.green,
-									Enum.TextXAlignment.Left
-								),
-							},
-						}
-					),
-				}
-			)
+			rows["Egg" .. i] = e("Frame", {
+				Name = "GrowingEgg" .. i,
+				Size = UDim2.fromOffset(rowW, rowH),
+				BackgroundTransparency = 1,
+				LayoutOrder = i,
+			}, {
+				Card = e(UI.Surface, {
+					w = rowW,
+					h = rowH,
+					color = C.gold,
+					children = {
+						Image = UI.icon(egg.icon or "egg", 10, 12, 74, 78),
+						Name = UI.text(egg.name or "Egg", 94, 8, rowW - 108, 42, 24, nil, Enum.TextXAlignment.Left),
+						Status = UI.text(
+							egg.status or "Growing",
+							94,
+							55,
+							rowW - 108,
+							32,
+							22,
+							C.green,
+							Enum.TextXAlignment.Left
+						),
+					},
+				}),
+			})
 		end
 	end
 	local contents = {
 		Header = e(UI.Surface, { w = panelW, h = headerH, color = C.gold, children = header }),
-		List = e(
-			"ScrollingFrame",
-			{
-				Name = isPets and "PetsInventoryScroll" or "GrowingEggsScroll",
-				BackgroundTransparency = 1,
-				BorderSizePixel = 0,
-				Position = UDim2.fromOffset(4, headerH + 12),
-				Size = UDim2.fromOffset(panelW - 8, panelH - headerH - 26),
-				CanvasSize = UDim2.fromOffset(
-					0,
-					math.max(100, (isPets and #p.pets or #p.eggs) * (rowH + 16) - 16) + 28
-				),
-				ScrollBarThickness = 5,
-				ScrollBarImageColor3 = C.white,
-				ScrollingDirection = Enum.ScrollingDirection.Y,
-				Active = true,
-			},
-			rows
-		),
+		List = e("ScrollingFrame", {
+			Name = isPets and "PetsInventoryScroll" or "GrowingEggsScroll",
+			BackgroundTransparency = 1,
+			BorderSizePixel = 0,
+			Position = UDim2.fromOffset(4, headerH + 12),
+			Size = UDim2.fromOffset(panelW - 8, panelH - headerH - 26),
+			CanvasSize = UDim2.fromOffset(0, math.max(100, (isPets and #p.pets or #p.eggs) * (rowH + 16) - 16) + 28),
+			ScrollBarThickness = 5,
+			ScrollBarImageColor3 = C.white,
+			ScrollingDirection = Enum.ScrollingDirection.Y,
+			Active = true,
+		}, rows),
 	}
 	local children = {
-		Panel = e(
-			UI.Surface,
-			{
-				name = isPets and "PetsSidebar" or "EggsSidebar",
-				x = lane,
-				y = 0,
-				w = panelW,
-				h = panelH,
-				color = C.body,
-				quiet = true,
-				active = true,
-				children = contents,
-			}
-		),
-		Collapse = e(
-			UI.Button,
-			{
-				name = "CollapseSidebar",
-				buttonRef = p.closeRef,
-				label = ">",
-				x = compact and 2 or 8,
-				y = math.floor((panelH - 64) / 2),
-				w = compact and 44 or 64,
-				h = 64,
-				color = C.red,
-				textSize = compact and 36 or 48,
-				onClick = p.onClose,
-			}
-		),
+		Panel = e(UI.Surface, {
+			name = isPets and "PetsSidebar" or "EggsSidebar",
+			x = lane,
+			y = 0,
+			w = panelW,
+			h = panelH,
+			color = C.body,
+			quiet = true,
+			active = true,
+			children = contents,
+		}),
+		Collapse = e(UI.Button, {
+			name = "CollapseSidebar",
+			label = ">",
+			x = compact and 2 or 8,
+			y = math.floor((panelH - 64) / 2),
+			w = compact and 44 or 64,
+			h = 64,
+			color = C.red,
+			textSize = compact and 36 or 48,
+			onClick = p.onClose,
+		}),
 	}
 	if isPets then
 		children.EquipBest = button(
@@ -282,22 +248,19 @@ local function Sidebar(p)
 			30
 		)
 	end
-	return e(
-		UI.Transition,
-		{
-			name = "RightSidebar",
-			x = p.width - panelW - lane - 20,
-			y = top,
-			w = panelW + lane,
-			h = panelH + footerSpace,
-			slide = true,
-			visible = p.visible,
-			transitionKey = p.kind,
-			reduced = p.reduced,
-			onClosed = p.onClosed,
-			z = 20,
-			children = children,
-		}
-	)
+	return e(UI.Transition, {
+		name = "RightSidebar",
+		x = p.width - panelW - lane - 20,
+		y = top,
+		w = panelW + lane,
+		h = panelH + footerSpace,
+		slide = true,
+		visible = p.visible,
+		transitionKey = p.kind,
+		reduced = p.reduced,
+		onClosed = p.onClosed,
+		z = 20,
+		children = children,
+	})
 end
 return Sidebar

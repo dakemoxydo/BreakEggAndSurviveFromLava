@@ -44,8 +44,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://123049135110897",
-    "textureId": "rbxassetid://124376442284830",
+    "meshId": "rbxassetid://104550567619981",
+    "textureId": "rbxassetid://74124893932370",
     "templatePath": "ReplicatedStorage.PickaxeModels.Hacker",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.HackerPickaxe"
   }

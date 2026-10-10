@@ -36,19 +36,16 @@ local function ModelPreview(props)
 			camera:Destroy()
 		end
 	end, { props.kind, props.pickaxe, props.weight, props.locked })
-	return e(
-		"ViewportFrame",
-		{
-			Name = props.name or "ItemPreview",
-			ref = ref,
-			BackgroundTransparency = 1,
-			Position = UDim2.fromOffset(props.x or 0, props.y or 0),
-			Size = UDim2.fromOffset(props.w, props.h),
-			Ambient = Color3.fromRGB(200, 200, 210),
-			LightColor = Color3.new(1, 1, 1),
-			LightDirection = Vector3.new(-1, -2, -3),
-			ZIndex = 7,
-		}
-	)
+	return e("ViewportFrame", {
+		Name = props.name or "ItemPreview",
+		ref = ref,
+		BackgroundTransparency = 1,
+		Position = UDim2.fromOffset(props.x or 0, props.y or 0),
+		Size = UDim2.fromOffset(props.w, props.h),
+		Ambient = Color3.fromRGB(200, 200, 210),
+		LightColor = Color3.new(1, 1, 1),
+		LightDirection = Vector3.new(-1, -2, -3),
+		ZIndex = 7,
+	})
 end
 return React.memo(ModelPreview)

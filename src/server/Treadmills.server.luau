@@ -27,7 +27,7 @@ local function speedValue(player, fallback)
 	if typeof(speed) ~= "number" or speed ~= speed or speed == math.huge or speed < 0 then
 		speed = fallback
 	end
-	return speed
+	return math.min(speed, Game.MaxSpeed)
 end
 
 local function detach(player, jump)
@@ -170,10 +170,13 @@ RunService.Heartbeat:Connect(function(dt)
 				session.elapsed -= seconds
 				player:SetAttribute(
 					"Speed",
-					speedValue(player, session.walkSpeed)
-						+ seconds
-							* (session.station:GetAttribute("TrainingGain") or Config.SpeedPerSecond)
-							* (player:GetAttribute("Multiplier") or 1)
+					math.min(
+						Game.MaxSpeed,
+						speedValue(player, session.walkSpeed)
+							+ seconds
+								* (session.station:GetAttribute("TrainingGain") or Config.SpeedPerSecond)
+								* (player:GetAttribute("Multiplier") or 1)
+					)
 				)
 			end
 		end

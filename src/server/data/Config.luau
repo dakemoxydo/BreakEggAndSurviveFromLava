@@ -2,10 +2,10 @@ local Config = {
 	StudioStoreName = "PlayerProfiles_Studio_v1",
 	LiveStoreName = "PlayerProfiles_Live_v1",
 	-- Persistent Studio saves use a separate real DataStore. Mock is an explicit opt-in.
-	StudioMode = "Persistent",
+	StudioMode = game:GetService("RunService"):IsStudio() and script:GetAttribute("StudioMode") or "Persistent",
 	AutoSaveSeconds = 60,
 	LoadTimeoutSeconds = 90,
-	OfflineLimitSeconds = 8 * 3600,
+	OfflineLimitSeconds = 24 * 3600,
 	MigrateLegacyLive = true,
 	LegacyLiveStoreName = "PetBases_v1",
 }

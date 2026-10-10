@@ -19,18 +19,15 @@ local function jumpAction(_, state)
 end
 local function update()
 	if player:GetAttribute("OnTreadmill") then
-		ContextActionService:BindActionAtPriority(
-			"ExitTreadmill",
-			jumpAction,
-			false,
-			3000,
-			Enum.KeyCode.Space,
-			Enum.KeyCode.ButtonA
-		)
+		ContextActionService:BindActionAtPriority("ExitTreadmill", jumpAction, false, 3000, Enum.KeyCode.Space)
 	else
 		ContextActionService:UnbindAction("ExitTreadmill")
 	end
 end
 player:GetAttributeChangedSignal("OnTreadmill"):Connect(update)
-UserInputService.JumpRequest:Connect(requestExit)
+UserInputService.JumpRequest:Connect(function()
+	if UserInputService:GetLastInputType() == Enum.UserInputType.Touch then
+		requestExit()
+	end
+end)
 update()

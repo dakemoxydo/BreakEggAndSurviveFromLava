@@ -43,8 +43,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://100812205398062",
-    "textureId": "rbxassetid://94820149994239",
+    "meshId": "rbxassetid://135141073161882",
+    "textureId": "rbxassetid://102223402428585",
     "templatePath": "ReplicatedStorage.PickaxeModels.Rainbow",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.RainbowPickaxe"
   }

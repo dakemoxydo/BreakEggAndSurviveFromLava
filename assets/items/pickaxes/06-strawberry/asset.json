@@ -43,8 +43,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://90706778905318",
-    "textureId": "rbxassetid://132601465996557",
+    "meshId": "rbxassetid://103054678867204",
+    "textureId": "rbxassetid://71826001413129",
     "templatePath": "ReplicatedStorage.PickaxeModels.Strawberry",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.StrawberryPickaxe"
   }

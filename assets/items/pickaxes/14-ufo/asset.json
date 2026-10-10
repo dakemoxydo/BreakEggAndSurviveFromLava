@@ -44,8 +44,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://119121501832425",
-    "textureId": "rbxassetid://107254769406502",
+    "meshId": "rbxassetid://133500238027384",
+    "textureId": "rbxassetid://140208728593226",
     "templatePath": "ReplicatedStorage.PickaxeModels.UFO",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.UFOPickaxe"
   }

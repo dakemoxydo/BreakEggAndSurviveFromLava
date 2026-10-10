@@ -27,6 +27,7 @@ local function reconcileTools(player, state)
 	if not state.ready or not backpack or not humanoid or humanoid.Health <= 0 then
 		return
 	end
+	Schema.MigrateBackpack(state)
 	local wanted, present = {}, {}
 	for _, pet in state.pets do
 		if not pet.equipped then
@@ -96,34 +97,28 @@ local function sync(player, state)
 	local inventory, eggs, income = {}, {}, 0
 	for _, pet in state.pets do
 		local info = Game.pet(pet.kind)
-		table.insert(
-			inventory,
-			{
-				id = pet.id,
-				kind = pet.kind or "TestChick",
-				weight = pet.weight or 1,
-				name = info.name,
-				icon = info.icon,
-				rarity = info.rarity,
-				income = math.floor(Game.income(pet)),
-				equipped = pet.equipped,
-			}
-		)
+		table.insert(inventory, {
+			id = pet.id,
+			kind = pet.kind or "TestChick",
+			weight = pet.weight or 1,
+			name = info.name,
+			icon = info.icon,
+			rarity = info.rarity,
+			income = math.floor(Game.income(pet)),
+			equipped = pet.equipped,
+		})
 		if pet.equipped then
 			income += Game.income(pet)
 		end
 	end
 	for _, egg in state.eggs do
 		local remaining = math.max(0, math.ceil(egg.hatchesAt - os.time()))
-		table.insert(
-			eggs,
-			{
-				id = egg.id,
-				name = Game.pet(egg.kind).name .. " Egg",
-				icon = "egg",
-				status = "Hatches in " .. remaining .. "s",
-			}
-		)
+		table.insert(eggs, {
+			id = egg.id,
+			name = Game.pet(egg.kind).name .. " Egg",
+			icon = "egg",
+			status = "Hatches in " .. remaining .. "s",
+		})
 	end
 	state.income = income
 	player:SetAttribute("PetInventory", Http:JSONEncode(inventory))
@@ -220,6 +215,12 @@ local function hatch(player, state, index)
 	local at = egg.position
 	egg.model:Destroy()
 	addPet(player, state, at, nil, egg.kind, egg.weight)
+end
+local function hatchReady(player, state, now)
+	table.sort(state.eggs, Schema.EggComesFirst)
+	while state.eggs[1] and state.eggs[1].hatchesAt <= now do
+		hatch(player, state, 1)
+	end
 end
 local function findPlacementTool(player)
 	local character = player.Character
@@ -360,8 +361,6 @@ local function perform(player, state, name, payload)
 			spawnPet(player, state, item, payload.position, yaw)
 		end
 		tool:Destroy()
-		state.carriedKind = ""
-		state.carriedPet = false
 		return reply(true, kind == "Egg" and "Egg placed!" or "Pet placed!")
 	elseif name == "EquipPet" or name == "UnequipPet" then
 		for _, pet in state.pets do
@@ -421,15 +420,13 @@ local function perform(player, state, name, payload)
 			return reply(false, "You need $" .. Config.GrowAllCost .. " to hatch all eggs.")
 		end
 		state.cash -= Config.GrowAllCost
-		for i = #state.eggs, 1, -1 do
-			hatch(player, state, i)
-		end
+		hatchReady(player, state, math.huge)
 		return reply(true, "All eggs hatched!")
 	elseif name == "ClaimOffline" then
 		if state.offline <= 0 then
 			return reply(false, "No offline cash to claim.")
 		end
-		state.cash += state.offline
+		state.cash = math.min(Game.MaxCash, state.cash + state.offline)
 		state.offline = 0
 		return reply(true)
 	elseif name == "ClaimCollectionReward" then
@@ -442,8 +439,8 @@ local function perform(player, state, name, payload)
 			return reply(false, "Reward already claimed.")
 		end
 		state.rewardClaimed = true
-		state.cash += 100
-		player:SetAttribute("Speed", (player:GetAttribute("Speed") or 16) + 60)
+		state.cash = math.min(Game.MaxCash, state.cash + 100)
+		player:SetAttribute("Speed", math.min(Game.MaxSpeed, (player:GetAttribute("Speed") or 16) + 60))
 		return reply(true, "Received $100 and +60 speed!")
 	elseif name == "BuyPickaxe" or name == "BuyTrail" then
 		local index = payload.index
@@ -548,8 +545,8 @@ local function perform(player, state, name, payload)
 			return reply(false, "Reward already claimed.")
 		end
 		state.freeRewardClaimed = true
-		state.cash += 100
-		player:SetAttribute("Speed", (player:GetAttribute("Speed") or 16) + 60)
+		state.cash = math.min(Game.MaxCash, state.cash + 100)
+		player:SetAttribute("Speed", math.min(Game.MaxSpeed, (player:GetAttribute("Speed") or 16) + 60))
 		return reply(true, "Received $100 and +60 speed!")
 	elseif name == "ReturnBase" then
 		if Adventure.hasCargo(player) then
@@ -714,9 +711,7 @@ local function join(player)
 		end
 	end
 	local sortedEggs = table.clone(saved.eggs)
-	table.sort(sortedEggs, function(a, b)
-		return a.hatchesAt < b.hatchesAt
-	end)
+	table.sort(sortedEggs, Schema.EggComesFirst)
 	for _, savedEgg in sortedEggs do
 		local egg = table.clone(savedEgg)
 		local at = position(
@@ -803,16 +798,13 @@ task.spawn(function()
 			if not state.ready or not DataService.IsActive(player) then
 				continue
 			end
-			for i = #state.eggs, 1, -1 do
-				local egg = state.eggs[i]
-				if egg.hatchesAt <= os.time() then
-					hatch(player, state, i)
-				else
-					egg.label.Text = "Hatches in " .. (egg.hatchesAt - os.time()) .. "s"
-				end
+			local now = os.time()
+			hatchReady(player, state, now)
+			for _, egg in state.eggs do
+				egg.label.Text = "Hatches in " .. (egg.hatchesAt - now) .. "s"
 			end
 			sync(player, state)
-			state.cash += state.income
+			state.cash = math.min(Game.MaxCash, state.cash + state.income)
 			state.playtime += 1
 			player:SetAttribute("Cash", state.cash)
 			DataService.Commit(player)

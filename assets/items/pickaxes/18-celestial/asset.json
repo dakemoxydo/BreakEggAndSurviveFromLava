@@ -44,8 +44,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://122808458320112",
-    "textureId": "rbxassetid://84667052348530",
+    "meshId": "rbxassetid://121908620603281",
+    "textureId": "rbxassetid://90171384437991",
     "templatePath": "ReplicatedStorage.PickaxeModels.Celestial",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.CelestialPickaxe"
   }

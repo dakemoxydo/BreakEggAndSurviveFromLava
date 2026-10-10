@@ -62,7 +62,7 @@ local function board(name,title,at,color,icon)
 end
 board("TopMoney","Top Money",Vector3.new(-99,12.3,16),Color3.fromRGB(33,230,52),"rbxassetid://72638283383933")
 board("TopSpeed","Top Speed",Vector3.new(-78,12.3,16),Color3.fromRGB(23,171,255),"rbxassetid://124600108076702")
-board("TopPlaytime","Top Playtime",Vector3.new(-57,12.3,16),Color3.fromRGB(245,67,144),"rbxassetid://95794400162139")
+board("TopPlaytime","Top Playtime",Vector3.new(-57,12.3,16),Color3.fromRGB(245,67,144),"rbxassetid://80316475458538")
 local gift=part("FreeGift",Vector3.new(5,5,5),CFrame.new(-125,2.7,-10),Color3.fromRGB(250,35,55));gift:SetAttribute("Interaction","Free")
 part("GiftRibbonX",Vector3.new(5.1,.7,5.1),CFrame.new(-125,5.1,-10),Color3.fromRGB(255,211,25));part("GiftRibbonY",Vector3.new(.7,5.1,5.1),CFrame.new(-125,2.7,-10),Color3.fromRGB(255,211,25))
 local giftGui=Instance.new("BillboardGui");giftGui.Size=UDim2.fromOffset(160,65);giftGui.StudsOffsetWorldSpace=Vector3.new(0,5,0);giftGui.Adornee=gift;giftGui.Parent=gift;label(giftGui,"FREE!",40,Color3.fromRGB(183,255,0))

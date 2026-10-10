@@ -43,8 +43,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://116605554193178",
-    "textureId": "rbxassetid://128576122667851",
+    "meshId": "rbxassetid://140425092595752",
+    "textureId": "rbxassetid://139912222676386",
     "templatePath": "ReplicatedStorage.PickaxeModels.Demon",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.DemonPickaxe"
   }

@@ -43,17 +43,14 @@ function Hotbar.icon(tool, x, y, w, h)
 		return UI.icon(key, x, y, w, h)
 	end
 	if tool.TextureId ~= "" then
-		return e(
-			"ImageLabel",
-			{
-				BackgroundTransparency = 1,
-				Position = UDim2.fromOffset(x, y),
-				Size = UDim2.fromOffset(w, h),
-				Image = tool.TextureId,
-				ScaleType = Enum.ScaleType.Fit,
-				ZIndex = 7,
-			}
-		)
+		return e("ImageLabel", {
+			BackgroundTransparency = 1,
+			Position = UDim2.fromOffset(x, y),
+			Size = UDim2.fromOffset(w, h),
+			Image = tool.TextureId,
+			ScaleType = Enum.ScaleType.Fit,
+			ZIndex = 7,
+		})
 	end
 	return nil
 end
@@ -62,15 +59,12 @@ function Hotbar.Bar(p)
 	local refs = p.slotRefs or ownRefs
 	local binding, update = React.useBinding(0)
 	local motion = React.useMemo(function()
-		return Ripple.createSpring(
-			0,
-			{
-				frequency = Theme.motion.transitionFrequency,
-				dampingRatio = 1,
-				precision = Theme.motion.transitionPrecision,
-				start = true,
-			}
-		)
+		return Ripple.createSpring(0, {
+			frequency = Theme.motion.transitionFrequency,
+			dampingRatio = 1,
+			precision = Theme.motion.transitionPrecision,
+			start = true,
+		})
 	end, {})
 	React.useEffect(function()
 		local disconnect = motion:onChange(update)

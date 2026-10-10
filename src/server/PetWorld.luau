@@ -26,6 +26,13 @@ if storedTemplates and runtimeTemplates then
 		end
 	end
 end
+-- Clients build previews, tools and Index icons from the same imported pet templates.
+local petTemplates = assets and assets:FindFirstChild("Pets")
+if petTemplates and not ReplicatedStorage:FindFirstChild("PetModels") then
+	local runtimePets = petTemplates:Clone()
+	runtimePets.Name = "PetModels"
+	runtimePets.Parent = ReplicatedStorage
+end
 World.chick = PetVisuals.chick
 World.pet = PetVisuals.pet
 World.egg = PetVisuals.egg
@@ -290,10 +297,22 @@ function World.updateBase(player, state)
 				local original = p:GetAttribute("ReferenceColor")
 				if original.B > original.R * 1.2 or state.treadmillLevel >= 5 then
 					p.Color = Game.Treadmills[state.treadmillLevel].color
+				else
+					p.Color = original
 				end
 			end
 		end
-		if state.treadmillLevel >= 5 and not station:FindFirstChild("UpgradeGlow") then
+		local glow
+		for _, child in station:GetDescendants() do
+			if child:IsA("PointLight") and child.Name == "UpgradeGlow" then
+				if state.treadmillLevel < 5 or glow then
+					child:Destroy()
+				else
+					glow = child
+				end
+			end
+		end
+		if state.treadmillLevel >= 5 and not glow then
 			local light = Instance.new("PointLight")
 			light.Name = "UpgradeGlow"
 			light.Range = 15

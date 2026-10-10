@@ -22,7 +22,7 @@ local function eggFrom(part)
 		model = model.Parent
 	end
 end
-local function targetEgg()
+local function targetEgg(screenPoint)
 	local tool = held()
 	if not tool or not tool:GetAttribute("Pickaxe") then
 		return
@@ -32,6 +32,17 @@ local function targetEgg()
 		return
 	end
 	local target = eggFrom(mouse.Target)
+	if screenPoint then
+		local camera = workspace.CurrentCamera
+		if camera then
+			local ray = camera:ViewportPointToRay(screenPoint.X, screenPoint.Y)
+			local params = RaycastParams.new()
+			params.FilterType = Enum.RaycastFilterType.Exclude
+			params.FilterDescendantsInstances = { player.Character }
+			local hit = workspace:Raycast(ray.Origin, ray.Direction * 500, params)
+			target = hit and eggFrom(hit.Instance) or nil
+		end
+	end
 	if
 		target
 		and not target:GetAttribute("Hatching")
@@ -55,7 +66,7 @@ local function targetEgg()
 	end
 	return closest
 end
-local function swing()
+local function swing(screenPoint)
 	if
 		player:GetAttribute("UIWindowOpen")
 		or player:GetAttribute("OnTreadmill")
@@ -72,7 +83,7 @@ local function swing()
 		return
 	end
 	if tool:GetAttribute("Pickaxe") then
-		local target = targetEgg()
+		local target = targetEgg(screenPoint)
 		last = os.clock()
 		local character = player.Character
 		local id = target and target:GetAttribute("EggId")
@@ -124,13 +135,13 @@ UIS.InputBegan:Connect(function(input, processed)
 	if processed then
 		return
 	end
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.KeyCode == Enum.KeyCode.ButtonR2 then
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		swing()
 	end
 end)
 UIS.TouchTapInWorld:Connect(function(at, processed)
 	if not processed then
-		swing()
+		swing(at)
 	end
 end)
 local highlight = Instance.new("Highlight")

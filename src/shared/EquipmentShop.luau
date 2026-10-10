@@ -13,19 +13,17 @@ local function EquipmentShop(p)
 	local height = compactCard and 172 or math.max(340, p.height - p.headerH - 90)
 	local cw = compactCard and 360 or p.compact and math.max(220, math.min(320, p.width - 60)) or 270
 	local cards = {
-		Layout = e(
-			"UIListLayout",
-			{ FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 18), SortOrder = Enum.SortOrder.LayoutOrder }
-		),
-		Padding = e(
-			"UIPadding",
-			{
-				PaddingLeft = UDim.new(0, 12),
-				PaddingRight = UDim.new(0, 12),
-				PaddingTop = UDim.new(0, 8),
-				PaddingBottom = UDim.new(0, 16),
-			}
-		),
+		Layout = e("UIListLayout", {
+			FillDirection = Enum.FillDirection.Horizontal,
+			Padding = UDim.new(0, 18),
+			SortOrder = Enum.SortOrder.LayoutOrder,
+		}),
+		Padding = e("UIPadding", {
+			PaddingLeft = UDim.new(0, 12),
+			PaddingRight = UDim.new(0, 12),
+			PaddingTop = UDim.new(0, 8),
+			PaddingBottom = UDim.new(0, 16),
+		}),
 	}
 	for i, item in list do
 		local have = table.find(owned, i) ~= nil
@@ -75,38 +73,33 @@ local function EquipmentShop(p)
 						) or nil,
 						Image = image,
 						-- Stat band overlaps the illustration like the reference: green value, white unit.
-						Stat = e(
-							UI.Surface,
-							{
-								x = compactCard and 124 or 12,
-								y = compactCard and 71 or height - 140,
-								w = compactCard and cw - 136 or cw - 24,
-								h = compactCard and 28 or 46,
-								variant = "utility",
-								z = 9,
-								children = {
-									Value = UI.text(
-										'<font color="'
-											.. UI.hex(C.green)
-											.. '">'
-											.. (pickaxes and Game.number(item.power) or "x" .. Game.number(
-												item.multiplier
-											))
-											.. "</font> "
-											.. (pickaxes and "Power" or "Speed"),
-										6,
-										1,
-										compactCard and cw - 148 or cw - 36,
-										compactCard and 24 or 40,
-										compactCard and 20 or 32,
-										nil,
-										nil,
-										nil,
-										{ rich = true, fit = true }
-									),
-								},
-							}
-						),
+						Stat = e(UI.Surface, {
+							x = compactCard and 124 or 12,
+							y = compactCard and 71 or height - 140,
+							w = compactCard and cw - 136 or cw - 24,
+							h = compactCard and 28 or 46,
+							variant = "utility",
+							z = 9,
+							children = {
+								Value = UI.text(
+									'<font color="'
+										.. UI.hex(C.green)
+										.. '">'
+										.. (pickaxes and Game.number(item.power) or "x" .. Game.number(item.multiplier))
+										.. "</font> "
+										.. (pickaxes and "Power" or "Speed"),
+									6,
+									1,
+									compactCard and cw - 148 or cw - 36,
+									compactCard and 24 or 40,
+									compactCard and 20 or 32,
+									nil,
+									nil,
+									nil,
+									{ rich = true, fit = true }
+								),
+							},
+						}),
 						Condition = UI.text(
 							equipped and "In use"
 								or have and "Owned"
@@ -138,43 +131,35 @@ local function EquipmentShop(p)
 			}
 		)
 	end
-	return e(
-		"Frame",
-		{
-			Name = "EquipmentShop",
+	return e("Frame", {
+		Name = "EquipmentShop",
+		BackgroundTransparency = 1,
+		Position = UDim2.fromOffset(12, p.headerH + 10),
+		Size = UDim2.fromOffset(p.width - 24, p.height - p.headerH - 22),
+	}, {
+		Balance = UI.text(
+			"Balance: $" .. Game.number(cash),
+			12,
+			0,
+			p.width - 48,
+			28,
+			22,
+			C.green,
+			Enum.TextXAlignment.Left
+		),
+		Scroll = e("ScrollingFrame", {
+			Name = "EquipmentScroll",
+			Position = UDim2.fromOffset(0, 34),
+			Size = UDim2.new(1, 0, 1, -34),
 			BackgroundTransparency = 1,
-			Position = UDim2.fromOffset(12, p.headerH + 10),
-			Size = UDim2.fromOffset(p.width - 24, p.height - p.headerH - 22),
-		},
-		{
-			Balance = UI.text(
-				"Balance: $" .. Game.number(cash),
-				12,
-				0,
-				p.width - 48,
-				28,
-				22,
-				C.green,
-				Enum.TextXAlignment.Left
-			),
-			Scroll = e(
-				"ScrollingFrame",
-				{
-					Name = "EquipmentScroll",
-					Position = UDim2.fromOffset(0, 34),
-					Size = UDim2.new(1, 0, 1, -34),
-					BackgroundTransparency = 1,
-					BorderSizePixel = 0,
-					AutomaticCanvasSize = Enum.AutomaticSize.XY,
-					CanvasSize = UDim2.fromOffset(0, 0),
-					ScrollingDirection = Enum.ScrollingDirection.XY,
-					ScrollBarThickness = 6,
-					ScrollBarImageColor3 = C.white,
-					Active = true,
-				},
-				cards
-			),
-		}
-	)
+			BorderSizePixel = 0,
+			AutomaticCanvasSize = Enum.AutomaticSize.XY,
+			CanvasSize = UDim2.fromOffset(0, 0),
+			ScrollingDirection = Enum.ScrollingDirection.XY,
+			ScrollBarThickness = 6,
+			ScrollBarImageColor3 = C.white,
+			Active = true,
+		}, cards),
+	})
 end
 return EquipmentShop

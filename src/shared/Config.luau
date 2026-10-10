@@ -28,12 +28,47 @@ local Config = {
 			icon = "cash",
 			gamePassId = 0,
 		},
-		{ key = "speed150k", section = "Speed Packs", amount = "+150K SPEED", price = 59, icon = "shoe", productId = 0 },
+		{
+			key = "speed150k",
+			section = "Speed Packs",
+			amount = "+150K SPEED",
+			price = 59,
+			icon = "shoe",
+			productId = 0,
+		},
 		{ key = "speed1m", section = "Speed Packs", amount = "+1M SPEED", price = 199, icon = "shoes", productId = 0 },
-		{ key = "speed10m", section = "Speed Packs", amount = "+10M SPEED", price = 459, icon = "shoes", productId = 0 },
-		{ key = "speed50m", section = "Speed Packs", amount = "+50M SPEED", price = 799, icon = "speedBucket", productId = 0 },
-		{ key = "speed250m", section = "Speed Packs", amount = "+250M SPEED", price = 1799, icon = "speedChest", productId = 0 },
-		{ key = "speed1b", section = "Speed Packs", amount = "+1B SPEED", price = 3499, icon = "speedChest", productId = 0 },
+		{
+			key = "speed10m",
+			section = "Speed Packs",
+			amount = "+10M SPEED",
+			price = 459,
+			icon = "shoes",
+			productId = 0,
+		},
+		{
+			key = "speed50m",
+			section = "Speed Packs",
+			amount = "+50M SPEED",
+			price = 799,
+			icon = "speedBucket",
+			productId = 0,
+		},
+		{
+			key = "speed250m",
+			section = "Speed Packs",
+			amount = "+250M SPEED",
+			price = 1799,
+			icon = "speedChest",
+			productId = 0,
+		},
+		{
+			key = "speed1b",
+			section = "Speed Packs",
+			amount = "+1B SPEED",
+			price = 3499,
+			icon = "speedChest",
+			productId = 0,
+		},
 		{ key = "cash100k", section = "Cash Packs", amount = "$100K", price = 24, icon = "cash", productId = 0 },
 		{ key = "cash500k", section = "Cash Packs", amount = "$500K", price = 49, icon = "cashDouble", productId = 0 },
 		{ key = "cash2m", section = "Cash Packs", amount = "$2M", price = 79, icon = "cashPile", productId = 0 },
@@ -53,18 +88,15 @@ local Config = {
 	},
 }
 for _, pet in Game.Pets do
-	table.insert(
-		Config.Pets,
-		{
-			key = pet.key,
-			name = pet.name,
-			icon = pet.icon,
-			rarity = pet.rarity,
-			income = pet.income,
-			owned = false,
-			biome = pet.biome,
-			color = Config.RarityColor[pet.rarity] or "gold",
-		}
-	)
+	table.insert(Config.Pets, {
+		key = pet.key,
+		name = pet.name,
+		icon = pet.icon,
+		rarity = pet.rarity,
+		income = pet.income,
+		owned = false,
+		biome = pet.biome,
+		color = Config.RarityColor[pet.rarity] or "gold",
+	})
 end
 return Config

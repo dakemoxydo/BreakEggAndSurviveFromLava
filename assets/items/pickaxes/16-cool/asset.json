@@ -44,8 +44,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://94233891810593",
-    "textureId": "rbxassetid://70582806283452",
+    "meshId": "rbxassetid://123644298519047",
+    "textureId": "rbxassetid://105644428514702",
     "templatePath": "ReplicatedStorage.PickaxeModels.Cool",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.CoolPickaxe"
   }

@@ -1,10 +1,10 @@
 {
-  "date": "2026-10-06",
-  "studioPlaceId": 119583219290326,
+  "date": "2026-10-10",
+  "studioPlaceId": 120440556374316,
   "sources": [
     {
       "file": "ui/icons/resources/cash.png",
-      "assetId": 72638283383933
+      "assetId": 74929065994676
     },
     {
       "file": "ui/icons/navigation/index.png",
@@ -20,26 +20,26 @@
     },
     {
       "file": "ui/icons/navigation/cart.png",
-      "assetId": 82216367327862
+      "assetId": 90321313642748
     },
     {
       "file": "ui/effects/sunburst.png",
-      "assetId": 93658144719385
+      "assetId": 100836241976168
     },
     {
       "file": "ui/textures/studtexture.png",
-      "assetId": 103946336580493
+      "assetId": 71143262474046
     },
     {
       "file": "ui/effects/LunifyHalftone3.png",
-      "assetId": 97608267032141,
+      "assetId": 138806038455758,
       "original": "C:/Users/dakem/Documents/RobloxGames/Assets/Textures/LunifyHalftone3.png"
     }
   ],
   "atlases": [
     {
       "file": "ui/atlases/simulator-atlas-v1.png",
-      "assetId": 124600108076702,
+      "assetId": 82204824330823,
       "sourceSize": [
         1254,
         1254
@@ -51,7 +51,7 @@
     },
     {
       "file": "ui/atlases/offers-atlas-v1.png",
-      "assetId": 97764213374400,
+      "assetId": 91979363704625,
       "sourceSize": [
         1254,
         1254
@@ -63,7 +63,7 @@
     },
     {
       "file": "ui/atlases/pets-tools-atlas-v2.png",
-      "assetId": 129626962813547,
+      "assetId": 126441870016444,
       "sourceSize": [
         1254,
         1254
@@ -75,5 +75,5 @@
     }
   ],
   "rectangles": "src/shared/Assets.luau",
-  "delivery": "Rendered in Studio; separate preload probe returned Failure. Published delivery unverified."
+  "delivery": "Local images reuploaded; delivery verification pending."
 }

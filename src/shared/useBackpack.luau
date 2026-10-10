@@ -272,22 +272,6 @@ return function(onToggle, canEquip)
 						return
 					end
 				end
-				if input.KeyCode == Enum.KeyCode.ButtonL1 or input.KeyCode == Enum.KeyCode.ButtonR1 then
-					local held = 0
-					for i = 1, 10 do
-						if state.current.slots[i] and state.current.slots[i].Parent == player.Character then
-							held = i
-						end
-					end
-					local direction = input.KeyCode == Enum.KeyCode.ButtonR1 and 1 or -1
-					for step = 1, 10 do
-						local index = (held - 1 + step * direction) % 10 + 1
-						if state.current.slots[index] then
-							equip(state.current.slots[index])
-							break
-						end
-					end
-				end
 			end)
 		)
 		task.spawn(function()

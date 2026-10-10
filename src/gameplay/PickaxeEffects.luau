@@ -76,9 +76,28 @@ local Swings = {
 	Bat = {
 		support = Vector3.new(0, -0.45, 0),
 		keys = {
-			{ time = 0.16, at = Vector3.new(0.65, 1.2, 0.25), dir = Vector3.new(0.25, 0.35, 1), twist = -35, ease = "out" },
-			{ time = 0.2, at = Vector3.new(0.7, 1.25, 0.35), dir = Vector3.new(0.15, 0.4, 1), twist = -45, ease = "inout" },
-			{ time = 0.245, at = Vector3.new(0.85, 0.95, -0.55), dir = Vector3.new(1, 0.1, -0.1), lean = 5, twist = -15, ease = "in" },
+			{
+				time = 0.16,
+				at = Vector3.new(0.65, 1.2, 0.25),
+				dir = Vector3.new(0.25, 0.35, 1),
+				twist = -35,
+				ease = "out",
+			},
+			{
+				time = 0.2,
+				at = Vector3.new(0.7, 1.25, 0.35),
+				dir = Vector3.new(0.15, 0.4, 1),
+				twist = -45,
+				ease = "inout",
+			},
+			{
+				time = 0.245,
+				at = Vector3.new(0.85, 0.95, -0.55),
+				dir = Vector3.new(1, 0.1, -0.1),
+				lean = 5,
+				twist = -15,
+				ease = "in",
+			},
 			{
 				time = Game.SwingImpactTime,
 				at = Vector3.new(0.25, 0.9, -1.15),
@@ -128,23 +147,25 @@ function Effects.swingPlan(kind, rest, hold, support)
 	local plan = Swings[kind] or Swings.Pickaxe
 	local keys = { { time = 0, at = rest.Position, rot = rest.Rotation, lean = 0, twist = 0, elbow = DefaultElbow } }
 	for _, k in plan.keys do
-		table.insert(
-			keys,
-			{
-				time = k.time,
-				at = k.at,
-				rot = CFrame.fromRotationBetweenVectors(Vector3.yAxis, k.dir.Unit),
-				lean = k.lean or 0,
-				twist = k.twist or 0,
-				elbow = k.elbow or DefaultElbow,
-				ease = k.ease,
-			}
-		)
+		table.insert(keys, {
+			time = k.time,
+			at = k.at,
+			rot = CFrame.fromRotationBetweenVectors(Vector3.yAxis, k.dir.Unit),
+			lean = k.lean or 0,
+			twist = k.twist or 0,
+			elbow = k.elbow or DefaultElbow,
+			ease = k.ease,
+		})
 	end
-	table.insert(
-		keys,
-		{ time = SwingEnd, at = rest.Position, rot = rest.Rotation, lean = 0, twist = 0, elbow = DefaultElbow, ease = "inout" }
-	)
+	table.insert(keys, {
+		time = SwingEnd,
+		at = rest.Position,
+		rot = rest.Rotation,
+		lean = 0,
+		twist = 0,
+		elbow = DefaultElbow,
+		ease = "inout",
+	})
 	return { keys = keys, hold = hold, support = support or plan.support }
 end
 local function sample(plan, elapsed)
@@ -497,20 +518,17 @@ function Effects.fling(p, velocity, ground, life)
 	p.CanTouch = false
 	p.CanQuery = false
 	local axis = Vector3.new(random:NextNumber(-1, 1), random:NextNumber(-1, 1), random:NextNumber(-1, 1))
-	table.insert(
-		flying,
-		{
-			part = p,
-			position = p.Position,
-			velocity = velocity,
-			ground = ground + p.Size.Y / 2,
-			life = life or 0.9,
-			age = 0,
-			axis = axis.Magnitude > 1e-3 and axis.Unit or Vector3.yAxis,
-			angle = 0,
-			spin = random:NextNumber(6, 16),
-		}
-	)
+	table.insert(flying, {
+		part = p,
+		position = p.Position,
+		velocity = velocity,
+		ground = ground + p.Size.Y / 2,
+		life = life or 0.9,
+		age = 0,
+		axis = axis.Magnitude > 1e-3 and axis.Unit or Vector3.yAxis,
+		angle = 0,
+		spin = random:NextNumber(6, 16),
+	})
 	if not flyConnection then
 		flyConnection = RunService.Heartbeat:Connect(flyStep)
 	end
@@ -843,7 +861,7 @@ local function addCracks(model, stage)
 		local base = faces[rng:NextInteger(1, #faces)]
 		local side = rng:NextInteger(1, 4)
 		local normal = ({ Vector3.xAxis, -Vector3.xAxis, Vector3.zAxis, -Vector3.zAxis })[side]
-		local tangent = Vector3.yAxis:Cross(normal) -- keeps (tangent, Y, normal) right-handed
+		local tangent = Vector3.new(0, 1, 0):Cross(normal) -- keeps (tangent, Y, normal) right-handed
 		local halfW = (side <= 2 and base.Size.Z or base.Size.X) / 2 - 0.1
 		local halfH = base.Size.Y / 2 - 0.05
 		local u, v = rng:NextNumber(-halfW, halfW) * 0.7, rng:NextNumber(-halfH, halfH)

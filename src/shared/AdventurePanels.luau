@@ -5,6 +5,9 @@ local Theme = require(script.Parent.Theme)
 local Preview = require(script.Parent.ModelPreview)
 local e = React.createElement
 local C = Theme.colors
+-- Legacy TestChick remains a distinct saved kind with its original income.
+local mergeKinds = table.clone(Game.Pets)
+table.insert(mergeKinds, Game.ByPet.TestChick)
 local function AdventurePanels(p)
 	local confirmation, setConfirmation = React.useState(nil)
 	React.useEffect(function()
@@ -55,19 +58,15 @@ local function AdventurePanels(p)
 			20,
 			C.gold
 		)
-		return e(
-			"ScrollingFrame",
-			{
-				Position = UDim2.fromOffset(0, p.headerH),
-				Size = UDim2.fromOffset(p.width, available),
-				CanvasSize = UDim2.fromOffset(0, 356),
-				BackgroundTransparency = 1,
-				BorderSizePixel = 0,
-				ScrollBarThickness = 5,
-				Active = true,
-			},
-			body
-		)
+		return e("ScrollingFrame", {
+			Position = UDim2.fromOffset(0, p.headerH),
+			Size = UDim2.fromOffset(p.width, available),
+			CanvasSize = UDim2.fromOffset(0, 356),
+			BackgroundTransparency = 1,
+			BorderSizePixel = 0,
+			ScrollBarThickness = 5,
+			Active = true,
+		}, body)
 	else
 		if confirmation then
 			local current = {}
@@ -76,13 +75,17 @@ local function AdventurePanels(p)
 			end
 			local valid = true
 			local onBase = 0
+			local selectedCount = 0
 			for _, pet in confirmation.pets do
 				local live = current[pet.id]
 				if not live or live.kind ~= pet.kind or live.equipped ~= pet.equipped then
 					valid = false
 				end
-				if pet.equipped then
-					onBase += 1
+				if confirmation.selected[pet.id] then
+					selectedCount += 1
+					if pet.equipped then
+						onBase += 1
+					end
 				end
 			end
 			local rows = {
@@ -97,7 +100,7 @@ local function AdventurePanels(p)
 				{ BackgroundTransparency = 1, Size = UDim2.fromOffset(p.width - 48, low and 64 or 82), LayoutOrder = 0 },
 				{
 					Text = UI.text(
-						valid and "Replace these 3 animals with one egg?"
+						valid and "Choose 3 animals: " .. selectedCount .. " / 3"
 							or "These animals changed. Cancel and choose again.",
 						0,
 						0,
@@ -118,72 +121,82 @@ local function AdventurePanels(p)
 				}
 			)
 			for i, pet in confirmation.pets do
-				rows["Pet" .. i] = e(
-					"Frame",
-					{
-						Name = "MergeInput" .. i,
-						BackgroundTransparency = 1,
-						Size = UDim2.fromOffset(p.width - 48, low and 64 or 84),
-						LayoutOrder = i,
-					},
-					{
-						Card = e(
-							UI.Surface,
-							{
-								w = p.width - 48,
-								h = low and 64 or 84,
-								variant = "utility",
-								children = {
-									Image = e(
-										Preview,
-										{ kind = pet.kind, weight = pet.weight, x = 8, y = 8, w = low and 48 or 60, h = low
-												and 48
-											or 60 }
-									),
-									Name = UI.text(
-										pet.name,
-										80,
-										4,
-										p.width - 140,
-										low and 28 or 36,
-										22,
-										nil,
-										Enum.TextXAlignment.Left
-									),
-									Identity = UI.text(
-										"#"
-											.. string.sub(pet.id, -8)
-											.. " · "
-											.. (pet.equipped and "On base" or "Backpack"),
-										80,
-										low and 34 or 42,
-										p.width - 140,
-										low and 24 or 34,
-										18,
-										nil,
-										Enum.TextXAlignment.Left
-									),
-								},
-							}
-						),
-					}
-				)
-			end
-			body.Preview = e(
-				"ScrollingFrame",
-				{
-					Name = "MergeConfirmation",
-					Position = UDim2.fromOffset(12, 4),
-					Size = UDim2.fromOffset(p.width - 24, math.max(1, available - 84)),
+				rows["Pet" .. i] = e("Frame", {
+					Name = "MergeInput" .. i,
 					BackgroundTransparency = 1,
-					BorderSizePixel = 0,
-					CanvasSize = UDim2.fromOffset(0, 0),
-					AutomaticCanvasSize = Enum.AutomaticSize.Y,
-					ScrollBarThickness = 5,
-					Active = true,
-				},
-				rows
-			)
+					Size = UDim2.fromOffset(p.width - 48, compact and 144 or (low and 64 or 84)),
+					LayoutOrder = i,
+				}, {
+					Card = e(UI.Surface, {
+						w = p.width - 48,
+						h = compact and 144 or (low and 64 or 84),
+						variant = "utility",
+						children = {
+							Image = e(Preview, {
+								kind = pet.kind,
+								weight = pet.weight,
+								x = 8,
+								y = 8,
+								w = low and 48 or 60,
+								h = low and 48 or 60,
+							}),
+							Name = UI.text(
+								pet.name,
+								80,
+								4,
+								p.width - (compact and 140 or 260),
+								low and 28 or 36,
+								22,
+								nil,
+								Enum.TextXAlignment.Left
+							),
+							Identity = UI.text(
+								"#" .. string.sub(pet.id, -8) .. " · " .. (pet.equipped and "On base" or "Backpack"),
+								80,
+								low and 34 or 42,
+								p.width - (compact and 140 or 260),
+								low and 24 or 34,
+								18,
+								nil,
+								Enum.TextXAlignment.Left
+							),
+							Select = e(UI.Button, {
+								name = "SelectMergePet" .. pet.id,
+								label = confirmation.selected[pet.id] and "Selected" or "Select",
+								x = compact and 12 or p.width - 174,
+								y = compact and 84 or (low and 8 or 18),
+								w = compact and p.width - 72 or 114,
+								h = 48,
+								color = confirmation.selected[pet.id] and C.green or C.blue,
+								textSize = 20,
+								disabled = p.busy
+									or not valid
+									or (selectedCount >= 3 and not confirmation.selected[pet.id]),
+								onClick = function()
+									local selected = table.clone(confirmation.selected)
+									selected[pet.id] = not selected[pet.id] or nil
+									setConfirmation({
+										kind = confirmation.kind,
+										pets = confirmation.pets,
+										selected = selected,
+									})
+								end,
+							}),
+						},
+					}),
+				})
+			end
+			body.Preview = e("ScrollingFrame", {
+				Name = "MergeConfirmation",
+				Position = UDim2.fromOffset(12, 4),
+				Size = UDim2.fromOffset(p.width - 24, math.max(1, available - 84)),
+				BackgroundTransparency = 1,
+				BorderSizePixel = 0,
+				CanvasSize = UDim2.fromOffset(0, 0),
+				AutomaticCanvasSize = Enum.AutomaticSize.Y,
+				ScrollBarThickness = 5,
+				Active = true,
+			}, rows)
 			local buttonW = (p.width - 56) / 2
 			body.Cancel = e(UI.Button, {
 				name = "CancelMerge",
@@ -208,38 +221,37 @@ local function AdventurePanels(p)
 				h = 48,
 				color = C.green,
 				textSize = compact and 21 or 25,
-				disabled = p.busy or not valid,
+				disabled = p.busy or not valid or selectedCount ~= 3,
 				onClick = function()
 					local ids = {}
 					for _, pet in confirmation.pets do
-						table.insert(ids, pet.id)
+						if confirmation.selected[pet.id] then
+							table.insert(ids, pet.id)
+						end
 					end
 					p.onAction("MergePets", { kind = confirmation.kind, pets = ids }, function()
 						setConfirmation(nil)
 					end)
 				end,
 			})
-			return e(
-				"Frame",
-				{
-					Position = UDim2.fromOffset(0, p.headerH),
-					Size = UDim2.fromOffset(p.width, available),
-					BackgroundTransparency = 1,
-				},
-				body
-			)
+			return e("Frame", {
+				Position = UDim2.fromOffset(0, p.headerH),
+				Size = UDim2.fromOffset(p.width, available),
+				BackgroundTransparency = 1,
+			}, body)
 		end
 		local hintH = low and 44 or 95
 		local listY = low and 64 or 125
-		body.Hint = UI.text(
-			low and "Merge 3 matching animals into an egg."
-				or "Merge 3 matching animals into a heavier egg.\nPlace the egg on your base to hatch it.",
-			16,
-			low and 8 or 14,
-			p.width - 32,
-			hintH,
-			low and 22 or 27
-		)
+		body.Hint = #p.pets > 0
+			and UI.text(
+				low and "Merge 3 matching animals into an egg."
+					or "Merge 3 matching animals into a heavier egg.\nPlace the egg on your base to hatch it.",
+				16,
+				low and 8 or 14,
+				p.width - 32,
+				hintH,
+				low and 22 or 27
+			)
 		local counts = {}
 		for _, pet in p.pets do
 			local item = counts[pet.kind]
@@ -248,9 +260,7 @@ local function AdventurePanels(p)
 				counts[pet.kind] = item
 			end
 			item.count += 1
-			if #item.pets < 3 then
-				table.insert(item.pets, pet)
-			end
+			table.insert(item.pets, pet)
 		end
 		local rows = {
 			Layout = e("UIListLayout", { Padding = UDim.new(0, 18), SortOrder = Enum.SortOrder.LayoutOrder }),
@@ -260,101 +270,81 @@ local function AdventurePanels(p)
 			),
 		}
 		local i = 0
-		for _, pet in Game.Pets do
+		for _, pet in mergeKinds do
 			local item = counts[pet.key]
 			if item then
 				i += 1
-				rows[pet.key] = e(
-					"Frame",
-					{
-						Name = "Merge" .. pet.key,
-						Size = UDim2.fromOffset(p.width - 52, compact and 158 or 110),
-						BackgroundTransparency = 1,
-						LayoutOrder = i,
-					},
-					{
-						Surface = e(
-							UI.Surface,
-							{
-								w = p.width - 52,
-								h = compact and 158 or 110,
-								color = C.muted,
-								quiet = true,
-								children = {
-									Image = e(
-										Preview,
-										{ kind = pet.key, x = 6, y = 6, w = compact and 72 or 90, h = compact and 72
-											or 90 }
-									),
-									Title = UI.text(
-										pet.name,
-										compact and 84 or 106,
-										8,
-										compact and p.width - 142 or p.width - 370,
-										46,
-										compact and 21 or 26,
-										nil,
-										Enum.TextXAlignment.Left
-									),
-									Count = UI.text(
-										item.count .. " / 3 Animals",
-										compact and 84 or 106,
-										54,
-										compact and p.width - 142 or p.width - 370,
-										36,
-										20,
-										item.count >= 3 and C.green or C.white,
-										Enum.TextXAlignment.Left
-									),
-									Merge = e(UI.Button, {
-										name = "Merge" .. pet.key,
-										label = "Merge 3",
-										x = compact and 12 or p.width - 242,
-										y = compact and 97 or 26,
-										w = compact and p.width - 76 or 180,
-										h = 48,
-										color = C.green,
-										textSize = 25,
-										disabled = p.busy or item.count < 3,
-										onClick = function()
-											setConfirmation({ kind = pet.key, pets = table.clone(item.pets) })
-										end,
-									}),
-								},
-							}
-						),
-					}
-				)
+				rows[pet.key] = e("Frame", {
+					Name = "Merge" .. pet.key,
+					Size = UDim2.fromOffset(p.width - 52, compact and 158 or 110),
+					BackgroundTransparency = 1,
+					LayoutOrder = i,
+				}, {
+					Surface = e(UI.Surface, {
+						w = p.width - 52,
+						h = compact and 158 or 110,
+						color = C.muted,
+						quiet = true,
+						children = {
+							Image = e(
+								Preview,
+								{ kind = pet.key, x = 6, y = 6, w = compact and 72 or 90, h = compact and 72 or 90 }
+							),
+							Title = UI.text(
+								pet.name,
+								compact and 84 or 106,
+								8,
+								compact and p.width - 142 or p.width - 370,
+								46,
+								compact and 21 or 26,
+								nil,
+								Enum.TextXAlignment.Left
+							),
+							Count = UI.text(
+								item.count .. " / 3 Animals",
+								compact and 84 or 106,
+								54,
+								compact and p.width - 142 or p.width - 370,
+								36,
+								20,
+								item.count >= 3 and C.green or C.white,
+								Enum.TextXAlignment.Left
+							),
+							Merge = e(UI.Button, {
+								name = "Merge" .. pet.key,
+								label = "Merge 3",
+								x = compact and 12 or p.width - 242,
+								y = compact and 97 or 26,
+								w = compact and p.width - 76 or 180,
+								h = 48,
+								color = C.green,
+								textSize = 25,
+								disabled = p.busy or item.count < 3,
+								onClick = function()
+									setConfirmation({ kind = pet.key, pets = table.clone(item.pets), selected = {} })
+								end,
+							}),
+						},
+					}),
+				})
 			end
 		end
-		if i == 0 then
-			rows.Empty =
-				UI.text("Steal animals from the field to start your collection.", 16, 16, p.width - 76, 100, 26)
-		end
-		body.List = e(
-			"ScrollingFrame",
-			{
-				Name = "MergeList",
-				Position = UDim2.fromOffset(22, listY),
-				Size = UDim2.fromOffset(p.width - 44, math.max(1, available - listY - 16)),
-				BackgroundTransparency = 1,
-				BorderSizePixel = 0,
-				CanvasSize = UDim2.fromOffset(0, 0),
-				AutomaticCanvasSize = Enum.AutomaticSize.Y,
-				ScrollBarThickness = 5,
-				Active = true,
-			},
-			rows
-		)
-	end
-	return e(
-		"Frame",
-		{
-			Position = UDim2.fromOffset(0, p.headerH),
-			Size = UDim2.fromOffset(p.width, p.height - p.headerH),
+		body.List = e("ScrollingFrame", {
+			Name = "MergeList",
+			Position = UDim2.fromOffset(22, listY),
+			Size = UDim2.fromOffset(p.width - 44, math.max(1, available - listY - 16)),
 			BackgroundTransparency = 1,
-		},
-		body
-	)
+			BorderSizePixel = 0,
+			CanvasSize = UDim2.fromOffset(0, 0),
+			AutomaticCanvasSize = Enum.AutomaticSize.Y,
+			ScrollBarThickness = 5,
+			Active = true,
+		}, rows)
+	end
+	return e("Frame", {
+		Position = UDim2.fromOffset(0, p.headerH),
+		Size = UDim2.fromOffset(p.width, p.height - p.headerH),
+		BackgroundTransparency = 1,
+	}, body)
 end
 return AdventurePanels

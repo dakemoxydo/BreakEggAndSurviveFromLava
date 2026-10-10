@@ -17,7 +17,7 @@ return {
 		red = rgb(245, 36, 37),
 		white = rgb(255, 255, 255),
 	},
-	studs = "rbxassetid://103946336580493",
+	studs = "rbxassetid://71143262474046",
 	motion = {
 		hoverScale = 1.05,
 		denseHoverScale = 1.025,

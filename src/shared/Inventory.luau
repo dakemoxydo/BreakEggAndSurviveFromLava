@@ -43,14 +43,11 @@ local function Inventory(p)
 		end
 	end
 	local cards = {
-		Layout = e(
-			"UIGridLayout",
-			{
-				CellSize = UDim2.fromOffset(cell, cardH),
-				CellPadding = UDim2.fromOffset(gap, gap),
-				SortOrder = Enum.SortOrder.LayoutOrder,
-			}
-		),
+		Layout = e("UIGridLayout", {
+			CellSize = UDim2.fromOffset(cell, cardH),
+			CellPadding = UDim2.fromOffset(gap, gap),
+			SortOrder = Enum.SortOrder.LayoutOrder,
+		}),
 		Padding = e(
 			"UIPadding",
 			{ PaddingLeft = UDim.new(0, 12), PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 12) }
@@ -119,84 +116,68 @@ local function Inventory(p)
 			nil,
 			Enum.TextXAlignment.Left
 		),
-		Close = e(
-			UI.Button,
-			{
-				name = "CloseInventory",
-				buttonRef = p.closeRef,
-				label = "X",
-				x = panelW - 62,
-				y = 12,
-				w = 44,
-				h = 44,
-				color = C.red,
-				textSize = 26,
-				onClick = p.onClose,
-			}
-		),
-		Search = e(
-			"TextBox",
-			{
-				Name = "InventorySearch",
-				Position = UDim2.fromOffset(stacked and 16 or panelW * 0.51, stacked and 84 or 20),
-				Size = UDim2.fromOffset(stacked and panelW - 32 or panelW * 0.49 - 84, 40),
-				BackgroundColor3 = C.muted,
-				BackgroundTransparency = 0.2,
-				BorderSizePixel = 0,
-				Text = query,
-				PlaceholderText = "Search",
-				PlaceholderColor3 = C.white:Lerp(C.muted, 0.35),
-				TextColor3 = C.white,
-				TextSize = 22,
-				Font = Enum.Font.GothamBold,
-				ClearTextOnFocus = false,
-				TextXAlignment = Enum.TextXAlignment.Left,
-				TextEditable = p.visible,
-				[React.Change.Text] = function(object)
-					setQuery(object.Text)
-				end,
-			},
-			{
-				Corner = e("UICorner", { CornerRadius = UDim.new(0, Theme.radius) }),
-				Padding = e("UIPadding", { PaddingLeft = UDim.new(0, 10) }),
-				Edge = e("UIStroke", { Color = C.ink, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
-			}
-		),
-		List = e(
-			"ScrollingFrame",
-			{
-				Name = "InventoryScroll",
-				Position = UDim2.fromOffset(8, header),
-				Size = UDim2.fromOffset(panelW - 16, listH),
-				BackgroundTransparency = 1,
-				BorderSizePixel = 0,
-				CanvasSize = UDim2.fromOffset(0, math.max(0, math.ceil(#shown / cols) * (cardH + gap) - gap) + 20),
-				ScrollBarThickness = 5,
-				ScrollBarImageColor3 = C.white,
-				ScrollingDirection = Enum.ScrollingDirection.Y,
-				Active = p.visible,
-			},
-			cards
-		),
+		Close = e(UI.Button, {
+			name = "CloseInventory",
+			label = "X",
+			x = panelW - 62,
+			y = 12,
+			w = 44,
+			h = 44,
+			color = C.red,
+			textSize = 26,
+			onClick = p.onClose,
+		}),
+		Search = e("TextBox", {
+			Name = "InventorySearch",
+			Position = UDim2.fromOffset(stacked and 16 or panelW * 0.51, stacked and 84 or 20),
+			Size = UDim2.fromOffset(stacked and panelW - 32 or panelW * 0.49 - 84, 40),
+			BackgroundColor3 = C.muted,
+			BackgroundTransparency = 0.2,
+			BorderSizePixel = 0,
+			Text = query,
+			PlaceholderText = "Search",
+			PlaceholderColor3 = C.white:Lerp(C.muted, 0.35),
+			TextColor3 = C.white,
+			TextSize = 22,
+			Font = Enum.Font.GothamBold,
+			ClearTextOnFocus = false,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			TextEditable = p.visible,
+			[React.Change.Text] = function(object)
+				setQuery(object.Text)
+			end,
+		}, {
+			Corner = e("UICorner", { CornerRadius = UDim.new(0, Theme.radius) }),
+			Padding = e("UIPadding", { PaddingLeft = UDim.new(0, 10) }),
+			Edge = e("UIStroke", { Color = C.ink, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+		}),
+		List = e("ScrollingFrame", {
+			Name = "InventoryScroll",
+			Position = UDim2.fromOffset(8, header),
+			Size = UDim2.fromOffset(panelW - 16, listH),
+			BackgroundTransparency = 1,
+			BorderSizePixel = 0,
+			CanvasSize = UDim2.fromOffset(0, math.max(0, math.ceil(#shown / cols) * (cardH + gap) - gap) + 20),
+			ScrollBarThickness = 5,
+			ScrollBarImageColor3 = C.white,
+			ScrollingDirection = Enum.ScrollingDirection.Y,
+			Active = p.visible,
+		}, cards),
 	}
 	local children = {
-		Panel = e(
-			"Frame",
-			{
-				Name = "InventoryPanel",
-				ref = p.inventoryRef,
-				Position = UDim2.fromOffset(lane, 0),
-				Size = UDim2.fromOffset(panelW, h),
-				BackgroundColor3 = C.ink,
-				BackgroundTransparency = 0.25,
-				BorderSizePixel = 0,
-				Active = true,
-			},
-			{
-				Corner = e("UICorner", { CornerRadius = UDim.new(0, Theme.radius) }),
-				Content = e("Frame", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1) }, body),
-			}
-		),
+		Panel = e("Frame", {
+			Name = "InventoryPanel",
+			ref = p.inventoryRef,
+			Position = UDim2.fromOffset(lane, 0),
+			Size = UDim2.fromOffset(panelW, h),
+			BackgroundColor3 = C.ink,
+			BackgroundTransparency = 0.25,
+			BorderSizePixel = 0,
+			Active = true,
+		}, {
+			Corner = e("UICorner", { CornerRadius = UDim.new(0, Theme.radius) }),
+			Content = e("Frame", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1) }, body),
+		}),
 	}
 	for i, kind in { "Pets", "Eggs" } do
 		children[kind] = e(UI.Button, {
@@ -219,30 +200,24 @@ local function Inventory(p)
 		})
 	end
 	local tabSpace = narrow and 56 or 0
-	return e(
-		UI.Transition,
-		{
-			name = "InventoryTransition",
-			x = x,
-			y = top - tabSpace,
-			w = w,
-			h = h + tabSpace,
-			visible = p.visible,
-			transitionKey = "Inventory",
-			reduced = p.reduced,
-			onClosed = p.onClosed,
-			z = 32,
-			children = {
-				Layout = e(
-					"Frame",
-					{ BackgroundTransparency = 1, Position = UDim2.fromOffset(0, tabSpace), Size = UDim2.fromOffset(
-						w,
-						h
-					) },
-					children
-				),
-			},
-		}
-	)
+	return e(UI.Transition, {
+		name = "InventoryTransition",
+		x = x,
+		y = top - tabSpace,
+		w = w,
+		h = h + tabSpace,
+		visible = p.visible,
+		transitionKey = "Inventory",
+		reduced = p.reduced,
+		onClosed = p.onClosed,
+		z = 32,
+		children = {
+			Layout = e(
+				"Frame",
+				{ BackgroundTransparency = 1, Position = UDim2.fromOffset(0, tabSpace), Size = UDim2.fromOffset(w, h) },
+				children
+			),
+		},
+	})
 end
 return React.memo(Inventory)

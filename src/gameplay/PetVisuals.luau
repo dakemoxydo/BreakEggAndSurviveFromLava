@@ -104,11 +104,18 @@ function Visuals.egg(color, nest)
 	m.PrimaryPart = shell
 	shell.PivotOffset = CFrame.new(0, -2.1, 0)
 	for i, tier in
-		{ { 2.8, 0.7, 0.85 }, { 3.1, 0.65, 1.35 }, { 3.05, 0.65, 2.95 }, { 2.5, 0.6, 3.55 }, { 1.9, 0.5, 4.1 }, {
-			1.05,
-			0.3,
-			4.5,
-		} }
+		{
+			{ 2.8, 0.7, 0.85 },
+			{ 3.1, 0.65, 1.35 },
+			{ 3.05, 0.65, 2.95 },
+			{ 2.5, 0.6, 3.55 },
+			{ 1.9, 0.5, 4.1 },
+			{
+				1.05,
+				0.3,
+				4.5,
+			},
+		}
 	do
 		part(m, "ShellTier" .. i, Vector3.new(tier[1], tier[2], tier[1]), Vector3.new(0, tier[3], 0), color)
 	end
@@ -142,6 +149,24 @@ end
 
 function Visuals.pet(kind, weight)
 	local info = Game.pet(kind)
+	-- Imported rigged models (ServerStorage.Assets.Pets, copied by PetWorld) replace the procedural shape.
+	local templates = game.ReplicatedStorage:FindFirstChild("PetModels")
+	local template = templates and templates:FindFirstChild(info.key == "TestChick" and "Chicken" or info.key)
+	if template then
+		local model = template:Clone()
+		model.Name = info.name
+		local outline = Instance.new("Highlight")
+		outline.Name = "PetOutline"
+		outline.Adornee = model
+		outline.FillTransparency = 1
+		outline.OutlineColor = Color3.fromRGB(16, 18, 22)
+		outline.OutlineTransparency = 0.08
+		outline.DepthMode = Enum.HighlightDepthMode.Occluded
+		outline.Parent = model
+		model:SetAttribute("Weight", weight or 1)
+		model:ScaleTo(Visuals.petScale(kind, weight))
+		return model
+	end
 	if info.shape == "chicken" then
 		local model = Visuals.chick()
 		model.Name = info.name
@@ -268,12 +293,8 @@ function Visuals.pet(kind, weight)
 	if headDelta.Magnitude > 0.01 then
 		for _, p in m:GetChildren() do
 			if
-				p:IsA("BasePart") and (
-					p.Name:find("Eye")
-					or p.Name:find("Ear")
-					or p.Name == "Muzzle"
-					or p.Name == "Nose"
-				)
+				p:IsA("BasePart")
+				and (p.Name:find("Eye") or p.Name:find("Ear") or p.Name == "Muzzle" or p.Name == "Nose")
 			then
 				p.Position += headDelta
 			end

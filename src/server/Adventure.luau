@@ -358,9 +358,22 @@ spawnEgg = function(info, at, scale)
 	local model = Visuals.egg(info.color)
 	model:ScaleTo(scale or 1)
 	model:PivotTo(CFrame.new(at))
+	-- Only field shells participate in aiming; base eggs and pets stay non-queryable.
+	for _, part in model:GetDescendants() do
+		if part:IsA("BasePart") and part.Name:sub(1, 5) == "Shell" then
+			part.CanQuery = true
+		end
+	end
 	model.Parent = field
-	local record =
-		{ id = Http:GenerateGUID(false), info = info, at = at, scale = scale or 1, model = model, status = "Egg", hp = info.hp }
+	local record = {
+		id = Http:GenerateGUID(false),
+		info = info,
+		at = at,
+		scale = scale or 1,
+		model = model,
+		status = "Egg",
+		hp = info.hp,
+	}
 	model.Name = info.name .. "_" .. info.rarity
 	model:SetAttribute("EggId", record.id)
 	model:SetAttribute("BreakableEgg", true)
@@ -405,26 +418,30 @@ local function swing(player, id)
 	bar.Visible = true
 	bar.Fill.Size = UDim2.fromScale(record.hp / record.info.hp, 1)
 	bar.Value.Text = Game.number(record.hp) .. "/" .. Game.number(record.info.hp) .. " HP"
-	feedback:FireAllClients(
-		"EggHit",
-		record.at,
-		{
-			model = record.model,
-			character = player.Character,
-			damage = damage,
-			scale = record.scale,
-			color = record.info.color,
-			crit = crit,
-			final = record.hp <= 0,
-		}
-	)
+	feedback:FireAllClients("EggHit", record.at, {
+		model = record.model,
+		character = player.Character,
+		damage = damage,
+		scale = record.scale,
+		color = record.info.color,
+		crit = crit,
+		final = record.hp <= 0,
+	})
 	if record.hp <= 0 then
 		hatch(record, player)
 	end
 end
 local function bat(player)
+	local state = services.states[player]
 	local root = character(player)
-	if not root then
+	if
+		not state
+		or not state.ready
+		or not services.active(player)
+		or not root
+		or player:GetAttribute("OnTreadmill")
+		or Adventure.hasCargo(player)
+	then
 		return
 	end
 	local tool = player.Character:FindFirstChildOfClass("Tool")
@@ -494,6 +511,10 @@ local function guardian(kind, at, biome)
 	model:ScaleTo(model:GetScale() * 4)
 	model.Name = biome .. "Guardian"
 	model:SetAttribute("Guardian", true)
+	-- Clients smooth and animate guardians from these attributes, like base pets.
+	model:SetAttribute("PetPosition", at)
+	model:SetAttribute("PetYaw", 0)
+	model:SetAttribute("PetWalking", false)
 	model:PivotTo(CFrame.new(at))
 	model.Parent = field
 	services.world.label(model, "GUARDIAN")
@@ -654,10 +675,15 @@ function Adventure.start(options)
 			local root = target and character(target)
 			local goal = root and Vector3.new(root.Position.X, 0.1, root.Position.Z) or guard.home
 			local delta = goal - guard.at
-			if delta.Magnitude > 1 then
+			local walking = delta.Magnitude > 1
+			if walking then
 				local direction = delta.Unit
 				guard.at += direction * math.min((root and 24 or 10) * step, delta.Magnitude)
-				guard.model:PivotTo(CFrame.lookAt(guard.at, guard.at + direction))
+				guard.model:SetAttribute("PetPosition", guard.at)
+				guard.model:SetAttribute("PetYaw", math.atan2(-direction.X, -direction.Z))
+			end
+			if guard.model:GetAttribute("PetWalking") ~= walking then
+				guard.model:SetAttribute("PetWalking", walking)
 			end
 			if root and minimum < 8 and now > guard.cooldown then
 				guard.cooldown = now + 2

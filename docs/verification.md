@@ -11,7 +11,9 @@
 | Форматирование и линт | `stylua src`, `selene src` | Стиль и статические ошибки Luau |
 | Сборка | `rojo build default.project.json -o .tools/check.rbxlx` | Файлы и mappings собираются; логику не проверяет |
 | Backpack и Merge | `tools/verify-backpack.luau` — выполнить через MCP `execute_luau` в Edit | INV-01…07, GP-06 на изолированных фикстурах; профили не читает |
-| Сохранения | `tools/verify-profiles.luau` — через MCP в Edit | SAVE-*, миграция, Reconcile в отдельном ProfileStore.Mock |
+| Сохранения | `tools/verify-profiles.luau` — через MCP в Server | SAVE-*, миграция, Reconcile в отдельном ProfileStore.Mock |
+| Исправления серверных ошибок | `tools/verify-server-bug-fixes.luau` — через MCP в Edit | Предел 24 h, баланс TitanDragon, старое переполнение offline, числовые пределы, отложенная миграция полного инвентаря, порядок вылупления, допуск Bat, сброс и дубликаты света дорожки; изолированные фикстуры |
+| Исправления аудита игровой логики | `tools/verify-audit-bug-fixes.luau` — через MCP в Edit | Отклонение повреждённого профиля, освобождение и повтор загрузки, исключения подготовки; выбор полевого яйца курсором/касанием и fallback; неперехват лучей базовыми моделями; TestChick в Merge, ID/масса/доход, пустое окно; Mock-атрибут игнорируется вне Studio; видимость частей/подписей/Highlight и генерация трещин |
 | Маршруты UI | `tools/verify-ui-routes.luau` + клики MCP, процедура ниже | UI-01…05 реальным вводом |
 | Ручная проверка в Play | MCP `start_stop_play`, `execute_luau` в Server/Client, `screen_capture` | Сценарии из документов систем |
 
@@ -19,7 +21,7 @@
 - `PreviewViewport` через `UIController` проверяет расчёт UI, а не телефон, safe insets или touch.
 - `screen_capture` в Play часто отдаёт чёрный кадр и не показывает 3D-сцену и ViewportFrame. Вид поз и эффектов тогда подтверждается только численно.
 - `execute_luau` не может слать ввод (VirtualInputManager требует capability RobloxScript). Клики и клавиши — только MCP `user_mouse_input` / `user_keyboard_input`.
-- Escape и ButtonB как CoreGui-клавиши через MCP не доставляются.
+- Escape как CoreGui-клавиша через MCP не доставляются.
 
 ### Маршруты UI
 
@@ -34,7 +36,6 @@
 | 4 | Клавиша Backquote | `inventoryPanel=true`, сайдбаров нет |
 | 5 | Backquote ещё раз | `inventoryPanel=false` |
 | 6 | Клик `OpenInventory` | `inventoryPanel=true`; закрыть |
-| 7 | Клавиша ButtonY | `inventoryPanel=false` |
 
 После прогона проверить консоль и остановить Play.
 
@@ -42,12 +43,14 @@
 
 | Область | Последняя проверка | Метод | Не проверено |
 |---|---|---|---|
-| Маршруты UI (UI-01…05) | 2026-10-09 | verify-ui-routes, клики MCP после StyLua | Escape/ButtonB, физические устройства |
-| Inventory, хотбар, drag (INV) | 2026-10-09 | verify-backpack после StyLua; drag — Play, мышь до StyLua | touch, gamepad |
+| Маршруты UI (UI-01…05) | 2026-10-09 | verify-ui-routes, клики MCP после StyLua | Escape, физические touch-устройства |
+| Inventory, хотбар, drag (INV) | 2026-10-09 | verify-backpack после StyLua; drag — Play, мышь до StyLua | touch |
 | Merge: подтверждение тройки (GP-06) | 2026-10-09 | verify-backpack; клиентский фикстур | Расход на игровом профиле |
-| Settings: громкость, Reduced motion | 2026-10-09 | Play, 390×844, фикстур UIAction | Физический gamepad/touch |
+| Settings: громкость, Reduced motion | 2026-10-09 | Play, 390×844, фикстур UIAction | Физический touch |
 | Адаптация HUD 390×844, 844×390, 568×320 | 2026-10-09 | PreviewViewport, TextBounds, screenshot | Реальные телефоны, полная матрица размеров |
 | HUD и окна по референсам | 2026-10-09 | Play, screen_capture | Pickaxe Shop, Eggs, Settings, Merge после правки; hover/press-кадры |
+| HUD из Figma (широкий экран) | 2026-10-11 | Play 1365×768: раскладка screen_capture, клики MCP: OpenPets → PetsSidebar и скрытие правой колонки, возврат после закрытия; GetCash → Shop/Cash Packs; Offline Cash скрывает HUD | Остальные кнопки кликом, hover/press-кадры, другие соотношения сторон, verify-ui-routes после правки пробы, touch |
+| Trails Shop из Figma | 2026-10-11 | Play: данные профиля в карточках, прокрутка колесом | Покупка и экипировка, hover/press, ExitBtn, ReducedMotion, узкий экран, touch |
 | Shop: Featured и Robux Unavailable | 2026-10-09 | Play, TextBounds | Покупки |
 | Замах, хват двумя руками, тайминги | 2026-10-09 | Edit-манекен и Play, численно | Вид в Play, R6, ходьба, чужие игроки |
 | Попадание: эффекты, крит, комбо, трещины, Audio | 2026-10-09 | Play, AutoSwing, численно | Вид, звук на слух, ReducedMotion, нагрузка |
@@ -56,11 +59,17 @@
 | Weight-подсказка и petScale (UI-06, GP-05) | 2026-10-08 | Не проверялось по просьбе пользователя | Весь сценарий |
 | Замах в Safe Zone (GP-03) | 2026-10-08 | Не проверялось по просьбе пользователя | Весь сценарий |
 | Перенос над головой | 2026-10-08 | Не проверялось по просьбе пользователя | Весь сценарий |
-| Сохранения (SAVE) | до 2026-10-09 | Stop/Play в Studio DataStore; verify-profiles | Live-сервер, перенос сессии между серверами, миграция live-ключа |
-| Дорожки | 2026-10-07 | Play: вход, начисление, выход, уровень 2 | touch/gamepad, два игрока |
+| Сохранения (SAVE) | 2026-10-09 | verify-profiles в Server на ProfileStore.Mock; verify-server-bug-fixes в Edit; загрузка профиля в Play | Live-сервер, перенос сессии между серверами, миграция live-ключа |
+| Дорожки | 2026-10-07 | Play: вход, начисление, выход, уровень 2 | touch, два игрока |
 | Игровой цикл целиком | 2026-10-07 | Play в Mock | Повтор после изменений 8–9 октября |
 | Производительность UI | до 2026-10-09 | Счётчики вызовов React | FPS на устройствах |
+| Повторный импорт кирок и дорожки | 2026-10-10: 18 кирок, шаблон и 7 дорожек подключены; runtime и release-экспорты сохранены | MCP Edit: совпадение 18 MeshId/TextureID, ненулевые MeshSize, высота превью 4.875 и Tool 4.753125, хват, ширина дорожек 7, прежние TrainingCenter/BeltCollision; Edit screenshot; Play в Mock: новая Wooden в руках, вход, +Speed, выход пробелом; StyLua, Selene: 0 ошибок / 17 предупреждений; default/release Rojo build | Все кирки в движении и вид магазина, live, открытие release отдельно; в консоли сохраняются предупреждения MaterialService и доступа к 90396347771673; Lava Bat ещё не перенесена |
+| Перенос локальных изображений на новый аккаунт | 2026-10-10: загружены 17 изображений; ссылки обновлены в src, сцене, манифестах и XML карты/материала | MCP upload_image; MarketplaceService подтвердил владельца Dakemo555 на трёх образцах; MCP подтвердил синхронизацию Assets и материал; ContentProvider: 1 Success / 16 Failure; StyLua, Selene: 0 ошибок / 17 предупреждений; default и release Rojo build | Доставка 16 изображений пока не подтверждена; вид в Play/live; повторный импорт FBX и MP3 ещё не выполнен |
+| Аудит кода, игровой логики и ассетов | 2026-10-10: исправлены луч массы, выбор любых трёх ID Merge, предел Speed; ProfileStore.Sandboxed=false; бита в Studio из 15 Part без внешних мешей | StyLua; Selene: 0 ошибок / 17 предупреждений; default/release build; MCP Edit: verify-backpack, verify-audit-bug-fixes с выбором тройки из четырёх, verify-server-bug-fixes, verify-speed-cap; Server: verify-profiles; Play Mock: хват биты, луч численно, Merge 390 px реальными кликами и прокруткой, выход игрока и SessionEnded без ошибок | Экспорт новой биты в release ожидает разрешения; доставка normal map и часов не подтверждена (Preload Failure); live, физический touch, полный цикл, несколько игроков, нагрузка |
+| Импортированная курица (Assets.Pets, Idle/Walk, страж) | 2026-10-11 | MCP Edit: шаблон, пивот, углы Bone.Transform после fix-bone-pose-rest; Play пользователем: анимации и плавное движение; StyLua, Selene: 0 ошибок / 17 предупреждений; Rojo build | Tool в руке, Index, перенос над головой, release-экспорт |
 | Release-сборка | 2026-10-09 | `rojo build` | Открытие собранного place отдельно |
+| Аудит ошибок сервера и сохранений | 2026-10-09: пять ошибок исправлены; офлайн-период 24 h | verify-server-bug-fixes и verify-backpack в MCP Edit; verify-profiles в Server; загрузка профиля в Play; StyLua; Selene: baseline 2 ошибки / 18 предупреждений; Rojo build | Полный игровой цикл, повреждённые реальные профили, физические устройства, live-сервер; verify-backpack требует Edit, в Server loadstring недоступен |
+| Аудит текущей игровой логики, загрузки и Merge | 2026-10-09: четыре проблемы и две прежние ошибки Selene исправлены | MCP Edit: verify-audit-bug-fixes, verify-server-bug-fixes, verify-backpack и вариант с TestChick; Server: verify-profiles в Mock; Play в Mock: удар мышью, вылупление, E-подбор, Safe Zone, размещение/снятие с прежним ID и доходом, пустой Merge, подтверждение TestChick на клиентском фикстуре, отказ подставным ID, OpenPets и Backquote; StyLua, Selene: 0 ошибок / 17 предупреждений; Rojo build | Live, реальные повреждённые профили, несколько игроков, физические touch; успешный расход TestChick проверен изолированно, UI — на клиентском фикстуре; полный набор старых сценариев не повторялся |
 
 ## Регрессионные сценарии
 
@@ -83,7 +92,7 @@
 | Дорожка | Встать, тренироваться, выйти | Прирост раз в секунду gain×multiplier; cooldown 3 s |
 | Владение | Чужая база и чужая дорожка | Размещение и тренировка запрещены |
 | Награды | Free, Forest collection, повтор | $100 / +60 Speed однократно; коллекция требует 8 видов Forest |
-| Офлайн | Выход, рост яйца, вход, Claim дважды | Доход с учётом вылупления и лимита 8 h; второй Claim пуст |
+| Офлайн | Выход, рост яйца, вход, Claim дважды | Доход с учётом вылупления и лимита 24 h; второй Claim пуст |
 | Сохранения | Stop/Play и потеря сессии | Прогресс восстановлен; после потери сессии изменений нет |
 | Релиз | `rojo build release.project.json`, открыть результат | Карта и зависимости загружаются, цикл запускается |
 
@@ -93,6 +102,6 @@
 
 - Реализовано 3 обычных биома и 25 видов; полный Index оригинала (74 записи) и остальные зоны отсутствуют. Животные, баланс и оформление восстановлены приблизительно. Уровни дорожки используют геометрию первого ассета. Музыка и звуки оригинала не перенесены.
 - Платные продукты и пасы имеют ID=0; рабочей покупки и серверной выдачи Robux нет.
-- Не подтверждены: физические touch/gamepad, многопользовательская конкуренция за базу, дорожку и яйцо, нагрузка, полная прогрессия, FPS слабых устройств, Graphics Quality, открытие release-place отдельно, live-сервер, межсерверные рейтинги, перенос сессии, миграция live-ключа.
+- Не подтверждены: физические touch, многопользовательская конкуренция за базу, дорожку и яйцо, нагрузка, полная прогрессия, FPS слабых устройств, Graphics Quality, открытие release-place отдельно, live-сервер, межсерверные рейтинги, перенос сессии, миграция live-ключа.
 
 Это границы текущей готовности, а не план. Новые требования добавлять явно, с условиями приёмки.

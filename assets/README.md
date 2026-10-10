@@ -73,11 +73,13 @@ ServerStorage.Assets/
 
 ## Правила файлов
 
+В текущем каталоге 18 кирок и три меша дорожки повторно импортированы под Dakemo555. Их ID записаны в `manifests/account-reimport.json` и индивидуальных манифестах кирок. `tools/save-account-models.py` пересоздаёт runtime-каталог, AssetTemplates и карту из свежего `tools/export-world.luau` снимка; MeshPart сохраняются с InitialSize. Исходный пак кирок хранится в прежнем SourceImports.Pickaxes_Pack_v03, исходник дорожки — в Environment.Treadmills.SourceImports. Старые шаблоны сохранены отдельно в ServerStorage.WorldBackups.BeforeAccountModelReimport. Lava Bat пока использует меши прежнего аккаунта.
+
 - Новому предмету создавайте собственную папку с references, models, textures, icons и exports. Для кирок префикс номера сохраняет порядок магазина.
 - Не меняйте ключи предметов: Wooden, Stone и остальные совпадают с GameConfig. Изображения кирок и порядок перечислены в [каталоге](items/pickaxes/catalog.json).
 - Сохраняйте версии в именах файлов. Выбранный референс отмечайте в asset.json; заменённые варианты удаляйте: история хранится в git.
 - Скрипты обработки находятся в tools/, а не среди ассетов. Исторические скрипты UI находятся в tools/archive/ui/.
-- Пути в release.project.json и манифестах соответствуют этой структуре. Roblox ID остаются прежними.
+- Пути в release.project.json и манифестах соответствуют этой структуре. При повторном импорте в другой аккаунт соответствие старых и новых Roblox ID хранится в `manifests/account-reimport.json`; ссылки обновляет `tools/rebind-local-images.py`.
 - Структура папок не означает одобрение моделей: работа в Blender ожидает согласования набора кирок.
 
 Подробнее: [кирки](items/pickaxes/README.md), [источники и ID](manifests/reference-assets.json), [UI-манифест](manifests/ui-manifest.json).

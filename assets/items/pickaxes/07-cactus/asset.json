@@ -43,8 +43,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://130355843116379",
-    "textureId": "rbxassetid://73600022507601",
+    "meshId": "rbxassetid://91849430459396",
+    "textureId": "rbxassetid://95205051580807",
     "templatePath": "ReplicatedStorage.PickaxeModels.Cactus",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.CactusPickaxe"
   }

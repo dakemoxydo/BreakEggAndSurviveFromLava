@@ -1,0 +1,351 @@
+{
+  "date": "2026-10-10",
+  "creatorId": 11789507527,
+  "universeId": 10770177677,
+  "placeId": 120440556374316,
+  "status": "Images rebound; pickaxes and treadmills reimported; bat replaced with 15 native Parts in Studio, release export pending approval; image delivery partly pending.",
+  "images": [
+    {
+      "path": "assets/ui/icons/navigation/reference-index-v1.png",
+      "oldId": "76096389003906",
+      "newId": "103973109056965"
+    },
+    {
+      "path": "assets/ui/icons/navigation/reference-egg-v1.png",
+      "oldId": "120031849641660",
+      "newId": "96442091950735"
+    },
+    {
+      "path": "assets/ui/icons/navigation/reference-home-v1.png",
+      "oldId": "119104635069423",
+      "newId": "96312211683196"
+    },
+    {
+      "path": "assets/ui/icons/navigation/reference-paw-v1.png",
+      "oldId": "118382351876288",
+      "newId": "122749797344399"
+    },
+    {
+      "path": "assets/ui/icons/navigation/settings-gear.png",
+      "oldId": "93020891544824",
+      "newId": "125150572209141"
+    },
+    {
+      "path": "assets/ui/icons/resources/cash.png",
+      "oldId": "72638283383933",
+      "newId": "74929065994676"
+    },
+    {
+      "path": "assets/ui/icons/navigation/cart.png",
+      "oldId": "82216367327862",
+      "newId": "90321313642748"
+    },
+    {
+      "path": "assets/ui/effects/sunburst.png",
+      "oldId": "93658144719385",
+      "newId": "100836241976168"
+    },
+    {
+      "path": "assets/ui/effects/LunifyHalftone3.png",
+      "oldId": "97608267032141",
+      "newId": "138806038455758"
+    },
+    {
+      "path": "assets/ui/textures/studtexture.png",
+      "oldId": "103946336580493",
+      "newId": "71143262474046"
+    },
+    {
+      "path": "assets/ui/atlases/simulator-atlas-v1.png",
+      "oldId": "124600108076702",
+      "newId": "82204824330823"
+    },
+    {
+      "path": "assets/ui/atlases/offers-atlas-v1.png",
+      "oldId": "97764213374400",
+      "newId": "91979363704625"
+    },
+    {
+      "path": "assets/ui/atlases/pets-tools-atlas-v2.png",
+      "oldId": "129626962813547",
+      "newId": "126441870016444"
+    },
+    {
+      "path": "assets/ui/atlases/pickaxes-generated-1-v01.png",
+      "oldId": "99300582266284",
+      "newId": "93677580281657"
+    },
+    {
+      "path": "assets/ui/atlases/pickaxes-generated-2-v01.png",
+      "oldId": "99607759575544",
+      "newId": "126846595998941"
+    },
+    {
+      "path": "assets/environment/materials/hd-studs/hd-studs-2x2-ao.png",
+      "oldId": "80175290864572",
+      "newId": "107033945808299"
+    },
+    {
+      "path": "assets/environment/materials/hd-studs/hd-studs-2x2-normal.png",
+      "oldId": "122070354289187",
+      "newId": "80177343939570",
+      "previousNewId": "104730527197306"
+    },
+    {
+      "path": "assets/ui/icons/resources/leaderboard-clock-v1.png",
+      "oldId": "95794400162139",
+      "newId": "80316475458538"
+    }
+  ],
+  "verification": {
+    "studioSourceSynced": true,
+    "preloadSuccess": 1,
+    "preloadFailure": 16,
+    "verifiedCreatorSamples": [
+      "103973109056965",
+      "107033945808299",
+      "96442091950735"
+    ],
+    "liveVerified": false,
+    "latestUploads": {
+      "normalMap": {
+        "id": "80177343939570",
+        "preload": "Failure"
+      },
+      "leaderboardClock": {
+        "id": "80316475458538",
+        "preload": "Failure"
+      },
+      "aoMap": {
+        "id": "107033945808299",
+        "preload": "Success"
+      }
+    }
+  },
+  "pickaxes": [
+    {
+      "key": "Wooden",
+      "mesh": "rbxassetid://96631115217383",
+      "texture": "rbxassetid://98063872564848",
+      "meshSize": [
+        5.320000171661377,
+        4.784999847412109,
+        1.3580000400543213
+      ]
+    },
+    {
+      "key": "Stone",
+      "mesh": "rbxassetid://83361324585169",
+      "texture": "rbxassetid://133292149711875",
+      "meshSize": [
+        5.3600006103515625,
+        4.875,
+        1.0980000495910645
+      ]
+    },
+    {
+      "key": "Iron",
+      "mesh": "rbxassetid://136441081039454",
+      "texture": "rbxassetid://91716736479887",
+      "meshSize": [
+        5.3600006103515625,
+        4.970000267028809,
+        1.0480000972747803
+      ]
+    },
+    {
+      "key": "Golden",
+      "mesh": "rbxassetid://104039194421199",
+      "texture": "rbxassetid://99253376308553",
+      "meshSize": [
+        5.439998626708984,
+        5.049999713897705,
+        1.2700001001358032
+      ]
+    },
+    {
+      "key": "Diamond",
+      "mesh": "rbxassetid://139200757956601",
+      "texture": "rbxassetid://97354211795586",
+      "meshSize": [
+        5.520000457763672,
+        5.074999809265137,
+        1.2400000095367432
+      ]
+    },
+    {
+      "key": "Strawberry",
+      "mesh": "rbxassetid://103054678867204",
+      "texture": "rbxassetid://71826001413129",
+      "meshSize": [
+        5.540000915527344,
+        5.079999923706055,
+        1.2699999809265137
+      ]
+    },
+    {
+      "key": "Cactus",
+      "mesh": "rbxassetid://91849430459396",
+      "texture": "rbxassetid://95205051580807",
+      "meshSize": [
+        5.519996643066406,
+        5.095000267028809,
+        0.8799999952316284
+      ]
+    },
+    {
+      "key": "Lightning",
+      "mesh": "rbxassetid://115309506378708",
+      "texture": "rbxassetid://110678039775687",
+      "meshSize": [
+        5.542266845703125,
+        5.085000038146973,
+        1.1750000715255737
+      ]
+    },
+    {
+      "key": "Candy",
+      "mesh": "rbxassetid://70972386887237",
+      "texture": "rbxassetid://106091844267549",
+      "meshSize": [
+        5.396087646484375,
+        5.085000038146973,
+        0.9199999570846558
+      ]
+    },
+    {
+      "key": "Rainbow",
+      "mesh": "rbxassetid://135141073161882",
+      "texture": "rbxassetid://102223402428585",
+      "meshSize": [
+        5.55999755859375,
+        5.079999923706055,
+        1.2799999713897705
+      ]
+    },
+    {
+      "key": "Crystal",
+      "mesh": "rbxassetid://93410635942929",
+      "texture": "rbxassetid://125507369783655",
+      "meshSize": [
+        5.660003662109375,
+        6.010000228881836,
+        1.2599999904632568
+      ]
+    },
+    {
+      "key": "Demon",
+      "mesh": "rbxassetid://140425092595752",
+      "texture": "rbxassetid://139912222676386",
+      "meshSize": [
+        5.6199951171875,
+        5.880000114440918,
+        1.3700000047683716
+      ]
+    },
+    {
+      "key": "Hacker",
+      "mesh": "rbxassetid://104550567619981",
+      "texture": "rbxassetid://74124893932370",
+      "meshSize": [
+        5.6032867431640625,
+        4.934999465942383,
+        1.1469999551773071
+      ]
+    },
+    {
+      "key": "UFO",
+      "mesh": "rbxassetid://133500238027384",
+      "texture": "rbxassetid://140208728593226",
+      "meshSize": [
+        5.6032867431640625,
+        5.319999694824219,
+        2.059999942779541
+      ]
+    },
+    {
+      "key": "Secret",
+      "mesh": "rbxassetid://98512882183451",
+      "texture": "rbxassetid://139469039949130",
+      "meshSize": [
+        5.6032867431640625,
+        5.449999809265137,
+        1.2899999618530273
+      ]
+    },
+    {
+      "key": "Cool",
+      "mesh": "rbxassetid://123644298519047",
+      "texture": "rbxassetid://105644428514702",
+      "meshSize": [
+        5.6032867431640625,
+        5.979999542236328,
+        1.4079999923706055
+      ]
+    },
+    {
+      "key": "Galaxy",
+      "mesh": "rbxassetid://96984434463039",
+      "texture": "rbxassetid://127693011531358",
+      "meshSize": [
+        5.6032867431640625,
+        5.2760820388793945,
+        1.1983329057693481
+      ]
+    },
+    {
+      "key": "Celestial",
+      "mesh": "rbxassetid://121908620603281",
+      "texture": "rbxassetid://90171384437991",
+      "meshSize": [
+        5.6032867431640625,
+        6.1073503494262695,
+        1.4700000286102295
+      ]
+    }
+  ],
+  "treadmill": {
+    "widthStuds": 7,
+    "stations": 7,
+    "meshes": [
+      {
+        "name": "Treadmill_Belt",
+        "mesh": "rbxassetid://87050560863333",
+        "texture": "rbxassetid://112335032013160",
+        "meshSize": [
+          395,
+          65.60012817382812,
+          835
+        ]
+      },
+      {
+        "name": "Treadmill_Display",
+        "mesh": "rbxassetid://115367028110134",
+        "texture": "rbxassetid://112335032013160",
+        "meshSize": [
+          294,
+          130,
+          49.300048828125
+        ]
+      },
+      {
+        "name": "Treadmill_Frame",
+        "mesh": "rbxassetid://76926983231183",
+        "texture": "rbxassetid://108798444485402",
+        "meshSize": [
+          584,
+          422,
+          873.5
+        ]
+      }
+    ]
+  },
+  "bat": {
+    "implementation": "Studio native Part model",
+    "visualParts": 15,
+    "meshParts": 0,
+    "gripPreserved": true,
+    "helper": "tools/create-studio-bat.luau",
+    "releaseExport": "pending approval"
+  }
+}

@@ -19,6 +19,7 @@ Roblox-игра. Код — `src/` (Luau; UI на React Luau + ReactRoblox, ан
 - Скрипты меняй только файлами в `src/`. В Studio их доставляет `rojo serve default.project.json --address 127.0.0.1`. Не записывай Source скриптов через MCP.
 - Добавил mapping в `*.project.json` — перезапусти `rojo serve`. Не копируй модуль в Studio через MCP вместо этого.
 - MCP: чтение дерева, Play-проверки, консоль, правки сцены, карты и ассетов. Изменения карты для release экспортируй (см. `docs/development.md`).
+- Окна UI из Figma пользователь импортирует плагином FigBlox; они живут только в Studio в `ReplicatedStorage.UITemplates` (см. `docs/ui.md`). Код их клонирует и заполняет; в `src/` и файлы их не переносить, внешний вид не перестраивать кодом.
 - Не создавай временные файлы и папки в `src/` и `Packages/`: Rojo падает на удалённых путях. Временные файлы — в `.tools/`.
 - После проверки удали временные объекты Studio и останови Play. StudioMode=Mock включай только временно в сцене, не в `src/server/data/Config.luau`.
 

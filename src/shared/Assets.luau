@@ -1,6 +1,6 @@
 local assets = {
-	indexHalftone = { image = "rbxassetid://97608267032141" },
-	settings = { image = "rbxassetid://93020891544824", offset = Vector2.new(31, 73), rect = Vector2.new(962, 894) },
+	indexHalftone = { image = "rbxassetid://138806038455758" },
+	settings = { image = "rbxassetid://125150572209141", offset = Vector2.new(31, 73), rect = Vector2.new(962, 894) },
 	trailGray = { image = "rbxassetid://82046206195556" },
 	trailGreen = { image = "rbxassetid://103181857711473" },
 	trailBlue = { image = "rbxassetid://99173064702974" },
@@ -10,15 +10,15 @@ local assets = {
 	trailSecret = { image = "rbxassetid://119362428725462" },
 	trailEternal = { image = "rbxassetid://74766850436673" },
 	trailDivine = { image = "rbxassetid://131938132845749" },
-	cash = { image = "rbxassetid://72638283383933" },
-	index = { image = "rbxassetid://76096389003906", offset = Vector2.new(213, 127), rect = Vector2.new(599, 769) },
-	egg = { image = "rbxassetid://120031849641660", offset = Vector2.new(148, 63), rect = Vector2.new(729, 913) },
-	pets = { image = "rbxassetid://118382351876288", offset = Vector2.new(30, 63), rect = Vector2.new(963, 844) },
-	home = { image = "rbxassetid://119104635069423", offset = Vector2.new(33, 65), rect = Vector2.new(956, 873) },
-	cart = { image = "rbxassetid://82216367327862", offset = Vector2.new(23, 97), rect = Vector2.new(1213, 1117) },
-	sunburst = { image = "rbxassetid://93658144719385" },
+	cash = { image = "rbxassetid://74929065994676" },
+	index = { image = "rbxassetid://103973109056965", offset = Vector2.new(213, 127), rect = Vector2.new(599, 769) },
+	egg = { image = "rbxassetid://96442091950735", offset = Vector2.new(148, 63), rect = Vector2.new(729, 913) },
+	pets = { image = "rbxassetid://122749797344399", offset = Vector2.new(30, 63), rect = Vector2.new(963, 844) },
+	home = { image = "rbxassetid://96312211683196", offset = Vector2.new(33, 65), rect = Vector2.new(956, 873) },
+	cart = { image = "rbxassetid://90321313642748", offset = Vector2.new(23, 97), rect = Vector2.new(1213, 1117) },
+	sunburst = { image = "rbxassetid://100836241976168" },
 }
-local atlas = "rbxassetid://124600108076702"
+local atlas = "rbxassetid://82204824330823"
 local regions = {
 	shoe = { 23, 95, 276, 292 },
 	shoes = { 308, 120, 318, 244 },
@@ -42,7 +42,7 @@ for key, r in regions do
 		rect = Vector2.new(math.floor(r[3] * atlasScale), math.floor(r[4] * atlasScale)),
 	}
 end
-local offerAtlas = "rbxassetid://97764213374400"
+local offerAtlas = "rbxassetid://91979363704625"
 local offerRegions = {
 	dragon1 = { 12, 138, 300, 242 },
 	dragon2 = { 323, 82, 300, 305 },
@@ -64,7 +64,7 @@ for key, r in offerRegions do
 		rect = Vector2.new(math.floor(r[3] * atlasScale), math.floor(r[4] * atlasScale)),
 	}
 end
-local cleanAtlas = "rbxassetid://129626962813547"
+local cleanAtlas = "rbxassetid://126441870016444"
 local cleanRegions = {
 	chicken = { 51, 179, 315, 383 },
 	bat = { 401, 192, 449, 319 },
@@ -83,39 +83,39 @@ for key, r in cleanRegions do
 end
 -- Generated pickaxe concepts; two native 1024 px atlases.
 assets.pickaxeWooden =
-	{ image = "rbxassetid://99300582266284", offset = Vector2.new(0, 0), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://93677580281657", offset = Vector2.new(0, 0), rect = Vector2.new(341, 341) }
 assets.pickaxeStone =
-	{ image = "rbxassetid://99300582266284", offset = Vector2.new(341, 0), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://93677580281657", offset = Vector2.new(341, 0), rect = Vector2.new(341, 341) }
 assets.pickaxeIron =
-	{ image = "rbxassetid://99300582266284", offset = Vector2.new(682, 0), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://93677580281657", offset = Vector2.new(682, 0), rect = Vector2.new(341, 341) }
 assets.pickaxeGolden =
-	{ image = "rbxassetid://99300582266284", offset = Vector2.new(0, 341), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://93677580281657", offset = Vector2.new(0, 341), rect = Vector2.new(341, 341) }
 assets.pickaxeDiamond =
-	{ image = "rbxassetid://99300582266284", offset = Vector2.new(341, 341), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://93677580281657", offset = Vector2.new(341, 341), rect = Vector2.new(341, 341) }
 assets.pickaxeStrawberry =
-	{ image = "rbxassetid://99300582266284", offset = Vector2.new(682, 341), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://93677580281657", offset = Vector2.new(682, 341), rect = Vector2.new(341, 341) }
 assets.pickaxeCactus =
-	{ image = "rbxassetid://99300582266284", offset = Vector2.new(0, 682), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://93677580281657", offset = Vector2.new(0, 682), rect = Vector2.new(341, 341) }
 assets.pickaxeLightning =
-	{ image = "rbxassetid://99300582266284", offset = Vector2.new(341, 682), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://93677580281657", offset = Vector2.new(341, 682), rect = Vector2.new(341, 341) }
 assets.pickaxeCandy =
-	{ image = "rbxassetid://99300582266284", offset = Vector2.new(682, 682), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://93677580281657", offset = Vector2.new(682, 682), rect = Vector2.new(341, 341) }
 assets.pickaxeRainbow =
-	{ image = "rbxassetid://99607759575544", offset = Vector2.new(0, 0), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://126846595998941", offset = Vector2.new(0, 0), rect = Vector2.new(341, 341) }
 assets.pickaxeCrystal =
-	{ image = "rbxassetid://99607759575544", offset = Vector2.new(341, 0), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://126846595998941", offset = Vector2.new(341, 0), rect = Vector2.new(341, 341) }
 assets.pickaxeDemon =
-	{ image = "rbxassetid://99607759575544", offset = Vector2.new(682, 0), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://126846595998941", offset = Vector2.new(682, 0), rect = Vector2.new(341, 341) }
 assets.pickaxeHacker =
-	{ image = "rbxassetid://99607759575544", offset = Vector2.new(0, 341), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://126846595998941", offset = Vector2.new(0, 341), rect = Vector2.new(341, 341) }
 assets.pickaxeUFO =
-	{ image = "rbxassetid://99607759575544", offset = Vector2.new(341, 341), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://126846595998941", offset = Vector2.new(341, 341), rect = Vector2.new(341, 341) }
 assets.pickaxeSecret =
-	{ image = "rbxassetid://99607759575544", offset = Vector2.new(682, 341), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://126846595998941", offset = Vector2.new(682, 341), rect = Vector2.new(341, 341) }
 assets.pickaxeCool =
-	{ image = "rbxassetid://99607759575544", offset = Vector2.new(0, 682), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://126846595998941", offset = Vector2.new(0, 682), rect = Vector2.new(341, 341) }
 assets.pickaxeGalaxy =
-	{ image = "rbxassetid://99607759575544", offset = Vector2.new(341, 682), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://126846595998941", offset = Vector2.new(341, 682), rect = Vector2.new(341, 341) }
 assets.pickaxeCelestial =
-	{ image = "rbxassetid://99607759575544", offset = Vector2.new(682, 682), rect = Vector2.new(341, 341) }
+	{ image = "rbxassetid://126846595998941", offset = Vector2.new(682, 682), rect = Vector2.new(341, 341) }
 return assets

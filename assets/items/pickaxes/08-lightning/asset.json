@@ -43,8 +43,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://82685402077422",
-    "textureId": "rbxassetid://96888424705402",
+    "meshId": "rbxassetid://115309506378708",
+    "textureId": "rbxassetid://110678039775687",
     "templatePath": "ReplicatedStorage.PickaxeModels.Lightning",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.LightningPickaxe"
   }

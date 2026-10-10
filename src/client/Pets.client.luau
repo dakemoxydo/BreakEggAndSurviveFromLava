@@ -117,8 +117,6 @@ local function update(screenPoint)
 	local ray
 	if screenPoint then
 		ray = camera:ViewportPointToRay(screenPoint.X, screenPoint.Y)
-	elseif UIS:GetLastInputType().Name:match("^Gamepad") then
-		ray = camera:ViewportPointToRay(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
 	else
 		local mouse = UIS:GetMouseLocation()
 		-- GetMouseLocation includes the top bar; use viewport coordinates without a second inset.
@@ -226,7 +224,7 @@ UIS.InputBegan:Connect(function(input, processed)
 	if processed then
 		return
 	end
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.KeyCode == Enum.KeyCode.ButtonR2 then
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		task.spawn(place)
 	elseif input.KeyCode == Enum.KeyCode.Escape and heldTool() then
 		local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
@@ -253,9 +251,7 @@ local function refreshModel(model)
 	for _, v in model:GetDescendants() do
 		if v:IsA("BasePart") then
 			v.LocalTransparencyModifier = visible and 0 or 1
-		elseif v:IsA("BillboardGui") then
-			v.Enabled = visible
-		elseif v:IsA("Highlight") then
+		elseif v:IsA("BillboardGui") or v:IsA("Highlight") then
 			v.Enabled = visible
 		end
 	end
@@ -294,9 +290,12 @@ RunService.PreSimulation:Connect(function(dt)
 			carryPoses[character] = state
 			for _, joint in character:GetDescendants() do
 				if joint:IsA("Motor6D") or joint:IsA("AnimationConstraint") then
-					local sign = (
-						{ RightShoulder = 1, ["Right Shoulder"] = 1, LeftShoulder = -1, ["Left Shoulder"] = -1 }
-					)[joint.Name]
+					local sign = ({
+						RightShoulder = 1,
+						["Right Shoulder"] = 1,
+						LeftShoulder = -1,
+						["Left Shoulder"] = -1,
+					})[joint.Name]
 					local elbow = joint.Name == "RightElbow" or joint.Name == "LeftElbow"
 					if sign or elbow then
 						table.insert(
@@ -334,7 +333,8 @@ RunService.PreSimulation:Connect(function(dt)
 	end
 end)
 local function attachPetVisual(model)
-	if not model:IsA("Model") or model:GetAttribute("PetVisual") ~= true or petVisuals[model] then
+	local animated = model:GetAttribute("PetVisual") == true or model:GetAttribute("Guardian") == true
+	if not model:IsA("Model") or not animated or petVisuals[model] then
 		return
 	end
 	local rig = PetAnimation.bind(model)
@@ -355,6 +355,22 @@ local function attachPetVisual(model)
 		walkWeight = 0,
 		walking = model:GetAttribute("PetWalking") == true,
 	}
+	-- Imported rigs carry their own Idle/Walk clips; tracks play locally on every client.
+	local animator = model:FindFirstChild("Animator", true)
+	local animations = model:FindFirstChild("Animations")
+	if rig.generic and animator and animations then
+		local tracks = {}
+		for _, name in { "Idle", "Walk" } do
+			local animation = animations:FindFirstChild(name)
+			if animation and animation:IsA("Animation") and animation.AnimationId ~= "" then
+				local track = animator:LoadAnimation(animation)
+				track.Looped = true
+				track:Play(0, 0.001)
+				tracks[name] = track
+			end
+		end
+		state.tracks = next(tracks) and tracks or nil
+	end
 	petVisuals[model] = state
 	local function refreshTarget()
 		local at = model:GetAttribute("PetPosition")
@@ -406,7 +422,13 @@ RunService.RenderStepped:Connect(function(dt)
 			state.phase = (state.phase + dt * PetAnimation.WalkCycleSpeed) % (math.pi * 2)
 		end
 		if state.rig.Body.Parent and state.rig.Body.LocalTransparencyModifier < 1 then
-			if state.rig.generic then
+			if state.tracks then
+				model:PivotTo(state.current)
+				for name, track in state.tracks do
+					local weight = name == "Walk" and state.walkWeight or 1 - state.walkWeight
+					track:AdjustWeight(math.max(weight, 0.001), 0)
+				end
+			elseif state.rig.generic then
 				model:PivotTo(
 					state.current * CFrame.new(0, math.abs(math.sin(state.phase)) * 0.12 * state.walkWeight, 0)
 				)
@@ -475,7 +497,7 @@ RunService.RenderStepped:Connect(function(dt)
 		local camera = workspace.CurrentCamera
 		if camera and UIS.MouseEnabled and not player:GetAttribute("UIWindowOpen") then
 			local cursor = UIS:GetMouseLocation()
-			local ray = camera:ScreenPointToRay(cursor.X, cursor.Y)
+			local ray = camera:ViewportPointToRay(cursor.X, cursor.Y)
 			local closest = 140
 			hoverRayParams.FilterDescendantsInstances = player.Character and { player.Character } or {}
 			local obstacle = workspace:Raycast(ray.Origin, ray.Direction * 140, hoverRayParams)

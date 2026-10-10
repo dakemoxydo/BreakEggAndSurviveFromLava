@@ -44,8 +44,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://90738514604134",
-    "textureId": "rbxassetid://125433804733622",
+    "meshId": "rbxassetid://139200757956601",
+    "textureId": "rbxassetid://97354211795586",
     "templatePath": "ReplicatedStorage.PickaxeModels.Diamond",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.DiamondPickaxe"
   }

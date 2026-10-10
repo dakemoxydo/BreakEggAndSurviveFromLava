@@ -50,108 +50,87 @@ local function OfflineCash(p)
 			C.white
 		),
 	}
-	return e(
-		"Frame",
-		{
-			Name = "OfflineReward",
+	return e("Frame", {
+		Name = "OfflineReward",
+		BackgroundTransparency = 1,
+		Position = UDim2.fromOffset(0, p.headerH),
+		Size = UDim2.fromOffset(w, h),
+	}, {
+		Glow = e("Frame", {
+			Name = "RewardGlow",
+			Position = UDim2.fromOffset(8, 8),
+			Size = UDim2.fromOffset(w - 16, buttonY - 4),
+			BackgroundColor3 = C.green,
+			BackgroundTransparency = 0.95,
+			BorderSizePixel = 0,
+			ZIndex = 1,
+		}, {
+			Corner = e("UICorner", { CornerRadius = UDim.new(0, 8) }),
+			Fade = e("UIGradient", {
+				Rotation = 90,
+				Transparency = NumberSequence.new({
+					NumberSequenceKeypoint.new(0, 1),
+					NumberSequenceKeypoint.new(0.65, 0.2),
+					NumberSequenceKeypoint.new(1, 1),
+				}),
+			}),
+		}),
+		Earned = UI.text(
+			"You earned:",
+			margin,
+			low and 8 or 20,
+			w - margin * 2,
+			low and 32 or narrow and 40 or 60,
+			low and 28 or narrow and 34 or 60
+		),
+		Burst = burst,
+		Cash = UI.icon("cash", (w - cashW) / 2, cashY, cashW, cashH),
+		Amount = UI.text(
+			"$" .. p.amount,
+			margin,
+			cashY + cashH * 0.36,
+			w - margin * 2,
+			math.max(54, amountSize * 1.35),
+			amountSize,
+			C.green
+		),
+		Claim = e(UI.Button, {
+			name = "ClaimOffline",
+			label = p.busy and "Claiming..." or "Claim",
+			x = margin,
+			y = buttonY,
+			w = claimW,
+			h = buttonH,
+			color = C.green,
+			textSize = low and 32 or narrow and 38 or 64,
+			halftone = true,
+			hoverScale = 1.025,
+			disabled = p.busy,
+			onClick = p.onClaim,
+		}),
+		Double = e(UI.Button, {
+			name = "DoubleOffline",
+			x = margin + claimW + gap,
+			y = buttonY,
+			w = doubleW,
+			h = buttonH,
+			color = C.purple,
+			halftone = true,
+			hoverScale = 1.025,
+			disabled = true,
+			disabledColor = C.purple:Lerp(C.body, 0.18),
+			children = doubleContents,
+		}),
+		DoubleBadge = not low and e("Frame", {
+			Name = "DoubleBadge",
 			BackgroundTransparency = 1,
-			Position = UDim2.fromOffset(0, p.headerH),
-			Size = UDim2.fromOffset(w, h),
-		},
-		{
-			Glow = e(
-				"Frame",
-				{
-					Name = "RewardGlow",
-					Position = UDim2.fromOffset(8, 8),
-					Size = UDim2.fromOffset(w - 16, buttonY - 4),
-					BackgroundColor3 = C.green,
-					BackgroundTransparency = 0.95,
-					BorderSizePixel = 0,
-					ZIndex = 1,
-				},
-				{
-					Corner = e("UICorner", { CornerRadius = UDim.new(0, 8) }),
-					Fade = e(
-						"UIGradient",
-						{
-							Rotation = 90,
-							Transparency = NumberSequence.new({
-								NumberSequenceKeypoint.new(0, 1),
-								NumberSequenceKeypoint.new(0.65, 0.2),
-								NumberSequenceKeypoint.new(1, 1),
-							}),
-						}
-					),
-				}
-			),
-			Earned = UI.text(
-				"You earned:",
-				margin,
-				low and 8 or 20,
-				w - margin * 2,
-				low and 32 or narrow and 40 or 60,
-				low and 28 or narrow and 34 or 60
-			),
-			Burst = burst,
-			Cash = UI.icon("cash", (w - cashW) / 2, cashY, cashW, cashH),
-			Amount = UI.text(
-				"$" .. p.amount,
-				margin,
-				cashY + cashH * 0.36,
-				w - margin * 2,
-				math.max(54, amountSize * 1.35),
-				amountSize,
-				C.green
-			),
-			Claim = e(
-				UI.Button,
-				{
-					name = "ClaimOffline",
-					label = p.busy and "Claiming..." or "Claim",
-					x = margin,
-					y = buttonY,
-					w = claimW,
-					h = buttonH,
-					color = C.green,
-					textSize = low and 32 or narrow and 38 or 64,
-					halftone = true,
-					hoverScale = 1.025,
-					disabled = p.busy,
-					onClick = p.onClaim,
-				}
-			),
-			Double = e(
-				UI.Button,
-				{
-					name = "DoubleOffline",
-					x = margin + claimW + gap,
-					y = buttonY,
-					w = doubleW,
-					h = buttonH,
-					color = C.purple,
-					halftone = true,
-					hoverScale = 1.025,
-					disabled = true,
-					disabledColor = C.purple:Lerp(C.body, 0.18),
-					children = doubleContents,
-				}
-			),
-			DoubleBadge = not low and e(
-				"Frame",
-				{
-					Name = "DoubleBadge",
-					BackgroundTransparency = 1,
-					Position = UDim2.fromOffset(w - margin - (narrow and 60 or 84), buttonY - 25),
-					Size = UDim2.fromOffset(narrow and 70 or 92, 48),
-					Rotation = 15,
-					ZIndex = 10,
-				},
-				{
-					Text = UI.text("2x", 0, 0, narrow and 70 or 92, 48, narrow and 34 or 44, C.purple),
-				}
-			) or nil,
-		}
-	)
+			Position = UDim2.fromOffset(w - margin - (narrow and 60 or 84), buttonY - 25),
+			Size = UDim2.fromOffset(narrow and 70 or 92, 48),
+			Rotation = 15,
+			ZIndex = 10,
+		}, {
+			Text = UI.text("2x", 0, 0, narrow and 70 or 92, 48, narrow and 34 or 44, C.purple),
+		}) or nil,
+	})
 end
 return React.memo(OfflineCash)

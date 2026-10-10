@@ -43,8 +43,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://85631105250473",
-    "textureId": "rbxassetid://80061973709515",
+    "meshId": "rbxassetid://93410635942929",
+    "textureId": "rbxassetid://125507369783655",
     "templatePath": "ReplicatedStorage.PickaxeModels.Crystal",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.CrystalPickaxe"
   }

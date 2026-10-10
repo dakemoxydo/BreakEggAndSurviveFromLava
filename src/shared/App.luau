@@ -2,7 +2,6 @@ local RS = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local MarketplaceService = game:GetService("MarketplaceService")
-local GuiService = game:GetService("GuiService")
 local React = require(RS.Packages.React)
 local UI = require(script.Parent.UI)
 local Theme = require(script.Parent.Theme)
@@ -16,6 +15,9 @@ local useToolDrag = require(script.Parent.useToolDrag)
 local ToolDragPreview = require(script.Parent.ToolDragPreview)
 local Settings = require(script.Parent.Settings)
 local EquipmentShop = require(script.Parent.EquipmentShop)
+local TrailsShop = require(script.Parent.TrailsShop)
+local Figma = require(script.Parent.FigmaTemplate)
+local FigmaHud = require(script.Parent.FigmaHud)
 local ModelPreview = require(script.Parent.ModelPreview)
 local Game = require(RS:WaitForChild("GameConfig"))
 local AdventurePanels = require(script.Parent.AdventurePanels)
@@ -111,11 +113,9 @@ local function App(props)
 	local current = React.useRef({ screen = screen, category = shopCategory })
 	local navigationRevision = React.useRef(0)
 	current.current = { screen = screen, category = shopCategory, closing = closing }
-	local focusBefore = React.useRef(nil)
 	local scrollRef = React.useRef(nil)
 	local sectionOffsets = React.useRef({})
 	local scrollPositions = React.useRef({})
-	local closingRef = React.useRef(nil)
 	local mounted = React.useRef(true)
 	local rootRef = React.useRef(nil)
 	local compact = viewport.X < 900
@@ -273,16 +273,13 @@ local function App(props)
 				end
 			end
 			if not assigned then
-				table.insert(
-					result[kind],
-					{
-						name = tool.Name,
-						tool = tool,
-						kind = tool:GetAttribute("PetKind"),
-						weight = tool:GetAttribute("PetWeight") or 1,
-						held = tool == backpack.held,
-					}
-				)
+				table.insert(result[kind], {
+					name = tool.Name,
+					tool = tool,
+					kind = tool:GetAttribute("PetKind"),
+					weight = tool:GetAttribute("PetWeight") or 1,
+					held = tool == backpack.held,
+				})
 			end
 		end
 		return result
@@ -351,10 +348,11 @@ local function App(props)
 			end)
 		end
 		local camera = workspace.CurrentCamera
-		local connections =
-			{ camera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
+		local connections = {
+			camera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
 				setViewport(camera.ViewportSize)
-			end) }
+			end),
+		}
 		for key in Config.DataDefaults do
 			table.insert(
 				connections,
@@ -474,20 +472,8 @@ local function App(props)
 		end
 	end, { data.GameplayNoticeAt })
 	React.useEffect(function()
-		if screen then
-			focusBefore.current = GuiService.SelectedObject
-			task.defer(function()
-				if mounted.current and UserInputService.GamepadEnabled then
-					GuiService.SelectedObject = closingRef.current
-				end
-			end)
-		else
-			if focusBefore.current and focusBefore.current.Parent then
-				GuiService.SelectedObject = focusBefore.current
-			end
-		end
 		local connection = UserInputService.InputBegan:Connect(function(input, processed)
-			if input.KeyCode == Enum.KeyCode.Escape or input.KeyCode == Enum.KeyCode.ButtonB then
+			if input.KeyCode == Enum.KeyCode.Escape then
 				close()
 			end
 			if processed then
@@ -515,25 +501,26 @@ local function App(props)
 		return nil
 	end, {})
 	local function button(label, x, y, w, h, color, callback, icon, textSize, name)
-		local section = (
-			{ OpenShop = "Shop", OpenIndex = "Index", OpenPets = "Pets", Eggs = "Eggs", OpenSettings = "Settings" }
-		)[name or ""]
-		return e(
-			UI.Button,
-			{
-				label = label,
-				x = x,
-				y = y,
-				w = w,
-				h = h,
-				color = color,
-				onClick = callback,
-				icon = icon,
-				textSize = textSize,
-				name = name,
-				selected = section ~= nil and screen == section and not closing,
-			}
-		)
+		local section = ({
+			OpenShop = "Shop",
+			OpenIndex = "Index",
+			OpenPets = "Pets",
+			Eggs = "Eggs",
+			OpenSettings = "Settings",
+		})[name or ""]
+		return e(UI.Button, {
+			label = label,
+			x = x,
+			y = y,
+			w = w,
+			h = h,
+			color = color,
+			onClick = callback,
+			icon = icon,
+			textSize = textSize,
+			name = name,
+			selected = section ~= nil and screen == section and not closing,
+		})
 	end
 	local function shopText(label, x, y, w, h, size, color, align)
 		return UI.text(label, x, y, w, h, size, color, align, Theme.index.outline)
@@ -598,15 +585,12 @@ local function App(props)
 		local y = 8
 		sectionOffsets.current = {}
 		sections.Layout = e("UIListLayout", { Padding = UDim.new(0, 24), SortOrder = Enum.SortOrder.LayoutOrder })
-		sections.Padding = e(
-			"UIPadding",
-			{
-				PaddingLeft = UDim.new(0, 8),
-				PaddingRight = UDim.new(0, 8),
-				PaddingTop = UDim.new(0, 8),
-				PaddingBottom = UDim.new(0, 20),
-			}
-		)
+		sections.Padding = e("UIPadding", {
+			PaddingLeft = UDim.new(0, 8),
+			PaddingRight = UDim.new(0, 8),
+			PaddingTop = UDim.new(0, 8),
+			PaddingBottom = UDim.new(0, 20),
+		})
 		local order = 0
 		local function add(name, h, content)
 			order += 1
@@ -676,22 +660,19 @@ local function App(props)
 		for i, chance in chances do
 			local col = (i - 1) % petColumns
 			local row = math.floor((i - 1) / petColumns)
-			hero["Pet" .. i] = e(
-				UI.Surface,
-				{
-					variant = "shop",
-					quiet = true,
-					x = petStart + col * (petWidth + 12),
-					y = petY + row * (petH + 12),
-					w = petWidth,
-					h = petH,
-					color = i > 5 and C.purple:Lerp(C.body, 0.3) or C.muted:Lerp(C.body, 0.4),
-					children = {
-						Pet = UI.icon("dragon" .. i, 8, 10, petWidth - 16, petH - 50),
-						Chance = shopText(chance, 6, petH - 36, petWidth - 12, 26, 20, i > 5 and C.gold or C.white),
-					},
-				}
-			)
+			hero["Pet" .. i] = e(UI.Surface, {
+				variant = "shop",
+				quiet = true,
+				x = petStart + col * (petWidth + 12),
+				y = petY + row * (petH + 12),
+				w = petWidth,
+				h = petH,
+				color = i > 5 and C.purple:Lerp(C.body, 0.3) or C.muted:Lerp(C.body, 0.4),
+				children = {
+					Pet = UI.icon("dragon" .. i, 8, 10, petWidth - 16, petH - 50),
+					Chance = shopText(chance, 6, petH - 36, petWidth - 12, 26, 20, i > 5 and C.gold or C.white),
+				},
+			})
 		end
 		-- Keep quantity and price together, ascending from the smallest pack.
 		if anyAvailable then
@@ -708,20 +689,16 @@ local function App(props)
 			hero.Availability = shopText("Unavailable", 20, buyY, heroW - 40, 32, 26, C.white)
 			hero.PackSummary = shopText("Egg packs are not available yet.", 20, buyY + 36, heroW - 40, 28, 20, C.white)
 		end
-		add(
-			"Featured",
-			heroH + 4,
-			{ Hero = e(
+		add("Featured", heroH + 4, {
+			Hero = e(
 				UI.Surface,
 				{ variant = "shop", w = heroW, h = heroH, color = C.purple:Lerp(C.body, 0.72), children = hero }
-			) }
-		)
+			),
+		})
 		for _, section in { "Game Passes", "Speed Packs", "Cash Packs" } do
 			sectionOffsets.current[section] = y
-			add(
-				section .. "Title",
-				48,
-				{ Title = shopText(
+			add(section .. "Title", 48, {
+				Title = shopText(
 					"~" .. section .. "~",
 					8,
 					0,
@@ -729,8 +706,8 @@ local function App(props)
 					48,
 					40,
 					section == "Speed Packs" and C.blue or C.green
-				) }
-			)
+				),
+			})
 			local list = {}
 			for _, offer in Config.Offers do
 				if offer.section == section then
@@ -742,15 +719,12 @@ local function App(props)
 			local cw = (innerW - (columns - 1) * 24) / columns
 			local ch = section == "Game Passes" and (cw < 300 and 376 or 276) or 288
 			local cards = {
-				Layout = e(
-					"UIGridLayout",
-					{
-						CellSize = UDim2.fromOffset(cw, ch),
-						CellPadding = UDim2.fromOffset(24, 24),
-						FillDirectionMaxCells = columns,
-						SortOrder = Enum.SortOrder.LayoutOrder,
-					}
-				),
+				Layout = e("UIGridLayout", {
+					CellSize = UDim2.fromOffset(cw, ch),
+					CellPadding = UDim2.fromOffset(24, 24),
+					FillDirectionMaxCells = columns,
+					SortOrder = Enum.SortOrder.LayoutOrder,
+				}),
 			}
 			for i, offer in list do
 				cards[offer.key] = e(
@@ -788,23 +762,19 @@ local function App(props)
 		end
 		return {
 			Tabs = transparent(0, 0, windowW, scrollTop - 14, tabs),
-			ShopScroller = e(
-				"ScrollingFrame",
-				{
-					Name = "ShopScroll",
-					ref = scrollRef,
-					BackgroundTransparency = 1,
-					BorderSizePixel = 0,
-					Position = UDim2.fromOffset(16, scrollTop),
-					Size = UDim2.fromOffset(windowW - 32, windowH - scrollTop - 24),
-					CanvasSize = UDim2.fromOffset(0, y + 12),
-					ScrollBarThickness = 5,
-					ScrollBarImageColor3 = C.muted:Lerp(C.white, 0.35),
-					ScrollingDirection = Enum.ScrollingDirection.Y,
-					Active = true,
-				},
-				sections
-			),
+			ShopScroller = e("ScrollingFrame", {
+				Name = "ShopScroll",
+				ref = scrollRef,
+				BackgroundTransparency = 1,
+				BorderSizePixel = 0,
+				Position = UDim2.fromOffset(16, scrollTop),
+				Size = UDim2.fromOffset(windowW - 32, windowH - scrollTop - 24),
+				CanvasSize = UDim2.fromOffset(0, y + 12),
+				ScrollBarThickness = 5,
+				ScrollBarImageColor3 = C.muted:Lerp(C.white, 0.35),
+				ScrollingDirection = Enum.ScrollingDirection.Y,
+				Active = true,
+			}, sections),
 		}
 	end
 	local function index()
@@ -886,10 +856,14 @@ local function App(props)
 						end,
 						children = {
 							Name = text(pet.owned and pet.name or "???", 8, 6, cell - 16, 40, 20),
-							Image = e(
-								ModelPreview,
-								{ kind = pet.key, x = 10, y = 48, w = cell - 20, h = cardH - 60, locked = not pet.owned }
-							),
+							Image = e(ModelPreview, {
+								kind = pet.key,
+								x = 10,
+								y = 48,
+								w = cell - 20,
+								h = cardH - 60,
+								locked = not pet.owned,
+							}),
 						},
 					}),
 				})
@@ -903,26 +877,23 @@ local function App(props)
 				Progress = UI.progress(category, owned, #pets, gridX, progressY, gridW, 52, C.green, "index"),
 			}
 			if showContext then
-				contents.Context = e(
-					UI.Surface,
-					{
-						variant = "index",
-						quiet = true,
-						x = 12,
-						y = 0,
-						w = contextW,
-						h = sectionH - 12,
-						color = ({ Forest = C.green, Desert = C.gold, Snow = C.blue, Titanic = C.purple })[category]:Lerp(
-							C.body,
-							0.6
-						),
-						children = {
-							Title = text(category, 8, 16, contextW - 16, 32, 23),
-							Egg = UI.icon("egg", 14, 66, contextW - 28, math.min(140, sectionH - 134)),
-							Count = text(owned .. "/" .. #pets, 8, sectionH - 64, contextW - 16, 32, 24),
-						},
-					}
-				)
+				contents.Context = e(UI.Surface, {
+					variant = "index",
+					quiet = true,
+					x = 12,
+					y = 0,
+					w = contextW,
+					h = sectionH - 12,
+					color = ({ Forest = C.green, Desert = C.gold, Snow = C.blue, Titanic = C.purple })[category]:Lerp(
+						C.body,
+						0.6
+					),
+					children = {
+						Title = text(category, 8, 16, contextW - 16, 32, 23),
+						Egg = UI.icon("egg", 14, 66, contextW - 28, math.min(140, sectionH - 134)),
+						Count = text(owned .. "/" .. #pets, 8, sectionH - 64, contextW - 16, 32, 24),
+					},
+				})
 			else
 				contents.Title = text(category, 12, 0, leftW - 36, 32, 25, C.white, Enum.TextXAlignment.Left)
 			end
@@ -1023,60 +994,51 @@ local function App(props)
 			rewardContents.Label = text("$100 · +60 Speed", 12, 8, rightW - 24, 26, 20)
 		end
 		return {
-			ScrollBody = e(
-				UI.Surface,
-				{
-					variant = "index",
-					name = "IndexCollection",
-					x = 16,
-					y = scrollY,
-					w = leftW,
-					h = scrollH,
-					color = C.body,
-					quiet = true,
-					children = {
-						IndexScroller = e("ScrollingFrame", {
-							Name = "IndexScroll",
-							BackgroundTransparency = 1,
-							BorderSizePixel = 0,
-							Position = UDim2.fromOffset(0, 4),
-							Size = UDim2.new(1, 0, 1, -8),
-							CanvasSize = UDim2.fromOffset(0, sectionY),
-							ScrollBarThickness = 5,
-							ScrollBarImageColor3 = C.white,
-							ScrollingDirection = Enum.ScrollingDirection.Y,
-							Active = true,
-						}, sections),
-					},
-				}
-			),
-			Detail = e(
-				UI.Surface,
-				{
-					variant = "index",
-					burst = wide and not short and pet.owned,
-					name = "IndexDetail",
-					x = rightX,
-					y = bodyY,
-					w = rightW,
-					h = detailH,
-					color = detailColor,
-					children = detailContents,
-				}
-			),
-			Rewards = e(
-				UI.Surface,
-				{
-					variant = "index",
-					name = "IndexRewards",
-					x = rightX,
-					y = rewardY,
-					w = rightW,
-					h = rewardH,
-					color = C.green:Lerp(C.body, 0.7),
-					children = rewardContents,
-				}
-			),
+			ScrollBody = e(UI.Surface, {
+				variant = "index",
+				name = "IndexCollection",
+				x = 16,
+				y = scrollY,
+				w = leftW,
+				h = scrollH,
+				color = C.body,
+				quiet = true,
+				children = {
+					IndexScroller = e("ScrollingFrame", {
+						Name = "IndexScroll",
+						BackgroundTransparency = 1,
+						BorderSizePixel = 0,
+						Position = UDim2.fromOffset(0, 4),
+						Size = UDim2.new(1, 0, 1, -8),
+						CanvasSize = UDim2.fromOffset(0, sectionY),
+						ScrollBarThickness = 5,
+						ScrollBarImageColor3 = C.white,
+						ScrollingDirection = Enum.ScrollingDirection.Y,
+						Active = true,
+					}, sections),
+				},
+			}),
+			Detail = e(UI.Surface, {
+				variant = "index",
+				burst = wide and not short and pet.owned,
+				name = "IndexDetail",
+				x = rightX,
+				y = bodyY,
+				w = rightW,
+				h = detailH,
+				color = detailColor,
+				children = detailContents,
+			}),
+			Rewards = e(UI.Surface, {
+				variant = "index",
+				name = "IndexRewards",
+				x = rightX,
+				y = rewardY,
+				w = rightW,
+				h = rewardH,
+				color = C.green:Lerp(C.body, 0.7),
+				children = rewardContents,
+			}),
 			Total = UI.progress(
 				"Unlocked",
 				data.UnlockedPets or totalOwned,
@@ -1110,6 +1072,11 @@ local function App(props)
 		return screen == "Shop" and shop() or nil
 	end, { screen == "Shop", windowW, windowH, headerH, compact, shopCategory })
 	local hud = {}
+	-- shortcut: the Figma HUD is laid out for landscape only; compact screens keep the React HUD.
+	local figmaHud = not compact and Figma.get("Hud") ~= nil
+	local figmaScale = math.min(width / 1920, height / 1080)
+	-- Figma HUD frees the top row (old Settings spot, clear of the Roblox top bar) for Slow Mode.
+	local slowX, slowY = figmaHud and 244 or 20, figmaHud and 12 or height * 0.36 + 176
 	if compact then
 		local navW = math.min(168, (width - 184) / 2)
 		local navY = narrow and 118 or 62
@@ -1135,8 +1102,8 @@ local function App(props)
 		-- Reference toggle: knob slides inside the track; ON/OFF text keeps the state readable without color.
 		hud.Slow = e(UI.Button, {
 			name = "SlowMode",
-			x = 20,
-			y = height * 0.36 + 176,
+			x = slowX,
+			y = slowY,
 			w = 120,
 			h = 52,
 			variant = "utility",
@@ -1152,7 +1119,7 @@ local function App(props)
 				State = UI.text(slow and "ON" or "OFF", slow and 6 or 52, 8, 62, 36, 20),
 			},
 		})
-		hud.SlowLabel = UI.text("Slow Mode", 148, height * 0.36 + 176, 170, 52, 26, nil, Enum.TextXAlignment.Left)
+		hud.SlowLabel = UI.text("Slow Mode", slowX + 128, slowY, 170, 52, 26, nil, Enum.TextXAlignment.Left)
 		hud.Egg = button(nil, width - 100, height * 0.38, 80, 80, C.red, function()
 			open("Eggs")
 		end, "egg", nil, "Eggs")
@@ -1183,31 +1150,25 @@ local function App(props)
 	})
 	local inventoryIcon = {}
 	for i = 0, 3 do
-		inventoryIcon["Cell" .. i] = e(
-			"Frame",
-			{
-				Position = UDim2.fromOffset(9 + (i % 2) * 14, 9 + math.floor(i / 2) * 14),
-				Size = UDim2.fromOffset(12, 12),
-				BackgroundColor3 = C.white,
-				BorderSizePixel = 0,
-			},
-			{ Corner = e("UICorner", { CornerRadius = UDim.new(0, 3) }) }
-		)
+		inventoryIcon["Cell" .. i] = e("Frame", {
+			Position = UDim2.fromOffset(9 + (i % 2) * 14, 9 + math.floor(i / 2) * 14),
+			Size = UDim2.fromOffset(12, 12),
+			BackgroundColor3 = C.white,
+			BorderSizePixel = 0,
+		}, { Corner = e("UICorner", { CornerRadius = UDim.new(0, 3) }) })
 	end
-	hud.Inventory = e(
-		UI.Button,
-		{
-			name = "OpenInventory",
-			x = compact and width - 120 or 300,
-			y = compact and (narrow and 62 or 14) or 12,
-			w = 44,
-			h = 44,
-			variant = "utility",
-			selected = inventoryOpen and not closing,
-			onClick = toggleInventory,
-			children = inventoryIcon,
-		}
-	)
+	hud.Inventory = e(UI.Button, {
+		name = "OpenInventory",
+		-- Figma HUD: next to Settings, above the left button column (its top is y=291 of 1080).
+		x = compact and width - 120 or figmaHud and 20 or 300,
+		y = compact and (narrow and 62 or 14) or figmaHud and 291 * figmaScale - 56 or 12,
+		w = 44,
+		h = 44,
+		variant = "utility",
+		selected = inventoryOpen and not closing,
+		onClick = toggleInventory,
+		children = inventoryIcon,
+	})
 	local toolCount = #backpack.tools
 	local hotbarLayout = Hotbar.layout(width, height, backpack.slots, false)
 	local autoSwingVisible = not screen and data.InField and not data.PlacementKind
@@ -1328,6 +1289,31 @@ local function App(props)
 		hud.EventIcon = nil
 		hud.Event = nil
 	end
+	if figmaHud then
+		for _, key in
+			{ "Shop", "Index", "Egg", "Pets", "Settings", "SpeedIcon", "Speed", "SpeedPlus", "CashIcon", "Cash" }
+		do
+			hud[key] = nil
+		end
+		hud.Figma = e(FigmaHud, {
+			width = width,
+			height = height,
+			speed = number(data.Speed),
+			cash = number(data.Cash),
+			showSides = not sidebarOpen,
+			showResources = not inventoryOpen,
+			reduced = data.ReducedMotion,
+			onOpen = open,
+			onSpeedPlus = function()
+				setShopCategory("Speed Packs")
+				open("Shop")
+			end,
+			onCashPlus = function()
+				setShopCategory("Cash Packs")
+				open("Shop")
+			end,
+		})
+	end
 	if (compact and screen ~= nil and not inventoryOpen and not sidebarOpen) or screen == "Offline Cash" then
 		hud = {}
 	end
@@ -1359,230 +1345,195 @@ local function App(props)
 				end
 			end,
 			reduced = data.ReducedMotion,
-			closeRef = closingRef,
 			onClose = close,
 			onClosed = closed,
 		})
 	elseif sidebarOpen then
-		rootChildren.Sidebar = e(
-			Sidebar,
-			{
-				kind = screen,
-				visible = not closing,
-				width = width,
-				height = height,
-				compact = compact,
-				pets = pets,
-				eggs = eggs,
-				capacity = data.PetCapacity,
-				cash = data.Cash,
-				slotCost = data.PetSlotCost,
-				growCost = data.GrowAllCost,
-				reduced = data.ReducedMotion,
-				busy = busy,
-				closeRef = closingRef,
-				onClose = close,
-				onClosed = closed,
-				onAction = action,
-			}
-		)
+		rootChildren.Sidebar = e(Sidebar, {
+			kind = screen,
+			visible = not closing,
+			width = width,
+			height = height,
+			compact = compact,
+			pets = pets,
+			eggs = eggs,
+			capacity = data.PetCapacity,
+			cash = data.Cash,
+			slotCost = data.PetSlotCost,
+			growCost = data.GrowAllCost,
+			reduced = data.ReducedMotion,
+			busy = busy,
+			onClose = close,
+			onClosed = closed,
+			onAction = action,
+		})
 	elseif screen then
 		local body
 		if screen == "Pickaxe Shop" or screen == "Trails Shop" then
 			body = {
-				Equipment = e(
-					EquipmentShop,
-					{
-						kind = screen,
-						width = windowW,
-						height = windowH,
-						headerH = headerH,
-						compact = compact,
-						owned = decode(screen == "Pickaxe Shop" and data.OwnedPickaxes or data.OwnedTrails) or { 1 },
-						equipped = screen == "Pickaxe Shop" and data.PickaxeLevel or data.TrailLevel,
-						cash = data.Cash,
-						busy = busy,
-						onAction = action,
-					}
-				),
+				Equipment = e(EquipmentShop, {
+					kind = screen,
+					width = windowW,
+					height = windowH,
+					headerH = headerH,
+					compact = compact,
+					owned = decode(screen == "Pickaxe Shop" and data.OwnedPickaxes or data.OwnedTrails) or { 1 },
+					equipped = screen == "Pickaxe Shop" and data.PickaxeLevel or data.TrailLevel,
+					cash = data.Cash,
+					busy = busy,
+					onAction = action,
+				}),
 			}
 		elseif screen == "Merge Pets" or screen == "Satchel Shop" then
 			body = {
-				Adventure = e(
-					AdventurePanels,
-					{
-						kind = screen,
-						width = windowW,
-						height = windowH,
-						headerH = headerH,
-						compact = compact,
-						data = data,
-						pets = pets,
-						busy = busy,
-						enabled = not closing,
-						onAction = action,
-					}
-				),
+				Adventure = e(AdventurePanels, {
+					kind = screen,
+					width = windowW,
+					height = windowH,
+					headerH = headerH,
+					compact = compact,
+					data = data,
+					pets = pets,
+					busy = busy,
+					enabled = not closing,
+					onAction = action,
+				}),
 			}
 		else
 			body = screen == "Settings"
 					and {
-						Settings = e(
-							Settings,
-							{
-								width = windowW,
-								height = windowH,
-								headerH = headerH,
-								compact = compact,
-								data = settingsData,
-								onAction = action,
-								enabled = not closing and not busy,
-							}
-						),
+						Settings = e(Settings, {
+							width = windowW,
+							height = windowH,
+							headerH = headerH,
+							compact = compact,
+							data = settingsData,
+							onAction = action,
+							enabled = not closing and not busy,
+						}),
 					}
 				or screen == "Shop" and table.clone(shopContent)
 				or screen == "Offline Cash" and offline()
 				or index()
 		end
-		body.Header = e(
-			UI.Surface,
-			{
-				variant = (screen == "Index" or screen == "Shop") and "index" or nil,
-				shine = screen == "Index" or screen == "Shop" or screen == "Offline Cash",
-				x = 0,
-				y = 0,
-				w = windowW,
-				h = headerH,
-				color = screen == "Settings" and C.muted:Lerp(C.white, 0.65)
-					or screen == "Index" and C.purple
-					or screen == "Pickaxe Shop" and C.gold
-					or screen == "Trails Shop" and C.blue
-					or C.green,
-				children = {
-					Title = UI.text(
-						screen,
-						22,
-						8,
-						windowW - (compact and 104 or 140),
-						math.max(36, headerH - 20),
-						screen == "Offline Cash" and (width < 600 and 32 or short and 36 or 80) or compact and 32 or 56,
-						nil,
-						Enum.TextXAlignment.Left,
-						(screen == "Index" or screen == "Shop") and Theme.index.outline or nil
-					),
-				},
-			}
-		)
-		body.Close = e(
-			UI.Button,
-			{
-				variant = (screen == "Index" or screen == "Shop") and "index" or nil,
-				name = "CloseWindow",
-				buttonRef = closingRef,
-				x = windowW - (compact and 61 or 79),
-				y = 14,
-				w = compact and 48 or 62,
-				h = compact and 48 or 62,
-				label = "X",
-				textSize = compact and 34 or 48,
-				color = C.red,
-				onClick = close,
-				z = 10,
-			}
-		)
-		rootChildren.Modal = e(
-			"Frame",
-			{
-				Name = "Modal",
-				Size = UDim2.fromOffset(width, height),
-				BackgroundTransparency = 1,
-				ZIndex = 20,
-				SelectionGroup = true,
-				SelectionBehaviorUp = Enum.SelectionBehavior.Stop,
-				SelectionBehaviorDown = Enum.SelectionBehavior.Stop,
-				SelectionBehaviorLeft = Enum.SelectionBehavior.Stop,
-				SelectionBehaviorRight = Enum.SelectionBehavior.Stop,
-			},
-			{
-				Blocker = e(
-					"TextButton",
-					{
-						Name = "ModalBlocker",
-						Size = UDim2.fromScale(1, 1),
-						BackgroundColor3 = C.ink,
-						BackgroundTransparency = 0.55,
-						Text = "",
-						AutoButtonColor = false,
-						Selectable = false,
-					}
+		body.Header = e(UI.Surface, {
+			variant = (screen == "Index" or screen == "Shop") and "index" or nil,
+			shine = screen == "Index" or screen == "Shop" or screen == "Offline Cash",
+			x = 0,
+			y = 0,
+			w = windowW,
+			h = headerH,
+			color = screen == "Settings" and C.muted:Lerp(C.white, 0.65)
+				or screen == "Index" and C.purple
+				or screen == "Pickaxe Shop" and C.gold
+				or screen == "Trails Shop" and C.blue
+				or C.green,
+			children = {
+				Title = UI.text(
+					screen,
+					22,
+					8,
+					windowW - (compact and 104 or 140),
+					math.max(36, headerH - 20),
+					screen == "Offline Cash" and (width < 600 and 32 or short and 36 or 80) or compact and 32 or 56,
+					nil,
+					Enum.TextXAlignment.Left,
+					(screen == "Index" or screen == "Shop") and Theme.index.outline or nil
 				),
-				Window = e(
-					UI.Transition,
-					{
-						name = "ModalTransition",
-						x = wx,
-						y = wy,
+			},
+		})
+		body.Close = e(UI.Button, {
+			variant = (screen == "Index" or screen == "Shop") and "index" or nil,
+			name = "CloseWindow",
+			x = windowW - (compact and 61 or 79),
+			y = 14,
+			w = compact and 48 or 62,
+			h = compact and 48 or 62,
+			label = "X",
+			textSize = compact and 34 or 48,
+			color = C.red,
+			onClick = close,
+			z = 10,
+		})
+		rootChildren.Modal = e("Frame", {
+			Name = "Modal",
+			Size = UDim2.fromOffset(width, height),
+			BackgroundTransparency = 1,
+			ZIndex = 20,
+		}, {
+			Blocker = e("TextButton", {
+				Name = "ModalBlocker",
+				Size = UDim2.fromScale(1, 1),
+				BackgroundColor3 = C.ink,
+				BackgroundTransparency = 0.55,
+				Text = "",
+				AutoButtonColor = false,
+				Selectable = false,
+			}),
+			Window = e(UI.Transition, {
+				name = "ModalTransition",
+				x = wx,
+				y = wy,
+				w = windowW,
+				h = windowH,
+				visible = not closing,
+				transitionKey = screen,
+				reduced = data.ReducedMotion,
+				onClosed = closed,
+				children = {
+					Window = screen == "Trails Shop" and Figma.get("TrailsShop") and e(TrailsShop, {
+						width = windowW,
+						height = windowH,
+						owned = decode(data.OwnedTrails) or { 1 },
+						equipped = data.TrailLevel,
+						cash = data.Cash,
+						busy = busy,
+						reduced = data.ReducedMotion,
+						onAction = action,
+						onClose = close,
+					}) or e(UI.Surface, {
+						variant = (screen == "Index" or screen == "Shop") and "index" or nil,
+						name = screen,
 						w = windowW,
 						h = windowH,
-						visible = not closing,
-						transitionKey = screen,
-						reduced = data.ReducedMotion,
-						onClosed = closed,
-						children = {
-							Window = e(
-								UI.Surface,
-								{
-									variant = (screen == "Index" or screen == "Shop") and "index" or nil,
-									name = screen,
-									w = windowW,
-									h = windowH,
-									color = C.body,
-									quiet = true,
-									z = 2,
-									children = body,
-								}
-							),
-						},
-					}
-				),
-			}
-		)
+						color = C.body,
+						quiet = true,
+						z = 2,
+						children = body,
+					}),
+				},
+			}),
+		})
 	end
 	rootChildren.Hotbar = screen ~= "Offline Cash"
 		and not (compact and screen ~= nil and not inventoryOpen)
-		and e(
-			Hotbar.Bar,
-			{
-				width = width,
-				height = height,
-				slots = backpack.slots,
-				slotRefs = backpack.slotRefs,
-				inventoryRef = backpack.inventoryRef,
-				held = backpack.held,
-				revision = backpack.revision,
-				open = inventoryOpen and not closing,
-				reduced = data.ReducedMotion,
-				equip = equipTool,
-				assign = assignTool,
-				drag = drag,
-			}
-		)
+		and e(Hotbar.Bar, {
+			width = width,
+			height = height,
+			slots = backpack.slots,
+			slotRefs = backpack.slotRefs,
+			inventoryRef = backpack.inventoryRef,
+			held = backpack.held,
+			revision = backpack.revision,
+			open = inventoryOpen and not closing,
+			reduced = data.ReducedMotion,
+			equip = equipTool,
+			assign = assignTool,
+			drag = drag,
+		})
 	rootChildren.Drag =
 		e(ToolDragPreview, { drag = drag, rootRef = rootRef, scale = scale, width = width, height = height })
 	if pendingLabel then
-		rootChildren.Pending = e(
-			UI.Surface,
-			{
-				name = "PendingAction",
-				x = (width - 220) / 2,
-				y = compact and narrow and not short and 124 or 8,
-				w = 220,
-				h = 40,
-				variant = "utility",
-				z = 60,
-				children = { Text = UI.text(pendingLabel, 8, 2, 204, 36, 22) },
-			}
-		)
+		rootChildren.Pending = e(UI.Surface, {
+			name = "PendingAction",
+			x = (width - 220) / 2,
+			y = compact and narrow and not short and 124 or 8,
+			w = 220,
+			h = 40,
+			variant = "utility",
+			z = 60,
+			children = { Text = UI.text(pendingLabel, 8, 2, 204, 36, 22) },
+		})
 	end
 	if autoSwingVisible then
 		rootChildren.AutoSwing = e(UI.Button, {
@@ -1603,72 +1554,66 @@ local function App(props)
 	end
 	if not screen and data.PlacementKind == "Egg" then
 		local bannerW = math.min(620, width - 32)
-		rootChildren.Placement = e(
-			UI.Surface,
-			{
-				name = "PlacementGuide",
-				x = (width - bannerW) / 2,
-				y = compact and (narrow and 180 or 124) or 76,
-				w = bannerW,
-				h = 142,
-				color = C.body,
-				quiet = true,
-				z = 40,
-				children = {
-					Title = UI.text(
-						data.PlacementKind == "Egg" and "Place your egg" or "Place your animal",
-						12,
-						8,
-						bannerW - 24,
-						36,
-						26,
-						C.gold
-					),
-					Hint = UI.text(
-						data.PlacementValid and "Click / tap the green spot on your base"
-							or "Aim inside the highlighted pen",
-						12,
-						50,
-						bannerW - 24,
-						38,
-						20
-					),
-					Cancel = e(UI.Button, {
-						name = "CancelPlacement",
-						label = "Cancel",
-						x = (bannerW - 128) / 2,
-						y = 98,
-						w = 128,
-						h = 32,
-						variant = "utility",
-						textSize = 20,
-						onClick = function()
-							local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-							if humanoid then
-								humanoid:UnequipTools()
-							end
-						end,
-					}),
-				},
-			}
-		)
+		rootChildren.Placement = e(UI.Surface, {
+			name = "PlacementGuide",
+			x = (width - bannerW) / 2,
+			y = compact and (narrow and 180 or 124) or 76,
+			w = bannerW,
+			h = 142,
+			color = C.body,
+			quiet = true,
+			z = 40,
+			children = {
+				Title = UI.text(
+					data.PlacementKind == "Egg" and "Place your egg" or "Place your animal",
+					12,
+					8,
+					bannerW - 24,
+					36,
+					26,
+					C.gold
+				),
+				Hint = UI.text(
+					data.PlacementValid and "Click / tap the green spot on your base"
+						or "Aim inside the highlighted pen",
+					12,
+					50,
+					bannerW - 24,
+					38,
+					20
+				),
+				Cancel = e(UI.Button, {
+					name = "CancelPlacement",
+					label = "Cancel",
+					x = (bannerW - 128) / 2,
+					y = 98,
+					w = 128,
+					h = 32,
+					variant = "utility",
+					textSize = 20,
+					onClick = function()
+						local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+						if humanoid then
+							humanoid:UnequipTools()
+						end
+					end,
+				}),
+			},
+		})
 	end
 	if message or (not screen and data.PlacementKind and data.PlacementError) then
 		local noticeW = math.min(580, width - 32)
-		rootChildren.ActionMessage = e(
-			UI.Surface,
-			{
-				name = "ActionMessage",
-				x = (width - noticeW) / 2,
-				y = compact and (narrow and 330 or 276) or 232,
-				w = noticeW,
-				h = 60,
-				color = C.body,
-				quiet = true,
-				z = 50,
-				children = { Text = UI.text(message or data.PlacementError, 12, 8, noticeW - 24, 42, 20) },
-			}
-		)
+		rootChildren.ActionMessage = e(UI.Surface, {
+			name = "ActionMessage",
+			x = (width - noticeW) / 2,
+			y = compact and (narrow and 330 or 276) or 232,
+			w = noticeW,
+			h = 60,
+			color = C.body,
+			quiet = true,
+			z = 50,
+			children = { Text = UI.text(message or data.PlacementError, 12, 8, noticeW - 24, 42, 20) },
+		})
 	end
 	return e(
 		UI.ReducedMotion.Provider,

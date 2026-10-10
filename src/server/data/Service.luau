@@ -162,35 +162,33 @@ function Service.Load(player)
 		profile:EndSession()
 		return nil
 	end
-	profile:AddUserId(player.UserId)
-	profile:Reconcile()
 	local original = deepCopy(profile.Data)
-	local migrated, reason = migrateLegacy(player, profile)
-	if not migrated then
+	-- Reject malformed data and migration errors through the same release path.
+	local prepared, valid, invalidReason = pcall(function()
+		profile:AddUserId(player.UserId)
+		profile:Reconcile()
+		local migrated, reason = migrateLegacy(player, profile)
+		if not migrated then
+			return false, reason
+		end
+		if profile.Data.discovered and type(profile.Data.discoveries) == "table" and #profile.Data.discoveries == 0 then
+			table.insert(profile.Data.discoveries, "TestChick")
+		end
+		if profile.Data.carriedKind ~= "" and profile.Data.carriedPet == false then
+			profile.Data.carriedPet = { kind = "TestChick", weight = 1 }
+		end
+		Schema.MigrateOffline(profile.Data)
+		local accepted, validationReason = Schema.Validate(profile.Data)
+		if not accepted then
+			return false, validationReason
+		end
+		Schema.MigrateBackpack(profile.Data)
+		return Schema.Validate(profile.Data)
+	end)
+	if not prepared or not valid then
 		profile.Data = original
 		profile:EndSession()
-		report(player, reason)
-		return nil
-	end
-	if profile.Data.discovered and #profile.Data.discoveries == 0 then
-		table.insert(profile.Data.discoveries, "TestChick")
-	end
-	if profile.Data.carriedKind ~= "" and profile.Data.carriedPet == false then
-		profile.Data.carriedPet = { kind = "TestChick", weight = 1 }
-	end
-	local valid, invalidReason = Schema.Validate(profile.Data)
-	if not valid then
-		profile.Data = original
-		profile:EndSession()
-		report(player, invalidReason)
-		return nil
-	end
-	Schema.MigrateBackpack(profile.Data)
-	local migratedValid, migratedReason = Schema.Validate(profile.Data)
-	if not migratedValid then
-		profile.Data = original
-		profile:EndSession()
-		report(player, migratedReason)
+		report(player, tostring(prepared and invalidReason or valid))
 		return nil
 	end
 	if player.Parent ~= Players or not profile:IsActive() then

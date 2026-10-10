@@ -51,16 +51,16 @@
       "creator": "DailySoundsFX"
     },
     {
-      "key": "HatchCharge, UIClick",
+      "key": "HatchCharge",
       "assetId": "106623224876186",
       "name": "Tiny Click - Daily Sounds",
       "creator": "DailySoundsFX"
     },
     {
-      "key": "UIHover",
-      "assetId": "138409154614452",
-      "name": "Toggle Click - Daily Sounds",
-      "creator": "DailySoundsFX"
+      "key": "UIClick",
+      "assetId": "88442833509532",
+      "name": "ui-simple-button-click",
+      "creator": "dakem (assets/audio/sfx/ui-click.mp3)"
     },
     {
       "key": "HatchPop",

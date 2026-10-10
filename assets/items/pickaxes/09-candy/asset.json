@@ -43,8 +43,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://72079467492358",
-    "textureId": "rbxassetid://102977099734663",
+    "meshId": "rbxassetid://70972386887237",
+    "textureId": "rbxassetid://106091844267549",
     "templatePath": "ReplicatedStorage.PickaxeModels.Candy",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.CandyPickaxe"
   }

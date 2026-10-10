@@ -38,33 +38,26 @@ function UI.text(text, x, y, w, h, size, color, align, outline, opts)
 	if opts.fit then
 		size = fitSize(text, size, w, h)
 	end
-	return e(
-		"TextLabel",
-		{
-			BackgroundTransparency = 1,
-			Position = UDim2.fromOffset(x, y),
-			Size = UDim2.fromOffset(w, h),
-			Text = text,
-			Font = Enum.Font.GothamBlack,
-			TextSize = size,
-			TextColor3 = color or Theme.colors.white,
-			TextXAlignment = align or Enum.TextXAlignment.Center,
-			TextWrapped = true,
-			RichText = opts.rich or false,
-			ZIndex = 8,
-		},
-		{
-			Outline = e(
-				"UIStroke",
-				{
-					Color = Theme.colors.ink,
-					Thickness = outline or Theme.outline,
-					StrokeSizingMode = Enum.StrokeSizingMode.FixedSize,
-					LineJoinMode = Enum.LineJoinMode.Round,
-				}
-			),
-		}
-	)
+	return e("TextLabel", {
+		BackgroundTransparency = 1,
+		Position = UDim2.fromOffset(x, y),
+		Size = UDim2.fromOffset(w, h),
+		Text = text,
+		Font = Enum.Font.GothamBlack,
+		TextSize = size,
+		TextColor3 = color or Theme.colors.white,
+		TextXAlignment = align or Enum.TextXAlignment.Center,
+		TextWrapped = true,
+		RichText = opts.rich or false,
+		ZIndex = 8,
+	}, {
+		Outline = e("UIStroke", {
+			Color = Theme.colors.ink,
+			Thickness = outline or Theme.outline,
+			StrokeSizingMode = Enum.StrokeSizingMode.FixedSize,
+			LineJoinMode = Enum.LineJoinMode.Round,
+		}),
+	})
 end
 function UI.hex(color)
 	return "#" .. color:ToHex()
@@ -102,46 +95,41 @@ function UI.icon(key, x, y, w, h, color)
 		properties.Size = UDim2.fromScale(1, 1)
 		properties.ZIndex = 2
 		children.Image = e("ImageLabel", properties)
-		return e(
-			"Frame",
-			{ Name = key, BackgroundTransparency = 1, Position = UDim2.fromOffset(x, y), Size = UDim2.fromOffset(w, h), ZIndex = 7 },
-			children
-		)
+		return e("Frame", {
+			Name = key,
+			BackgroundTransparency = 1,
+			Position = UDim2.fromOffset(x, y),
+			Size = UDim2.fromOffset(w, h),
+			ZIndex = 7,
+		}, children)
 	end
 	return e("ImageLabel", properties)
 end
 function UI.Surface(p)
 	if p.variant == "utility" then
-		return e(
-			"Frame",
-			{
-				Name = p.name,
-				BackgroundColor3 = p.selected and Theme.colors.muted or Theme.colors.ink,
-				BackgroundTransparency = p.selected and 0.15 or 0.35,
-				BorderSizePixel = 0,
-				Position = p.position or UDim2.fromOffset(p.x or 0, p.y or 0),
-				Size = p.size or UDim2.fromOffset(p.w, p.h),
-				ZIndex = p.z or 1,
-			},
-			{
-				Corner = corner(Theme.radius),
-				Selected = p.selected and e(
-					"UIStroke",
-					{
-						Name = "SelectedOutline",
-						Color = Theme.colors.white,
-						Thickness = 2,
-						ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-						StrokeSizingMode = Enum.StrokeSizingMode.FixedSize,
-					}
-				) or nil,
-				Content = e(
-					"Frame",
-					{ Name = "Content", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ZIndex = 6 },
-					p.children
-				),
-			}
-		)
+		return e("Frame", {
+			Name = p.name,
+			BackgroundColor3 = p.selected and Theme.colors.muted or Theme.colors.ink,
+			BackgroundTransparency = p.selected and 0.15 or 0.35,
+			BorderSizePixel = 0,
+			Position = p.position or UDim2.fromOffset(p.x or 0, p.y or 0),
+			Size = p.size or UDim2.fromOffset(p.w, p.h),
+			ZIndex = p.z or 1,
+		}, {
+			Corner = corner(Theme.radius),
+			Selected = p.selected and e("UIStroke", {
+				Name = "SelectedOutline",
+				Color = Theme.colors.white,
+				Thickness = 2,
+				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+				StrokeSizingMode = Enum.StrokeSizingMode.FixedSize,
+			}) or nil,
+			Content = e(
+				"Frame",
+				{ Name = "Content", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ZIndex = 6 },
+				p.children
+			),
+		})
 	end
 	return e(IndexSurface, p)
 end
@@ -149,7 +137,7 @@ function UI.Button(p)
 	local inputEnabled = React.useContext(UI.InputEnabled)
 	local reduced = React.useContext(UI.ReducedMotion)
 	local binding, update = React.useBinding(0)
-	local states = React.useRef({ hover = false, focus = false, pressed = false })
+	local states = React.useRef({ hover = false, pressed = false })
 	local hoverScale = p.hoverScale or (p.w > 240 and Theme.motion.denseHoverScale or Theme.motion.hoverScale)
 	local motion = React.useMemo(function()
 		return Ripple.createSpring(
@@ -177,7 +165,7 @@ function UI.Button(p)
 		end
 		states.current[key] = value
 		local s = states.current
-		local goal = (p.disabled or not inputEnabled) and 0 or (s.pressed and -1 or ((s.hover or s.focus) and 1 or 0))
+		local goal = (p.disabled or not inputEnabled) and 0 or (s.pressed and -1 or (s.hover and 1 or 0))
 		if reduced then
 			motion:stop()
 			motion:setGoal(goal)
@@ -191,7 +179,7 @@ function UI.Button(p)
 	end
 	React.useEffect(function()
 		if p.disabled or not inputEnabled then
-			states.current = { hover = false, focus = false, pressed = false }
+			states.current = { hover = false, pressed = false }
 			motion:stop()
 			motion:setGoal(0)
 			motion:setPosition(0)
@@ -212,7 +200,6 @@ function UI.Button(p)
 		if
 			input.UserInputType == Enum.UserInputType.MouseButton1
 			or input.UserInputType == Enum.UserInputType.Touch
-			or input.KeyCode == Enum.KeyCode.ButtonA
 		then
 			state("pressed", value)
 		end
@@ -224,7 +211,6 @@ function UI.Button(p)
 		local lost = UserInputService.WindowFocusReleased:Connect(function()
 			state("pressed", false)
 			state("hover", false)
-			state("focus", false)
 		end)
 		return function()
 			ended:Disconnect()
@@ -262,7 +248,7 @@ function UI.Button(p)
 		Text = "",
 		BackgroundTransparency = 1,
 		AutoButtonColor = false,
-		Selectable = inputEnabled and not p.disabled,
+		Selectable = false,
 		Active = inputEnabled and not p.disabled,
 		ZIndex = p.z or 1,
 		[React.Event.Activated] = function()
@@ -272,21 +258,11 @@ function UI.Button(p)
 			end
 		end,
 		[React.Event.MouseEnter] = function()
-			if inputEnabled and not p.disabled then
-				Audio.play("UIHover")
-			end
 			state("hover", true)
 		end,
 		[React.Event.MouseLeave] = function()
 			state("pressed", false)
 			state("hover", false)
-		end,
-		[React.Event.SelectionGained] = function()
-			state("focus", true)
-		end,
-		[React.Event.SelectionLost] = function()
-			state("pressed", false)
-			state("focus", false)
 		end,
 		[React.Event.InputBegan] = function(_, input)
 			if inputEnabled and not p.disabled then
@@ -300,33 +276,26 @@ function UI.Button(p)
 			press(input, false)
 		end,
 	}, {
-		Visual = e(
-			"Frame",
-			{
-				Name = "Visual",
-				AnchorPoint = Vector2.new(0.5, 0.5),
-				Position = UDim2.fromScale(0.5, 0.5),
-				Size = UDim2.fromOffset(p.w, p.h),
-				BackgroundTransparency = 1,
-			},
-			{
-				Scale = e("UIScale", { Scale = scaleBinding }),
-				Surface = e(
-					UI.Surface,
-					{
-						w = p.w,
-						h = p.h,
-						variant = p.variant,
-						motion = binding,
-						color = p.disabled and (p.disabledColor or Theme.colors.muted) or p.color,
-						selected = p.selected,
-						quiet = p.quiet,
-						halftone = p.halftone,
-						children = contents,
-					}
-				),
-			}
-		),
+		Visual = e("Frame", {
+			Name = "Visual",
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.fromScale(0.5, 0.5),
+			Size = UDim2.fromOffset(p.w, p.h),
+			BackgroundTransparency = 1,
+		}, {
+			Scale = e("UIScale", { Scale = scaleBinding }),
+			Surface = e(UI.Surface, {
+				w = p.w,
+				h = p.h,
+				variant = p.variant,
+				motion = binding,
+				color = p.disabled and (p.disabledColor or Theme.colors.muted) or p.color,
+				selected = p.selected,
+				quiet = p.quiet,
+				halftone = p.halftone,
+				children = contents,
+			}),
+		}),
 	})
 end
 function UI.Transition(p)
@@ -335,15 +304,12 @@ function UI.Transition(p)
 	local latest = React.useRef(p)
 	latest.current = p
 	local motion = React.useMemo(function()
-		return Ripple.createSpring(
-			0,
-			{
-				frequency = Theme.motion.transitionFrequency,
-				dampingRatio = 1,
-				precision = Theme.motion.transitionPrecision,
-				start = true,
-			}
-		)
+		return Ripple.createSpring(0, {
+			frequency = Theme.motion.transitionFrequency,
+			dampingRatio = 1,
+			precision = Theme.motion.transitionPrecision,
+			start = true,
+		})
 	end, {})
 	React.useEffect(function()
 		local change = motion:onChange(update)
@@ -383,144 +349,111 @@ function UI.Transition(p)
 			motion:setGoal(goal)
 		end
 	end, { p.visible, p.transitionKey, p.reduced })
-	return e(
-		"Frame",
-		{
-			Name = p.name or "Transition",
-			Position = UDim2.fromOffset(p.x, p.y),
-			Size = UDim2.fromOffset(p.w, p.h),
+	return e("Frame", {
+		Name = p.name or "Transition",
+		Position = UDim2.fromOffset(p.x, p.y),
+		Size = UDim2.fromOffset(p.w, p.h),
+		BackgroundTransparency = 1,
+		ZIndex = p.z or 2,
+	}, {
+		Group = e("CanvasGroup", {
+			Name = "AnimatedGroup",
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Size = UDim2.fromOffset(p.w + 32, p.h + 32),
 			BackgroundTransparency = 1,
-			ZIndex = p.z or 2,
-		},
-		{
-			Group = e(
-				"CanvasGroup",
-				{
-					Name = "AnimatedGroup",
-					AnchorPoint = Vector2.new(0.5, 0.5),
-					Size = UDim2.fromOffset(p.w + 32, p.h + 32),
-					BackgroundTransparency = 1,
-					Position = progress:map(function(t)
-						return UDim2.fromOffset(
-							p.w / 2 + (p.slide and (1 - t) * (p.w + 32) or 0),
-							p.h / 2 + (p.slide and 0 or (1 - t) * 10)
-						)
-					end),
-					GroupTransparency = progress:map(function(t)
-						return 1 - math.clamp(t, 0, 1)
-					end),
-				},
-				{
+			Position = progress:map(function(t)
+				return UDim2.fromOffset(
+					p.w / 2 + (p.slide and (1 - t) * (p.w + 32) or 0),
+					p.h / 2 + (p.slide and 0 or (1 - t) * 10)
+				)
+			end),
+			GroupTransparency = progress:map(function(t)
+				return 1 - math.clamp(t, 0, 1)
+			end),
+		}, {
 
-					Content = e(
-						"Frame",
-						{
-							Name = "Content",
-							Position = UDim2.fromOffset(16, 16),
-							Size = UDim2.fromOffset(p.w, p.h),
-							BackgroundTransparency = 1,
-						},
-						{
-							Input = e(UI.InputEnabled.Provider, { value = p.visible and inputEnabled }, p.children),
-						}
-					),
-				}
-			),
-		}
-	)
+			Content = e("Frame", {
+				Name = "Content",
+				Position = UDim2.fromOffset(16, 16),
+				Size = UDim2.fromOffset(p.w, p.h),
+				BackgroundTransparency = 1,
+			}, {
+				Input = e(UI.InputEnabled.Provider, { value = p.visible and inputEnabled }, p.children),
+			}),
+		}),
+	})
 end
 function UI.progress(label, value, total, x, y, w, h, color, variant)
 	local ratio = total > 0 and math.clamp(value / total, 0, 1) or 0
 	if variant == "index" then
-		return e(
-			UI.Surface,
-			{
-				variant = "index",
-				x = x,
-				y = y,
-				w = w,
-				h = h,
-				color = Theme.colors.body,
-				quiet = true,
-				children = {
-					Fill = ratio > 0 and e(
-						"Frame",
-						{
-							Name = "ProgressFill",
-							Position = UDim2.fromOffset(7, 7),
-							Size = UDim2.fromOffset((w - 14) * ratio, h - 18),
-							BackgroundColor3 = color,
-							BorderSizePixel = 0,
-							ZIndex = 5,
-						},
-						{
-							Corner = corner(4),
-							Gradient = e(
-								"UIGradient",
-								{
-									Rotation = 90,
-									Color = ColorSequence.new(
-										color:Lerp(Theme.colors.white, 0.15),
-										color:Lerp(Theme.colors.ink, 0.12)
-									),
-								}
-							),
-							Studs = e(
-								"ImageLabel",
-								{
-									BackgroundTransparency = 1,
-									Size = UDim2.fromScale(1, 1),
-									Image = Theme.studs,
-									ScaleType = Enum.ScaleType.Tile,
-									TileSize = UDim2.fromScale(40 / (w - 14), 40 / (h - 18)),
-									ImageColor3 = Theme.colors.ink,
-									ImageTransparency = 0.88,
-									ZIndex = 5,
-								},
-								{ Corner = corner(4) }
-							),
-						}
-					) or nil,
-					Label = UI.text(
-						label .. " " .. value .. "/" .. total,
-						12,
-						4,
-						w - 24,
-						h - 10,
-						24,
-						nil,
-						nil,
-						Theme.index.outline
-					),
-				},
-			}
-		)
-	end
-	return e(
-		UI.Surface,
-		{
+		return e(UI.Surface, {
+			variant = "index",
 			x = x,
 			y = y,
 			w = w,
 			h = h,
-			color = Theme.colors.muted,
+			color = Theme.colors.body,
 			quiet = true,
 			children = {
-				Fill = e(
-					"Frame",
-					{
-						Position = UDim2.fromOffset(3, 3),
-						Size = UDim2.new(ratio, -6, 1, -11),
-						BackgroundColor3 = color,
-						BorderSizePixel = 0,
+				Fill = ratio > 0 and e("Frame", {
+					Name = "ProgressFill",
+					Position = UDim2.fromOffset(7, 7),
+					Size = UDim2.fromOffset((w - 14) * ratio, h - 18),
+					BackgroundColor3 = color,
+					BorderSizePixel = 0,
+					ZIndex = 5,
+				}, {
+					Corner = corner(4),
+					Gradient = e("UIGradient", {
+						Rotation = 90,
+						Color = ColorSequence.new(
+							color:Lerp(Theme.colors.white, 0.15),
+							color:Lerp(Theme.colors.ink, 0.12)
+						),
+					}),
+					Studs = e("ImageLabel", {
+						BackgroundTransparency = 1,
+						Size = UDim2.fromScale(1, 1),
+						Image = Theme.studs,
+						ScaleType = Enum.ScaleType.Tile,
+						TileSize = UDim2.fromScale(40 / (w - 14), 40 / (h - 18)),
+						ImageColor3 = Theme.colors.ink,
+						ImageTransparency = 0.88,
 						ZIndex = 5,
-					},
-					{ Corner = corner(3) }
+					}, { Corner = corner(4) }),
+				}) or nil,
+				Label = UI.text(
+					label .. " " .. value .. "/" .. total,
+					12,
+					4,
+					w - 24,
+					h - 10,
+					24,
+					nil,
+					nil,
+					Theme.index.outline
 				),
-				Label = UI.text(label .. " " .. value .. "/" .. total, 12, 4, w - 24, h - 10, 30),
 			},
-		}
-	)
+		})
+	end
+	return e(UI.Surface, {
+		x = x,
+		y = y,
+		w = w,
+		h = h,
+		color = Theme.colors.muted,
+		quiet = true,
+		children = {
+			Fill = e("Frame", {
+				Position = UDim2.fromOffset(3, 3),
+				Size = UDim2.new(ratio, -6, 1, -11),
+				BackgroundColor3 = color,
+				BorderSizePixel = 0,
+				ZIndex = 5,
+			}, { Corner = corner(3) }),
+			Label = UI.text(label .. " " .. value .. "/" .. total, 12, 4, w - 24, h - 10, 30),
+		},
+	})
 end
 UI.Button = React.memo(UI.Button)
 UI.Surface = React.memo(UI.Surface)

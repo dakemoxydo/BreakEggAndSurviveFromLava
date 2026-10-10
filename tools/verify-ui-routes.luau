@@ -9,6 +9,16 @@ assert(gui, "verify-ui-routes: ShopReferenceUI not found")
 local function find(name)
 	return gui:FindFirstChild(name, true)
 end
+-- The Figma HUD hides buttons with Visible instead of unmounting them.
+local function shown(item)
+	while item and item:IsA("GuiObject") do
+		if not item.Visible then
+			return false
+		end
+		item = item.Parent
+	end
+	return item ~= nil
+end
 local function path(item)
 	return item and "LocalPlayer.PlayerGui." .. item:GetFullName():match("PlayerGui%.(.+)$") or nil
 end
@@ -26,7 +36,7 @@ local state = {
 	petsSidebar = find("PetsSidebar") ~= nil,
 	eggsSidebar = find("EggsSidebar") ~= nil,
 	inventoryPanel = find("InventoryPanel") ~= nil,
-	rightButtonsVisible = find("OpenPets") ~= nil and find("Eggs") ~= nil,
+	rightButtonsVisible = shown(find("OpenPets")) and shown(find("Eggs")),
 	openInventoryButtons = openInventoryButtons,
 	paths = {
 		OpenPets = path(find("OpenPets")),

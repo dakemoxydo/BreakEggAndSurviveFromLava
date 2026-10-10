@@ -42,8 +42,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://121622606415379",
-    "textureId": "rbxassetid://128758611018794",
+    "meshId": "rbxassetid://136441081039454",
+    "textureId": "rbxassetid://91716736479887",
     "templatePath": "ReplicatedStorage.PickaxeModels.Iron",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.IronPickaxe"
   }

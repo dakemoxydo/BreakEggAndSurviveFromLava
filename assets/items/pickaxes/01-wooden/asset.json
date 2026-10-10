@@ -70,8 +70,8 @@
     "uvSets": 1,
     "importedToRoblox": true,
     "manifest": "../pack/exports/roblox-import-v03/manifest.json",
-    "meshId": "rbxassetid://113249536688225",
-    "textureId": "rbxassetid://102332464573874",
+    "meshId": "rbxassetid://96631115217383",
+    "textureId": "rbxassetid://98063872564848",
     "templatePath": "ReplicatedStorage.PickaxeModels.Wooden",
     "sourcePath": "ServerStorage.Assets.Items.Pickaxes.SourceImports.Pickaxes_Pack_v03.WoodenPickaxe"
   }

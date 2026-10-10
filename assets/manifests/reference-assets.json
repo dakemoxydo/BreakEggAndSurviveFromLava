@@ -1,11 +1,11 @@
 {
-  "date": "2026-10-07",
-  "placeId": 119583219290326,
+  "date": "2026-10-10",
+  "placeId": 120440556374316,
   "generated": [
     {
       "key": "index",
       "prompt": "Use case: stylized-concept. Asset type: small Roblox simulator UI navigation icon. A single white and very light gray document / index notebook icon viewed from front, leaning about 10 degrees clockwise: rounded rectangular white page inside a very thick clean black outline, with three short bold black horizontal lines and one small black square near top, simple readable silhouette. This must look like the white document icon beside Index in a classic Roblox simulator, not a blue book. Real transparent alpha background. Black contour about 7 percent of icon width, consistent rounded joins. No text, letters, shadows outside silhouette, no glow, no background, no other items. Entire object fits centered with 10 percent transparent margin. Designed to read at 48 px.",
-      "assetId": "76096389003906",
+      "assetId": "103973109056965",
       "file": "assets/ui/icons/navigation/reference-index-v1.png",
       "generator": "image_gen.imagegen",
       "transparent_background": true
@@ -13,7 +13,7 @@
     {
       "key": "egg",
       "prompt": "Use case: stylized-concept. Asset type: small Roblox simulator UI egg button icon. Single plain upright peach / pale orange egg, smooth simplified egg silhouette, slightly pointed at top and broad rounded bottom. Front view, very thick clean rounded black outline, light warm peach center (#ffc47c), subtle warm orange shading near right edge. No spots, pattern, crack, shine sparkle, text, letters, labels, floor, external shadow or glow. Real transparent alpha background. Simple flat cartoon look matching classic Roblox simulator egg navigation button. Black contour about 6 percent of egg width, whole egg centered with 10 percent clear margin, reads at 48 px.",
-      "assetId": "120031849641660",
+      "assetId": "96442091950735",
       "file": "assets/ui/icons/navigation/reference-egg-v1.png",
       "generator": "image_gen.imagegen",
       "transparent_background": true
@@ -21,7 +21,7 @@
     {
       "key": "home",
       "prompt": "Use case: stylized-concept. Asset type: Roblox simulator Your Base world marker icon. Single bright cyan and blue house viewed flat from front, very simple broad arrow shaped triangular roof, square blue body with central rectangular doorway cutout open as actual transparency. Thick clean almost black outline around entire house silhouette and doorway, rounded joins. Big cyan outer roof, blue inset chevron under roof, cyan walls, two square corners, classic friendly mobile game home symbol. No text, no scenery, no ground, no shadow, no glow, no extra objects. Actual transparent alpha background. Entire icon centered with 8 percent transparent margins. Black contour about 5 percent width. Clean solid readable silhouette for 150 px game marker.",
-      "assetId": "119104635069423",
+      "assetId": "96312211683196",
       "file": "assets/ui/icons/navigation/reference-home-v1.png",
       "generator": "image_gen.imagegen",
       "transparent_background": true
@@ -31,24 +31,24 @@
     {
       "file": "assets/ui/icons/navigation/reference-paw-v1.png",
       "source": "C:/Users/dakem/Documents/RobloxGames/Assets/ui/petsicon.png",
-      "assetId": "118382351876288"
+      "assetId": "122749797344399"
     },
     {
       "file": "assets/environment/materials/hd-studs/hd-studs-2x2-ao.png",
-      "assetId": "80175290864572",
+      "assetId": "107033945808299",
       "source": "https://github.com/dudeax/Roblox-HD-Studs",
       "license": "MIT"
     },
     {
       "file": "assets/environment/materials/hd-studs/hd-studs-2x2-normal.png",
-      "assetId": "122070354289187",
+      "assetId": "80177343939570",
       "source": "https://github.com/dudeax/Roblox-HD-Studs",
       "license": "MIT"
     },
     {
       "file": "assets/ui/icons/navigation/settings-gear.png",
       "source": "C:/Users/dakem/Documents/RobloxGames/Assets/ui/SettingsGear.png",
-      "assetId": "93020891544824"
+      "assetId": "125150572209141"
     }
   ]
 }

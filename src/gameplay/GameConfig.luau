@@ -1,5 +1,7 @@
 local C = Color3.fromRGB
 local Config = {}
+Config.MaxCash = 1e18
+Config.MaxSpeed = 1e18
 Config.SafeZ = -39.5
 Config.SwingRange = 15
 Config.SwingCooldown = 0.6
@@ -14,7 +16,7 @@ Config.LavaInterval = 90
 Config.LavaSpeed = 35
 Config.TitanInterval = 1800
 Config.TitanDuration = 120
-Config.StudTexture = "rbxassetid://80175290864572"
+Config.StudTexture = "rbxassetid://107033945808299"
 -- Ascending rarity ladder; hatch effects climb it up to the rolled rarity.
 Config.Rarities = {
 	{ key = "Common", color = C(235, 240, 245) },
@@ -35,57 +37,87 @@ Config.Pickaxes = {
 	{ key = "Iron", name = "Iron Pickaxe", power = 15, cost = 800, rarity = "Uncommon", color = C(224, 235, 245) },
 	{ key = "Golden", name = "Golden Pickaxe", power = 60, cost = 20000, rarity = "Uncommon", color = C(255, 205, 25) },
 	{ key = "Diamond", name = "Diamond Pickaxe", power = 250, cost = 160000, rarity = "Rare", color = C(60, 226, 255) },
-	{ key = "Strawberry", name = "Strawberry Pickaxe", power = 1000, cost = 1200000, rarity = "Rare", color = C(
-		239,
-		47,
-		89
-	) },
+	{
+		key = "Strawberry",
+		name = "Strawberry Pickaxe",
+		power = 1000,
+		cost = 1200000,
+		rarity = "Rare",
+		color = C(239, 47, 89),
+	},
 	{ key = "Cactus", name = "Cactus Pickaxe", power = 4000, cost = 6000000, rarity = "Epic", color = C(64, 199, 61) },
-	{ key = "Lightning", name = "Lightning Pickaxe", power = 15000, cost = 40000000, rarity = "Legendary", color = C(
-		255,
-		228,
-		54
-	) },
-	{ key = "Candy", name = "Candy Pickaxe", power = 60000, cost = 400000000, rarity = "Mythic", color = C(
-		255,
-		117,
-		208
-	) },
-	{ key = "Rainbow", name = "Rainbow Pickaxe", power = 250000, cost = 2800000000, rarity = "Mythic", color = C(
-		193,
-		58,
-		255
-	) },
-	{ key = "Crystal", name = "Crystal Pickaxe", power = 1000000, cost = 20000000000, rarity = "Mythic", color = C(
-		151,
-		217,
-		255
-	) },
-	{ key = "Demon", name = "Demon Pickaxe", power = 4000000, cost = 120000000000, rarity = "Mythic", color = C(
-		213,
-		23,
-		44
-	) },
-	{ key = "Hacker", name = "Hacker Pickaxe", power = 15000000, cost = 1200000000000, rarity = "Secret", color = C(
-		69,
-		255,
-		77
-	) },
-	{ key = "UFO", name = "UFO Pickaxe", power = 60000000, cost = 12000000000000, rarity = "Cosmic", color = C(
-		112,
-		241,
-		206
-	) },
-	{ key = "Secret", name = "Secret Pickaxe", power = 250000000, cost = 80000000000000, rarity = "Secret", color = C(
-		46,
-		33,
-		66
-	) },
-	{ key = "Cool", name = "Cool Pickaxe", power = 1000000000, cost = 600000000000000, rarity = "Secret", color = C(
-		32,
-		92,
-		209
-	) },
+	{
+		key = "Lightning",
+		name = "Lightning Pickaxe",
+		power = 15000,
+		cost = 40000000,
+		rarity = "Legendary",
+		color = C(255, 228, 54),
+	},
+	{
+		key = "Candy",
+		name = "Candy Pickaxe",
+		power = 60000,
+		cost = 400000000,
+		rarity = "Mythic",
+		color = C(255, 117, 208),
+	},
+	{
+		key = "Rainbow",
+		name = "Rainbow Pickaxe",
+		power = 250000,
+		cost = 2800000000,
+		rarity = "Mythic",
+		color = C(193, 58, 255),
+	},
+	{
+		key = "Crystal",
+		name = "Crystal Pickaxe",
+		power = 1000000,
+		cost = 20000000000,
+		rarity = "Mythic",
+		color = C(151, 217, 255),
+	},
+	{
+		key = "Demon",
+		name = "Demon Pickaxe",
+		power = 4000000,
+		cost = 120000000000,
+		rarity = "Mythic",
+		color = C(213, 23, 44),
+	},
+	{
+		key = "Hacker",
+		name = "Hacker Pickaxe",
+		power = 15000000,
+		cost = 1200000000000,
+		rarity = "Secret",
+		color = C(69, 255, 77),
+	},
+	{
+		key = "UFO",
+		name = "UFO Pickaxe",
+		power = 60000000,
+		cost = 12000000000000,
+		rarity = "Cosmic",
+		color = C(112, 241, 206),
+	},
+	{
+		key = "Secret",
+		name = "Secret Pickaxe",
+		power = 250000000,
+		cost = 80000000000000,
+		rarity = "Secret",
+		color = C(46, 33, 66),
+	},
+	{
+		key = "Cool",
+		name = "Cool Pickaxe",
+		power = 1000000000,
+		cost = 600000000000000,
+		rarity = "Secret",
+		color = C(32, 92, 209),
+	},
 	{
 		key = "Galaxy",
 		name = "Galaxy Pickaxe",
@@ -121,11 +153,46 @@ Config.Trails = {
 	{ key = "Green", name = "Green Trail", cost = 500, multiplier = 2, color = C(110, 255, 14), icon = "shoe" },
 	{ key = "Blue", name = "Blue Trail", cost = 12000, multiplier = 4, color = C(11, 209, 255), icon = "shoes" },
 	{ key = "Purple", name = "Purple Trail", cost = 300000, multiplier = 10, color = C(168, 50, 255), icon = "shoes" },
-	{ key = "Golden", name = "Golden Trail", cost = 10000000, multiplier = 25, color = C(255, 214, 35), icon = "shoes" },
-	{ key = "Galaxy", name = "Galaxy Trail", cost = 1000000000, multiplier = 100, color = C(110, 33, 255), icon = "speedBucket" },
-	{ key = "Divine", name = "Divine Trail", cost = 100000000000, multiplier = 500, color = C(251, 244, 181), icon = "speedChest" },
-	{ key = "Eternal", name = "Eternal Trail", cost = 10000000000000, multiplier = 2500, color = C(255, 64, 186), icon = "speedChest" },
-	{ key = "Secret", name = "Secret Trail", cost = 1000000000000000, multiplier = 20000, color = C(25, 244, 255), icon = "speedChest" },
+	{
+		key = "Golden",
+		name = "Golden Trail",
+		cost = 10000000,
+		multiplier = 25,
+		color = C(255, 214, 35),
+		icon = "shoes",
+	},
+	{
+		key = "Galaxy",
+		name = "Galaxy Trail",
+		cost = 1000000000,
+		multiplier = 100,
+		color = C(110, 33, 255),
+		icon = "speedBucket",
+	},
+	{
+		key = "Divine",
+		name = "Divine Trail",
+		cost = 100000000000,
+		multiplier = 500,
+		color = C(251, 244, 181),
+		icon = "speedChest",
+	},
+	{
+		key = "Eternal",
+		name = "Eternal Trail",
+		cost = 10000000000000,
+		multiplier = 2500,
+		color = C(255, 64, 186),
+		icon = "speedChest",
+	},
+	{
+		key = "Secret",
+		name = "Secret Trail",
+		cost = 1000000000000000,
+		multiplier = 20000,
+		color = C(25, 244, 255),
+		icon = "speedChest",
+	},
 }
 Config.Pets = {}
 local function pet(key, name, biome, rarity, income, weight, shape, color, icon, size)
@@ -168,7 +235,7 @@ pet("IceWolf", "Ice Wolf", "Snow", "Rare", 850000, 5, "wolf", C(113, 192, 240), 
 pet("Yeti", "Yeti", "Snow", "Epic", 3200000, 2, "bear", C(176, 222, 240), "anteater", 2.6)
 pet("FrostDragon", "Frost Dragon", "Snow", "Legendary", 15000000, 0.9, "dragon", C(119, 212, 255), "dragon", 3.2)
 pet("Cerberus", "Cerberus", "Snow", "Mythic", 120000000, 0.1, "cerberus", C(45, 34, 61), "dog", 3.7)
-pet("TitanDragon", "Titanic Dragon", "Titanic", "Titanic", 9400000000, 1, "dragon", C(220, 40, 77), "dragon", 7)
+pet("TitanDragon", "Titanic Dragon", "Titanic", "Titanic", 240000000, 1, "dragon", C(220, 40, 77), "dragon", 7)
 Config.ByPet = {}
 for _, item in Config.Pets do
 	Config.ByPet[item.key] = item

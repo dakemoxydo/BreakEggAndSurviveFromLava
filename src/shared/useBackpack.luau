@@ -1,10 +1,24 @@
 local Players = game:GetService("Players")
 local StarterGui = game:GetService("StarterGui")
 local UIS = game:GetService("UserInputService")
+local Http = game:GetService("HttpService")
 local React = require(game.ReplicatedStorage.Packages.React)
 local player = Players.LocalPlayer
 
+-- Default slots for a profile that has never placed these tools.
+local Defaults = { ["Lava Bat"] = 1, Pickaxe = 2 }
+-- Stable key of a Tool across sessions: saved item ID, the current pickaxe, or the tool name.
+local function itemKey(tool)
+	return tool:GetAttribute("InventoryId") or (tool:GetAttribute("Pickaxe") and "Pickaxe") or tool.Name
+end
+local function loadLayout()
+	local raw = player:GetAttribute("HotbarLayout")
+	local ok, layout = pcall(Http.JSONDecode, Http, raw or "")
+	return raw and ok and type(layout) == "table" and layout or nil
+end
+
 -- Slots retain identity when Roblox moves a Tool between Backpack and Character.
+-- The layout (item key -> slot, 0 = inventory only) is saved to the profile and restored on join.
 return function(onToggle, canEquip)
 	local snapshot, setSnapshot = React.useState({ slots = {}, tools = {}, held = nil, revision = 0 })
 	local state = React.useRef(snapshot)
@@ -13,7 +27,49 @@ return function(onToggle, canEquip)
 	local slotRefs = React.useRef({})
 	local inventoryRef = React.useRef(nil)
 	latest.current = { toggle = onToggle, canEquip = canEquip }
+	local layout = React.useRef(nil)
+	local sent = React.useRef("")
+	-- Records where every present tool sits and saves the layout after a short debounce.
+	local function remember(slots, tools)
+		if not layout.current then
+			return
+		end
+		local present, taken = {}, {}
+		for _, tool in tools do
+			present[itemKey(tool)] = true
+			layout.current[itemKey(tool)] = 0
+		end
+		for i = 1, 10 do
+			local tool = slots[i]
+			if tool then
+				layout.current[itemKey(tool)] = i
+				taken[i] = true
+			end
+		end
+		-- An absent item (pet on the base, pickaxe being swapped) loses its slot once something else takes it.
+		for name, slot in layout.current do
+			if not present[name] and taken[slot] then
+				layout.current[name] = nil
+			end
+		end
+		local encoded = Http:JSONEncode(layout.current)
+		if encoded == sent.current then
+			return
+		end
+		sent.current = encoded
+		task.delay(1, function()
+			if sent.current == encoded then
+				pcall(function()
+					game.ReplicatedStorage.UIAction:InvokeServer("SetHotbar", { layout = layout.current })
+				end)
+			end
+		end)
+	end
 	local function refresh()
+		-- Wait for the saved layout so restored tools do not auto-fill slots first.
+		if not layout.current then
+			return
+		end
 		local tools, present = {}, {}
 		for _, container in { player:FindFirstChildOfClass("Backpack"), player.Character } do
 			if container then
@@ -49,10 +105,41 @@ return function(onToggle, canEquip)
 				assigned[slots[i]] = true
 			end
 		end
+		-- Bat and pickaxe slots stay free while those tools are missing (respawn, pickaxe swap).
+		local reserved = {}
+		for name, slot in Defaults do
+			reserved[layout.current[name] or slot] = true
+		end
+		reserved[0] = nil
+		for _, tool in tools do
+			local slot = layout.current[itemKey(tool)]
+			if slot == nil then
+				slot = Defaults[itemKey(tool)]
+			end
+			if slot and slot > 0 then
+				reserved[slot] = nil
+			end
+		end
 		for _, tool in tools do
 			if not assigned[tool] and not table.find(state.current.tools, tool) then
+				local slot = layout.current[itemKey(tool)]
+				if slot == nil then
+					slot = Defaults[itemKey(tool)]
+				end
+				if slot and slot > 0 and not slots[slot] then
+					slots[slot] = tool
+					assigned[tool] = true
+				end
+			end
+		end
+		for _, tool in tools do
+			if
+				not assigned[tool]
+				and not table.find(state.current.tools, tool)
+				and layout.current[itemKey(tool)] ~= 0
+			then
 				for i = 1, 10 do
-					if not slots[i] then
+					if not slots[i] and not reserved[i] then
 						slots[i] = tool
 						assigned[tool] = true
 						break
@@ -94,6 +181,7 @@ return function(onToggle, canEquip)
 		dirty.current = false
 		state.current = { slots = slots, tools = tools, held = held, revision = revision }
 		setSnapshot(state.current)
+		remember(slots, tools)
 	end
 	local equip = React.useCallback(function(tool)
 		if not latest.current.canEquip or not tool then
@@ -144,6 +232,7 @@ return function(onToggle, canEquip)
 		state.current =
 			{ slots = slots, tools = state.current.tools, held = state.current.held, revision = state.current.revision }
 		setSnapshot(state.current)
+		remember(slots, state.current.tools)
 	end, {})
 	React.useEffect(function()
 		local connections, containerConnections, toolConnections = {}, {}, {}
@@ -226,6 +315,19 @@ return function(onToggle, canEquip)
 			end
 			schedule()
 		end
+		-- The saved layout arrives with the profile: place every current tool from it once.
+		local function layoutLoaded()
+			if layout.current or not loadLayout() then
+				return
+			end
+			layout.current = loadLayout()
+			sent.current = Http:JSONEncode(layout.current)
+			state.current = { slots = {}, tools = {}, held = nil, revision = state.current.revision + 1 }
+			dirty.current = true
+			schedule()
+		end
+		table.insert(connections, player:GetAttributeChangedSignal("HotbarLayout"):Connect(layoutLoaded))
+		layoutLoaded()
 		table.insert(connections, player.CharacterAdded:Connect(watchContainer))
 		table.insert(connections, player.CharacterRemoving:Connect(unwatchContainer))
 		table.insert(

@@ -12,9 +12,11 @@ local assets = {
 	trailDivine = { image = "rbxassetid://131938132845749" },
 	cash = { image = "rbxassetid://74929065994676" },
 	index = { image = "rbxassetid://103973109056965", offset = Vector2.new(213, 127), rect = Vector2.new(599, 769) },
-	egg = { image = "rbxassetid://96442091950735", offset = Vector2.new(148, 63), rect = Vector2.new(729, 913) },
+	egg = { image = "rbxassetid://125435415548077" },
+	mossEgg = { image = "rbxassetid://97801077346901" },
 	pets = { image = "rbxassetid://122749797344399", offset = Vector2.new(30, 63), rect = Vector2.new(963, 844) },
 	home = { image = "rbxassetid://96312211683196", offset = Vector2.new(33, 65), rect = Vector2.new(956, 873) },
+	backpack = { image = "rbxassetid://110387127782366" },
 	cart = { image = "rbxassetid://90321313642748", offset = Vector2.new(23, 97), rect = Vector2.new(1213, 1117) },
 	sunburst = { image = "rbxassetid://100836241976168" },
 }

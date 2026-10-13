@@ -118,6 +118,11 @@ Players.PlayerRemoving:Connect(function(player)
 	snapshots[player] = nil
 	task.spawn(write, data)
 end)
+-- The Titanic Egg is a surprise: the banner never shows how long is left.
+local banner = details and details:FindFirstChild("TitanicBanner")
+if banner then
+	banner.BannerUI.Countdown.Text = "Can appear at any moment!"
+end
 local elapsed = 0
 RunService.Heartbeat:Connect(function(dt)
 	elapsed += dt
@@ -127,11 +132,6 @@ RunService.Heartbeat:Connect(function(dt)
 	elapsed = 0
 	for _, player in Players:GetPlayers() do
 		capture(player)
-	end
-	local banner = details:FindFirstChild("TitanicBanner")
-	if banner then
-		local seconds = workspace:GetAttribute("TitanCountdown") or Game.TitanInterval
-		banner.BannerUI.Countdown.Text = string.format("Spawns in: %d:%02d", math.floor(seconds / 60), seconds % 60)
 	end
 	display()
 end)

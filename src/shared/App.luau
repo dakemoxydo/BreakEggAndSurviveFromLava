@@ -3,8 +3,11 @@ local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local React = require(RS.Packages.React)
+local Game = require(RS.GameConfig)
+local Audio = require(RS:WaitForChild("Audio"))
 local UI = require(script.Parent.UI)
 local Theme = require(script.Parent.Theme)
+local LavaTimer = require(script.Parent.LavaTimer)
 local Config = require(script.Parent.Config)
 local Inventory = require(script.Parent.Inventory)
 local OfflineCash = require(script.Parent.OfflineCash)
@@ -16,10 +19,14 @@ local ToolDragPreview = require(script.Parent.ToolDragPreview)
 local Settings = require(script.Parent.Settings)
 local EquipmentShop = require(script.Parent.EquipmentShop)
 local TrailsShop = require(script.Parent.TrailsShop)
+local ShopWindow = require(script.Parent.ShopWindow)
+local SettingsWindow = require(script.Parent.SettingsWindow)
+local OfflineWindow = require(script.Parent.OfflineWindow)
+local RewardsWindow = require(script.Parent.RewardsWindow)
+local RebirthWindow = require(script.Parent.RebirthWindow)
 local Figma = require(script.Parent.FigmaTemplate)
 local FigmaHud = require(script.Parent.FigmaHud)
 local ModelPreview = require(script.Parent.ModelPreview)
-local Game = require(RS:WaitForChild("GameConfig"))
 local AdventurePanels = require(script.Parent.AdventurePanels)
 local e = React.createElement
 local C = Theme.colors
@@ -40,6 +47,51 @@ local function number(value)
 		end
 	end
 	return tostring(math.floor(value))
+end
+-- Toasts stack at the top of the screen; urgent kinds get a color and a sound.
+local TOAST_LIMIT = 3
+local TOAST_COLORS = { danger = C.red, error = C.red, event = C.gold, good = C.green }
+local TOAST_SOUNDS = {
+	danger = { "HatchHeart", { pitch = 0.8 } },
+	event = { "RevealRare" },
+	good = { "EggHitCrit" },
+}
+-- Next purchase of each kind; the client announces it once when Cash first covers the price.
+local function affordTargets(data)
+	local targets = {}
+	local rebirths = data.Rebirths or 0
+	if Game.rebirthCost(rebirths) <= Game.MaxCash then
+		table.insert(targets, {
+			key = "rebirth" .. rebirths,
+			cost = Game.rebirthCost(rebirths),
+			text = "You can Rebirth now!",
+		})
+	end
+	local pen = Game.PenCosts[data.PenLevel or 1]
+	if pen then
+		table.insert(targets, { key = "pen" .. (data.PenLevel or 1), cost = pen, text = "You can upgrade your Pen!" })
+	end
+	local treadmill = Game.Treadmills[(data.TreadmillLevel or 1) + 1]
+	if treadmill then
+		table.insert(targets, {
+			key = "treadmill" .. treadmill.name,
+			cost = treadmill.cost,
+			text = "You can upgrade your Treadmill to " .. treadmill.name .. "!",
+		})
+	end
+	for _, shop in { { "OwnedPickaxes", Game.Pickaxes, "pickaxe" }, { "OwnedTrails", Game.Trails, "trail" } } do
+		local owned = decode(data[shop[1]]) or { 1 }
+		for i, item in shop[2] do
+			if not table.find(owned, i) then
+				table.insert(
+					targets,
+					{ key = shop[3] .. i, cost = item.cost, text = "You can buy the " .. item.name .. "!" }
+				)
+				break
+			end
+		end
+	end
+	return targets
 end
 local function readData()
 	local data = {}
@@ -82,7 +134,9 @@ local function readData()
 			"CarryingName",
 			"GameplayNotice",
 			"GameplayNoticeAt",
+			"GameplayNoticeKind",
 			"AutoSwing",
+			"Rebirths",
 		}
 	do
 		data[key] = player:GetAttribute(key)
@@ -106,7 +160,9 @@ local function App(props)
 	local busy, setBusy = React.useState(false)
 	local pendingLabel, setPendingLabel = React.useState(nil)
 	local busyRef = React.useRef(false)
-	local message, setMessage = React.useState(nil)
+	local toasts, setToasts = React.useState({})
+	local toastId = React.useRef(0)
+	local affordSeen = React.useRef(nil)
 	local offlineShown = React.useRef(false)
 	local slow, setSlow = React.useState(player:GetAttribute("SlowMode") == true)
 	local shopCategory, setShopCategory = React.useState("Featured")
@@ -117,6 +173,45 @@ local function App(props)
 	local sectionOffsets = React.useRef({})
 	local scrollPositions = React.useRef({})
 	local mounted = React.useRef(true)
+	local notify = React.useCallback(function(text, kind)
+		if not text then
+			return
+		end
+		toastId.current += 1
+		local id = toastId.current
+		-- A repeated text moves to the newest slot instead of stacking twice.
+		setToasts(function(list)
+			local nextList = {}
+			for _, toast in list do
+				if toast.text ~= text then
+					table.insert(nextList, toast)
+				end
+			end
+			table.insert(nextList, { id = id, text = text, kind = kind })
+			while #nextList > TOAST_LIMIT do
+				table.remove(nextList, 1)
+			end
+			return nextList
+		end)
+		local sound = TOAST_SOUNDS[kind]
+		if sound then
+			Audio.play(sound[1], nil, sound[2])
+		end
+		task.delay(kind == "danger" and 5 or 4, function()
+			if not mounted.current then
+				return
+			end
+			setToasts(function(list)
+				local nextList = {}
+				for _, toast in list do
+					if toast.id ~= id then
+						table.insert(nextList, toast)
+					end
+				end
+				return #nextList == #list and list or nextList
+			end)
+		end)
+	end, {})
 	local rootRef = React.useRef(nil)
 	local compact = viewport.X < 900
 	local scale = compact and 1 or math.clamp(math.min(viewport.X / 1600, viewport.Y / 900), 0.75, 1.25)
@@ -124,7 +219,11 @@ local function App(props)
 	local short = height < 520
 	local narrow = width < 600
 	local windowW = compact and width - 32
-		or math.min(screen == "Settings" and 720 or screen == "Offline Cash" and 900 or 1100, width - 460)
+		or math.min(
+			(screen == "Settings" or screen == "Rebirth") and 760 or screen == "Offline Cash" and 900 or 1100,
+			-- Index stays between the HUD button columns.
+			width - (screen == "Index" and 580 or 460)
+		)
 	local windowH = compact and (short and height - (narrow and 204 or 148) or height - (narrow and 314 or 258))
 		or math.min(660, height - 210)
 	local wx, wy =
@@ -144,6 +243,11 @@ local function App(props)
 		windowH = height - 80
 		wy = 56
 		headerH = 64
+	end
+	-- Rebirth content is short: the window hugs it instead of the shared 660 height.
+	if screen == "Rebirth" and not compact then
+		windowH = math.min(windowH, 570)
+		wy = math.max(64, (height - windowH) / 2 - 24)
 	end
 	if screen == "Offline Cash" then
 		windowW = math.min(1040, width - 32)
@@ -203,7 +307,7 @@ local function App(props)
 		end
 		local remote = RS:FindFirstChild("UIAction")
 		if not remote or not remote:IsA("RemoteFunction") then
-			setMessage("Loading your base...")
+			notify("Loading your base...")
 			return
 		end
 		if busyRef.current then
@@ -223,11 +327,15 @@ local function App(props)
 			pending = "Buying…"
 		elseif name == "MergePets" then
 			pending = "Merging…"
-		elseif name == "ClaimOffline" or name == "ClaimCollectionReward" then
+		elseif
+			name == "ClaimOffline"
+			or name == "ClaimCollectionReward"
+			or name == "ClaimDailyReward"
+			or name == "ClaimStreakReward"
+		then
 			pending = "Claiming…"
 		end
 		setPendingLabel(pending)
-		setMessage(nil)
 		setBusy(true)
 		task.spawn(function()
 			local ok, result = pcall(function()
@@ -249,12 +357,12 @@ local function App(props)
 					onSuccess(result)
 				end
 				setData(readData())
-				setMessage(result.message)
+				notify(result.message)
 			else
-				setMessage(ok and type(result) == "table" and result.message or "Couldn't complete. Try again.")
+				notify(ok and type(result) == "table" and result.message or "Couldn't complete. Try again.", "error")
 			end
 		end)
-	end, { close })
+	end, { close, notify })
 	local pets = React.useMemo(function()
 		return decode(data.PetInventory) or {}
 	end, { data.PetInventory })
@@ -300,10 +408,10 @@ local function App(props)
 	local function purchase(offer)
 		local id = offer.gamePassId or offer.productId
 		if not id or id <= 0 then
-			setMessage("This purchase is not available yet.")
+			notify("This purchase is not available yet.")
 			return
 		end
-		local ok = pcall(function()
+		pcall(function()
 			if offer.gamePassId then
 				MarketplaceService:PromptGamePassPurchase(player, id)
 			else
@@ -393,8 +501,11 @@ local function App(props)
 				"CarryingName",
 				"GameplayNotice",
 				"GameplayNoticeAt",
+				"GameplayNoticeKind",
 				"AutoSwing",
 				"InField",
+				"EventRemaining",
+				"Rebirths",
 			}
 		do
 			table.insert(
@@ -418,6 +529,15 @@ local function App(props)
 						open(value)
 					elseif command == "Close" then
 						close()
+					elseif command == "Show" then
+						-- Stand zones: open only over an empty screen, never toggle or replace another window.
+						if not current.current.screen or current.current.closing then
+							open(value)
+						end
+					elseif command == "Hide" then
+						if current.current.screen == value and not current.current.closing then
+							close()
+						end
 					elseif command == "Category" then
 						setShopCategory(value)
 					elseif command == "PreviewViewport" and game:GetService("RunService"):IsStudio() then
@@ -439,7 +559,6 @@ local function App(props)
 		if player:GetAttribute("UIWindowOpen") ~= (screen ~= nil) then
 			player:SetAttribute("UIWindowOpen", screen ~= nil)
 		end
-		setMessage(nil)
 	end, { screen })
 	React.useEffect(function()
 		return function()
@@ -453,24 +572,35 @@ local function App(props)
 		end
 	end, { data.PetDataReady, data.OfflineCash })
 	React.useEffect(function()
-		if not message then
-			return
-		end
-		local active = true
-		task.delay(4, function()
-			if active and mounted.current then
-				setMessage(nil)
-			end
-		end)
-		return function()
-			active = false
-		end
-	end, { message })
-	React.useEffect(function()
 		if data.GameplayNotice then
-			setMessage(data.GameplayNotice)
+			notify(data.GameplayNotice, data.GameplayNoticeKind)
 		end
 	end, { data.GameplayNoticeAt })
+	-- Cash covering the next upgrade or purchase is announced once; what is already affordable at join stays quiet.
+	React.useEffect(function()
+		if not data.PetDataReady then
+			return
+		end
+		-- Saved Cash may replicate just after PetDataReady: the first seconds only record the baseline.
+		affordSeen.current = affordSeen.current or { readyAt = os.clock(), keys = {} }
+		local quiet = os.clock() - affordSeen.current.readyAt < 3
+		for _, target in affordTargets(data) do
+			if (data.Cash or 0) >= target.cost and not affordSeen.current.keys[target.key] then
+				affordSeen.current.keys[target.key] = true
+				if not quiet then
+					notify(target.text, "good")
+				end
+			end
+		end
+	end, {
+		data.PetDataReady,
+		data.Cash,
+		data.Rebirths,
+		data.PenLevel,
+		data.TreadmillLevel,
+		data.OwnedPickaxes,
+		data.OwnedTrails,
+	})
 	React.useEffect(function()
 		local connection = UserInputService.InputBegan:Connect(function(input, processed)
 			if input.KeyCode == Enum.KeyCode.Escape then
@@ -546,7 +676,7 @@ local function App(props)
 		})
 	end
 	local function offerCard(offer, w, h)
-		local compact = compact or w < 440
+		local tight = compact or w < 440
 		local pass = offer.section == "Game Passes"
 		local color = offer.section == "Cash Packs" and C.green
 			or pass and (offer.key == "cash2" and C.gold or C.blue)
@@ -562,14 +692,14 @@ local function App(props)
 		elseif pass then
 			contents = {
 				Item = UI.icon(offer.icon, 20, 22, w * 0.36, h - 118),
-				Title = shopText(offer.amount, w * 0.42, 20, w * 0.54 - 16, 56, compact and 30 or 44),
-				Description = shopText(offer.description, w * 0.42, 84, w * 0.54 - 16, 100, compact and 22 or 30),
+				Title = shopText(offer.amount, w * 0.42, 20, w * 0.54 - 16, 56, tight and 30 or 44),
+				Description = shopText(offer.description, w * 0.42, 84, w * 0.54 - 16, 100, tight and 22 or 30),
 				Buy = shopBuy(offer, 20, h - 76, w - 40, 52),
 			}
 		else
 			contents = {
 				Item = UI.icon(offer.icon, 40, 20, w - 80, h - 156),
-				Amount = shopText(offer.amount, 16, h - 130, w - 32, 42, compact and 26 or 29),
+				Amount = shopText(offer.amount, 16, h - 130, w - 32, 42, tight and 26 or 29),
 				Buy = shopBuy(offer, 20, h - 76, w - 40, 52),
 			}
 		end
@@ -579,7 +709,7 @@ local function App(props)
 		)
 	end
 	local function shop()
-		local compact = compact or windowW < 900
+		local tight = compact or windowW < 900
 		local innerW = windowW - 48
 		local sections = {}
 		local y = 8
@@ -604,14 +734,14 @@ local function App(props)
 		sectionOffsets.current.Featured = 0
 		add("FeaturedTitle", 48, { Title = shopText("~Featured~", 8, 0, innerW - 16, 48, 40, C.gold) })
 		local heroW = innerW
-		local petColumns = compact and math.clamp(math.floor((heroW - 36) / 88), 2, 4) or 7
-		local petStart = compact and 20 or 224
+		local petColumns = tight and math.clamp(math.floor((heroW - 36) / 88), 2, 4) or 7
+		local petStart = tight and 20 or 224
 		local petWidth = (heroW - petStart - 20 - (petColumns - 1) * 12) / petColumns
-		local petH = compact and 112 or 120
-		local petY = compact and 270 or 128
+		local petH = tight and 112 or 120
+		local petY = tight and 270 or 128
 		local petRows = math.ceil(7 / petColumns)
 		local buyY = petY + petRows * (petH + 12) + 16
-		local buyColumns = compact and (heroW < 300 and 1 or 2) or 4
+		local buyColumns = tight and (heroW < 300 and 1 or 2) or 4
 		local buyW = (heroW - 40 - (buyColumns - 1) * 16) / buyColumns
 		local featured = {}
 		local anyAvailable = false
@@ -627,33 +757,33 @@ local function App(props)
 		local hero = {
 			Name = shopText(
 				Config.FeaturedName,
-				compact and 20 or 224,
+				tight and 20 or 224,
 				20,
-				compact and heroW - 40 or heroW - 244,
+				tight and heroW - 40 or heroW - 244,
 				58,
-				compact and 27 or 37,
+				tight and 27 or 37,
 				C.gold,
-				compact and Enum.TextXAlignment.Center or Enum.TextXAlignment.Left
+				tight and Enum.TextXAlignment.Center or Enum.TextXAlignment.Left
 			),
 			Subtitle = shopText(
 				"Discover seven powerful pets!",
-				compact and 20 or 224,
+				tight and 20 or 224,
 				84,
-				compact and heroW - 40 or heroW - 244,
-				compact and 44 or 34,
-				compact and 20 or 24,
+				tight and heroW - 40 or heroW - 244,
+				tight and 44 or 34,
+				tight and 20 or 24,
 				nil,
-				compact and Enum.TextXAlignment.Center or Enum.TextXAlignment.Left
+				tight and Enum.TextXAlignment.Center or Enum.TextXAlignment.Left
 			),
 			Egg = UI.icon(
 				"angelEgg",
-				compact and heroW < 280 and (heroW - 108) / 2 or 24,
-				compact and 140 or 82,
-				compact and 108 or 174,
-				compact and 112 or 194
+				tight and heroW < 280 and (heroW - 108) / 2 or 24,
+				tight and 140 or 82,
+				tight and 108 or 174,
+				tight and 112 or 194
 			),
 		}
-		if compact and heroW >= 280 then
+		if tight and heroW >= 280 then
 			hero.Collection = shopText("Fallen Angel\nCollection", 148, 156, heroW - 168, 72, 24, C.white)
 		end
 		local chances = { "40%", "30%", "18%", "9.9%", "1%", "1%", "0.1%" }
@@ -683,7 +813,7 @@ local function App(props)
 				local x = 20 + col * (buyW + 16)
 				local top = buyY + row * 100
 				hero["Amount" .. i] = shopText(offer.amount, x, top, buyW, 28, 23)
-				hero["Offer" .. i] = shopBuy(offer, x, top + 34, buyW, 52, compact and 23 or 28)
+				hero["Offer" .. i] = shopBuy(offer, x, top + 34, buyW, 52, tight and 23 or 28)
 			end
 		else
 			hero.Availability = shopText("Unavailable", 20, buyY, heroW - 40, 32, 26, C.white)
@@ -745,12 +875,12 @@ local function App(props)
 			tabs[name] = e(UI.Button, {
 				variant = "shop",
 				name = name,
-				label = compact and ({ "Egg", "Passes", "Speed", "Cash" })[i] or name,
+				label = tight and ({ "Egg", "Passes", "Speed", "Cash" })[i] or name,
 				x = 20 + ((i - 1) % tabColumns) * (tabW + 12),
 				y = headerH + 12 + math.floor((i - 1) / tabColumns) * 56,
 				w = tabW,
 				h = 44,
-				textSize = compact and 18 or 22,
+				textSize = tight and 18 or 22,
 				color = selected and C.green or C.body:Lerp(C.muted, 0.35),
 				quiet = not selected,
 				selected = selected,
@@ -828,7 +958,7 @@ local function App(props)
 		local cell = (gridW - (cols - 1) * 18) / cols
 		local cardH = cell + 18
 		for _, category in { "Forest", "Desert", "Snow", "Titanic" } do
-			local pets = groups[category]
+			local kindPets = groups[category]
 			local owned = 0
 			local cards = {
 				Layout = e("UIGridLayout", {
@@ -838,7 +968,7 @@ local function App(props)
 					SortOrder = Enum.SortOrder.LayoutOrder,
 				}),
 			}
-			for i, pet in pets do
+			for i, pet in kindPets do
 				if pet.owned then
 					owned += 1
 				end
@@ -869,12 +999,12 @@ local function App(props)
 				})
 			end
 			local gridY = showContext and 0 or 44
-			local gridH = math.ceil(#pets / cols) * (cardH + 20) - 20
+			local gridH = math.ceil(#kindPets / cols) * (cardH + 20) - 20
 			local progressY = gridY + gridH + 22
 			local sectionH = progressY + 52 + 12
 			local contents = {
 				Grid = transparent(gridX, gridY, gridW, gridH, cards, "PetGrid"),
-				Progress = UI.progress(category, owned, #pets, gridX, progressY, gridW, 52, C.green, "index"),
+				Progress = UI.progress(category, owned, #kindPets, gridX, progressY, gridW, 52, C.green, "index"),
 			}
 			if showContext then
 				contents.Context = e(UI.Surface, {
@@ -890,8 +1020,14 @@ local function App(props)
 					),
 					children = {
 						Title = text(category, 8, 16, contextW - 16, 32, 23),
-						Egg = UI.icon("egg", 14, 66, contextW - 28, math.min(140, sectionH - 134)),
-						Count = text(owned .. "/" .. #pets, 8, sectionH - 64, contextW - 16, 32, 24),
+						Egg = UI.icon(
+							category == "Forest" and "mossEgg" or "egg",
+							14,
+							66,
+							contextW - 28,
+							math.min(140, sectionH - 134)
+						),
+						Count = text(owned .. "/" .. #kindPets, 8, sectionH - 64, contextW - 16, 32, 24),
 					},
 				})
 			else
@@ -1075,8 +1211,12 @@ local function App(props)
 	-- shortcut: the Figma HUD is laid out for landscape only; compact screens keep the React HUD.
 	local figmaHud = not compact and Figma.get("Hud") ~= nil
 	local figmaScale = math.min(width / 1920, height / 1080)
-	-- Figma HUD frees the top row (old Settings spot, clear of the Roblox top bar) for Slow Mode.
-	local slowX, slowY = figmaHud and 244 or 20, figmaHud and 12 or height * 0.36 + 176
+	-- Slow Mode sits under Shop, the bottom of the Figma left column (498 tall); FigmaHud centers the
+	-- column together with this 12 + 44 row (leftReserve).
+	local leftReserve = 56
+	local slowX = figmaHud and 19 * figmaScale or 20
+	local slowY = figmaHud and (height - 498 * figmaScale - leftReserve) / 2 + 498 * figmaScale + 12
+		or height * 0.36 + 176
 	if compact then
 		local navW = math.min(168, (width - 184) / 2)
 		local navY = narrow and 118 or 62
@@ -1099,27 +1239,45 @@ local function App(props)
 		hud.Index = button("Index", 20, height * 0.36 + 88, 208, 68, C.blue, function()
 			open("Index")
 		end, "index", 38, "OpenIndex")
-		-- Reference toggle: knob slides inside the track; ON/OFF text keeps the state readable without color.
+		-- Quiet pill: the knob side (left OFF, right ON) keeps the state readable without color.
 		hud.Slow = e(UI.Button, {
 			name = "SlowMode",
 			x = slowX,
 			y = slowY,
-			w = 120,
-			h = 52,
+			w = 148,
+			h = 44,
 			variant = "utility",
 			disabled = busy,
 			onClick = function()
 				action("SetSlowMode", { enabled = not slow })
 			end,
 			children = {
-				Knob = e(
-					UI.Surface,
-					{ x = slow and 70 or 6, y = 6, w = 44, h = 40, color = slow and C.green or C.red }
-				),
-				State = UI.text(slow and "ON" or "OFF", slow and 6 or 52, 8, 62, 36, 20),
+				Label = UI.text("Slow", 12, 6, 64, 32, 22, nil, Enum.TextXAlignment.Left),
+				Track = e("Frame", {
+					Name = "Track",
+					Position = UDim2.fromOffset(80, 10),
+					Size = UDim2.fromOffset(56, 24),
+					BackgroundColor3 = slow and C.green or C.muted,
+					BorderSizePixel = 0,
+					ZIndex = 7,
+				}, {
+					Corner = e("UICorner", { CornerRadius = UDim.new(0.5, 0) }),
+					Outline = e("UIStroke", {
+						Color = C.ink,
+						Thickness = 2,
+						ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+					}),
+					Knob = e("Frame", {
+						Name = "Knob",
+						Position = UDim2.fromOffset(slow and 35 or 3, 3),
+						Size = UDim2.fromOffset(18, 18),
+						BackgroundColor3 = C.white,
+						BorderSizePixel = 0,
+						ZIndex = 8,
+					}, { Corner = e("UICorner", { CornerRadius = UDim.new(0.5, 0) }) }),
+				}),
 			},
 		})
-		hud.SlowLabel = UI.text("Slow Mode", slowX + 128, slowY, 170, 52, 26, nil, Enum.TextXAlignment.Left)
 		hud.Egg = button(nil, width - 100, height * 0.38, 80, 80, C.red, function()
 			open("Eggs")
 		end, "egg", nil, "Eggs")
@@ -1130,10 +1288,6 @@ local function App(props)
 	if sidebarOpen or (inventoryOpen and compact) then
 		hud.Egg = nil
 		hud.Pets = nil
-	end
-	-- The label reaches past the left HUD column; keep it clear of central windows.
-	if screen and not sidebarOpen and not inventoryOpen then
-		hud.SlowLabel = nil
 	end
 	hud.Settings = e(UI.Button, {
 		name = "OpenSettings",
@@ -1148,26 +1302,17 @@ local function App(props)
 		end,
 		children = { Icon = UI.icon("settings", 8, 8, 28, 28) },
 	})
-	local inventoryIcon = {}
-	for i = 0, 3 do
-		inventoryIcon["Cell" .. i] = e("Frame", {
-			Position = UDim2.fromOffset(9 + (i % 2) * 14, 9 + math.floor(i / 2) * 14),
-			Size = UDim2.fromOffset(12, 12),
-			BackgroundColor3 = C.white,
-			BorderSizePixel = 0,
-		}, { Corner = e("UICorner", { CornerRadius = UDim.new(0, 3) }) })
-	end
 	hud.Inventory = e(UI.Button, {
 		name = "OpenInventory",
-		-- Figma HUD: next to Settings, above the left button column (its top is y=291 of 1080).
-		x = compact and width - 120 or figmaHud and 20 or 300,
-		y = compact and (narrow and 62 or 14) or figmaHud and 291 * figmaScale - 56 or 12,
+		-- Wide screens: right of the Slow Mode pill (148 wide), on the same row.
+		x = compact and width - 120 or slowX + 156,
+		y = compact and (narrow and 62 or 14) or slowY,
 		w = 44,
 		h = 44,
 		variant = "utility",
 		selected = inventoryOpen and not closing,
 		onClick = toggleInventory,
-		children = inventoryIcon,
+		children = { Icon = UI.icon("backpack", 3, 2, 38, 38) },
 	})
 	local toolCount = #backpack.tools
 	local hotbarLayout = Hotbar.layout(width, height, backpack.slots, false)
@@ -1238,17 +1383,7 @@ local function App(props)
 				open("Shop")
 			end,
 		})
-		if data.EventRemaining > 0 then
-			hud.EventIcon = UI.icon("lavaBat", width - 272, height - 108, 64, 84)
-			hud.Event = UI.text(
-				string.format("In %dm %02ds", math.floor(data.EventRemaining / 60), data.EventRemaining % 60),
-				width - 212,
-				height - 80,
-				196,
-				56,
-				40
-			)
-		end
+		hud.Event = e(LavaTimer, { x = width - 252, y = height - 100 })
 	end
 	if compact then
 		hud.Slow = e(UI.Button, {
@@ -1279,14 +1414,12 @@ local function App(props)
 			hud.Shop = nil
 			hud.Index = nil
 			hud.Slow = nil
-			hud.SlowLabel = nil
 		end
 		hud.SpeedIcon = nil
 		hud.Speed = nil
 		hud.SpeedPlus = nil
 		hud.CashIcon = nil
 		hud.Cash = nil
-		hud.EventIcon = nil
 		hud.Event = nil
 	end
 	if figmaHud then
@@ -1300,6 +1433,7 @@ local function App(props)
 			height = height,
 			speed = number(data.Speed),
 			cash = number(data.Cash),
+			leftReserve = leftReserve,
 			showSides = not sidebarOpen,
 			showResources = not inventoryOpen,
 			reduced = data.ReducedMotion,
@@ -1373,6 +1507,7 @@ local function App(props)
 			body = {
 				Equipment = e(EquipmentShop, {
 					kind = screen,
+					scale = scale,
 					width = windowW,
 					height = windowH,
 					headerH = headerH,
@@ -1381,6 +1516,18 @@ local function App(props)
 					equipped = screen == "Pickaxe Shop" and data.PickaxeLevel or data.TrailLevel,
 					cash = data.Cash,
 					busy = busy,
+					onAction = action,
+				}),
+			}
+		elseif screen == "Rebirth" then
+			body = {
+				Rebirth = e(RebirthWindow, {
+					width = windowW,
+					height = windowH,
+					headerH = headerH,
+					data = data,
+					busy = busy,
+					enabled = not closing,
 					onAction = action,
 				}),
 			}
@@ -1427,6 +1574,7 @@ local function App(props)
 				or screen == "Index" and C.purple
 				or screen == "Pickaxe Shop" and C.gold
 				or screen == "Trails Shop" and C.blue
+				or screen == "Rebirth" and C.gold
 				or C.green,
 			children = {
 				Title = UI.text(
@@ -1455,21 +1603,91 @@ local function App(props)
 			onClick = close,
 			z = 10,
 		})
-		rootChildren.Modal = e("Frame", {
-			Name = "Modal",
+		local figmaWindow
+		if screen == "Trails Shop" and Figma.get("TrailsShop") then
+			figmaWindow = e(TrailsShop, {
+				width = windowW,
+				height = windowH,
+				owned = decode(data.OwnedTrails) or { 1 },
+				equipped = data.TrailLevel,
+				cash = data.Cash,
+				busy = busy,
+				reduced = data.ReducedMotion,
+				onAction = action,
+				onClose = close,
+			})
+		elseif screen == "Offline Cash" and Figma.get("OfflineCash") and Figma.get("TrailsShop") then
+			figmaWindow = e(OfflineWindow, {
+				width = windowW,
+				height = windowH,
+				amount = number(data.OfflineCash),
+				busy = busy,
+				reduced = data.ReducedMotion,
+				onClaim = function()
+					action("ClaimOffline", {}, function()
+						close()
+					end)
+				end,
+				onClose = close,
+			})
+		elseif screen == "Settings" and Figma.get("Settings") then
+			figmaWindow = e(SettingsWindow, {
+				width = windowW,
+				height = windowH,
+				data = settingsData,
+				enabled = not closing and not busy,
+				reduced = data.ReducedMotion,
+				onAction = action,
+				onClose = close,
+			})
+		elseif screen == "Rewards" and Figma.get("Rewards") then
+			figmaWindow = e(RewardsWindow, {
+				width = windowW,
+				height = windowH,
+				data = data,
+				enabled = not closing and not busy,
+				reduced = data.ReducedMotion,
+				onAction = action,
+				onClose = close,
+			})
+		elseif screen == "Shop" and Figma.get("Shop") and Figma.get("TrailsShop") then
+			figmaWindow = e(ShopWindow, {
+				width = windowW,
+				height = windowH,
+				category = shopCategory,
+				reduced = data.ReducedMotion,
+				onPurchase = purchase,
+				onGift = function()
+					notify("Gifting is not available yet.")
+				end,
+				onClose = close,
+			})
+		end
+		-- The scene dimmer sits under the HUD (which stays clickable); the window itself is above HUD and hotbar.
+		rootChildren.ModalDim = e("Frame", {
+			Name = "ModalDim",
 			Size = UDim2.fromOffset(width, height),
 			BackgroundTransparency = 1,
 			ZIndex = 20,
 		}, {
-			Blocker = e("TextButton", {
-				Name = "ModalBlocker",
-				Size = UDim2.fromScale(1, 1),
-				BackgroundColor3 = C.ink,
-				BackgroundTransparency = 0.55,
-				Text = "",
-				AutoButtonColor = false,
-				Selectable = false,
+			Dim = e(UI.Transition, {
+				name = "ModalDimTransition",
+				x = wx,
+				y = wy,
+				w = windowW,
+				h = windowH,
+				visible = not closing,
+				transitionKey = screen,
+				reduced = data.ReducedMotion,
+				backdrop = { name = "ModalBlocker", w = width, h = height, color = C.ink, transparency = 0.55 },
 			}),
+		})
+		rootChildren.Modal = e("Frame", {
+			Name = "Modal",
+			Size = UDim2.fromOffset(width, height),
+			BackgroundTransparency = 1,
+			ZIndex = 45,
+		}, {
 			Window = e(UI.Transition, {
 				name = "ModalTransition",
 				x = wx,
@@ -1481,17 +1699,7 @@ local function App(props)
 				reduced = data.ReducedMotion,
 				onClosed = closed,
 				children = {
-					Window = screen == "Trails Shop" and Figma.get("TrailsShop") and e(TrailsShop, {
-						width = windowW,
-						height = windowH,
-						owned = decode(data.OwnedTrails) or { 1 },
-						equipped = data.TrailLevel,
-						cash = data.Cash,
-						busy = busy,
-						reduced = data.ReducedMotion,
-						onAction = action,
-						onClose = close,
-					}) or e(UI.Surface, {
+					Window = figmaWindow or e(UI.Surface, {
 						variant = (screen == "Index" or screen == "Shop") and "index" or nil,
 						name = screen,
 						w = windowW,
@@ -1535,7 +1743,39 @@ local function App(props)
 			children = { Text = UI.text(pendingLabel, 8, 2, 204, 36, 22) },
 		})
 	end
-	if autoSwingVisible then
+	-- Last seconds before a lava wave, shown only in the field.
+	local lavaIn = data.EventRemaining or 0
+	if not screen and data.InField and lavaIn > 0 and lavaIn <= 5 then
+		rootChildren.LavaCountdown = UI.text(
+			tostring(lavaIn),
+			(width - 240) / 2,
+			height * 0.2,
+			240,
+			150,
+			130,
+			Color3.fromRGB(255, 120, 40),
+			nil,
+			5
+		)
+	end
+	if autoSwingVisible and (data.CarryingCount or 0) > 0 then
+		-- While carrying, the Auto Swing slot becomes Drop: carried animals fall to the ground.
+		rootChildren.Drop = e(UI.Button, {
+			name = "Drop",
+			label = "Drop",
+			icon = "chicken",
+			x = (width - 272) / 2,
+			y = autoSwingY,
+			w = 272,
+			h = 54,
+			color = C.blue,
+			textSize = 28,
+			onClick = function()
+				game.ReplicatedStorage.GameplayAction:FireServer("Drop")
+			end,
+			z = 40,
+		})
+	elseif autoSwingVisible then
 		rootChildren.AutoSwing = e(UI.Button, {
 			name = "AutoSwing",
 			label = data.AutoSwing and "Auto Swing: ON" or "Auto Swing",
@@ -1601,18 +1841,31 @@ local function App(props)
 			},
 		})
 	end
-	if message or (not screen and data.PlacementKind and data.PlacementError) then
-		local noticeW = math.min(580, width - 32)
-		rootChildren.ActionMessage = e(UI.Surface, {
+	-- Notices stack under the top bar, clear of windows and the HUD columns; newest at the bottom.
+	local shown = table.clone(toasts)
+	if not screen and data.PlacementKind and data.PlacementError then
+		table.insert(shown, 1, { id = "placement", text = data.PlacementError, kind = "error" })
+	end
+	-- A central window starts right under two rows: older notices wait out of sight instead of covering its header.
+	local modalOpen = screen and not sidebarOpen and not inventoryOpen
+	while modalOpen and #shown > 2 do
+		table.remove(shown, 1)
+	end
+	local toastW = compact and (narrow and width - 152 or math.min(520, width - 288)) or math.min(520, width - 660)
+	local toastX = compact and narrow and 136 or (width - toastW) / 2
+	local pendingTop = pendingLabel and not (compact and narrow and not short)
+	local toastY = pendingTop and 54 or 8
+	for i, toast in shown do
+		rootChildren["Toast" .. i] = e(UI.Surface, {
 			name = "ActionMessage",
-			x = (width - noticeW) / 2,
-			y = compact and (narrow and 330 or 276) or 232,
-			w = noticeW,
-			h = 60,
-			color = C.body,
-			quiet = true,
+			x = toastX,
+			y = toastY + (i - 1) * 46,
+			w = toastW,
+			h = 42,
+			color = TOAST_COLORS[toast.kind] or C.body,
+			quiet = TOAST_COLORS[toast.kind] == nil,
 			z = 50,
-			children = { Text = UI.text(message or data.PlacementError, 12, 8, noticeW - 24, 42, 20) },
+			children = { Text = UI.text(toast.text, 10, 3, toastW - 20, 36, 20, nil, nil, nil, { fit = true }) },
 		})
 	end
 	return e(

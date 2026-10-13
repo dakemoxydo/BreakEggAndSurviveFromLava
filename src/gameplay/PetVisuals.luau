@@ -96,13 +96,7 @@ function Visuals.chick()
 	return m
 end
 
-function Visuals.egg(color, nest)
-	local m = Instance.new("Model")
-	m.Name = "Forest Egg"
-	color = color or Color3.fromRGB(255, 204, 159)
-	local shell = part(m, "Shell", Vector3.new(3.3, 1.5, 3.3), Vector3.new(0, 2.1, 0), color)
-	m.PrimaryPart = shell
-	shell.PivotOffset = CFrame.new(0, -2.1, 0)
+local function steppedShell(m, color)
 	for i, tier in
 		{
 			{ 2.8, 0.7, 0.85 },
@@ -126,17 +120,72 @@ function Visuals.egg(color, nest)
 			edge.CFrame *= CFrame.Angles(0, math.rad(45), 0)
 		end
 	end
+end
+
+-- Imported voxel shells (ServerStorage.Assets.Items.Eggs, copied by PetWorld to ReplicatedStorage.EggModels)
+-- are 2.325 studs tall; scaled to the stepped shell's body height. Without a skin the egg stays procedural.
+local EggMeshScale = 4.2 / 2.325
+local EggMeshBottom = 0.45
+
+function Visuals.egg(color, nest, skin)
+	local templates = skin and game.ReplicatedStorage:FindFirstChild("EggModels")
+	local template = templates and templates:FindFirstChild(skin)
+	local m = Instance.new("Model")
+	m.Name = "Forest Egg"
+	color = color or Color3.fromRGB(255, 204, 159)
+	if template then
+		local shell = template:Clone()
+		shell.Name = "Shell"
+		shell.Size *= EggMeshScale
+		shell.CFrame = CFrame.new(0, EggMeshBottom + shell.Size.Y / 2, 0)
+		shell.PivotOffset = CFrame.new(0, -shell.Position.Y, 0)
+		shell.Anchored = true
+		shell.CanCollide = false
+		shell.CanTouch = false
+		shell.CanQuery = false
+		shell.Parent = m
+		m.PrimaryPart = shell
+	else
+		local shell = part(m, "Shell", Vector3.new(3.3, 1.5, 3.3), Vector3.new(0, 2.1, 0), color)
+		m.PrimaryPart = shell
+		shell.PivotOffset = CFrame.new(0, -2.1, 0)
+		steppedShell(m, color)
+	end
 	if nest ~= false then
-		for i = 1, 14 do
-			local angle = i * math.pi * 2 / 14
+		-- Symmetric block nest: 16-block ring, 8 rim blocks and 8 twig ends on alternating angles.
+		local light, dark, deep =
+			Color3.fromRGB(190, 128, 72), Color3.fromRGB(161, 103, 59), Color3.fromRGB(118, 74, 40)
+		part(m, "NestTwig", Vector3.new(2.8, 0.25, 2.8), Vector3.new(0, 0.18, 0), deep)
+		for i = 0, 15 do
+			local angle = i * math.pi / 8
 			local twig = part(
 				m,
 				"NestTwig",
-				Vector3.new(1.8, 0.3, 0.48),
-				Vector3.new(math.cos(angle) * 1.85, 0.28, math.sin(angle) * 1.85),
-				Color3.fromRGB(161 + (i % 3) * 14, 103 + (i % 4) * 9, 59)
+				Vector3.new(0.6, 0.5, 0.85),
+				Vector3.new(math.cos(angle) * 1.9, 0.3, math.sin(angle) * 1.9),
+				i % 2 == 0 and light or dark
 			)
-			twig.CFrame *= CFrame.Angles(0, -angle + 0.55, math.sin(i) * 0.1)
+			twig.CFrame *= CFrame.Angles(0, -angle, 0)
+		end
+		for i = 0, 7 do
+			local rim = i * math.pi / 4
+			local twig = part(
+				m,
+				"NestTwig",
+				Vector3.new(0.5, 0.35, 0.9),
+				Vector3.new(math.cos(rim) * 1.85, 0.72, math.sin(rim) * 1.85),
+				dark
+			)
+			twig.CFrame *= CFrame.Angles(0, -rim, 0)
+			local tip = rim + math.pi / 8
+			local stick = part(
+				m,
+				"NestTwig",
+				Vector3.new(1, 0.2, 0.24),
+				Vector3.new(math.cos(tip) * 2.2, 0.5, math.sin(tip) * 2.2),
+				deep
+			)
+			stick.CFrame *= CFrame.Angles(0, -tip, 0.3)
 		end
 	end
 	return m
@@ -377,7 +426,7 @@ function Visuals.pickaxe(index)
 end
 
 function Visuals.placement(kind, petKind, weight)
-	return kind == "Egg" and Visuals.egg() or Visuals.pet(petKind, weight)
+	return kind == "Egg" and Visuals.egg(nil, nil, "DefaultEgg") or Visuals.pet(petKind, weight)
 end
 
 return Visuals

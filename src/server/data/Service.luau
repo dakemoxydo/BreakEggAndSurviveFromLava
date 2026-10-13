@@ -226,6 +226,28 @@ function Service.Load(player)
 	player:SetAttribute("DataStoreMode", Service.Mode)
 	return profile.Data
 end
+-- Dev panel: save now, without RequestSave's 10 s throttle.
+function Service.SaveNow(player)
+	local record = writable(player)
+	if not record or not commitRecord(player, record) then
+		return false
+	end
+	record.profile:Save()
+	return true
+end
+-- Dev panel, Studio only: the saved profile becomes the template and the session ends; the caller kicks the player.
+function Service.Reset(player)
+	assert(isStudio, "Profile reset is Studio-only")
+	local record = writable(player)
+	if not record then
+		return false
+	end
+	record.snapshot = nil
+	record.closing = true
+	record.profile.Data = deepCopy(Schema.Template)
+	record.profile:EndSession()
+	return true
+end
 function Service.Release(player)
 	local record = writable(player)
 	if not record then

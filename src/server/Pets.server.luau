@@ -74,6 +74,7 @@ local function cleanup(player)
 	end
 	if state.base then
 		state.base:SetAttribute("OwnerUserId", nil)
+		state.base:SetAttribute("PenLevel", nil)
 	end
 	player:SetAttribute("PetDataReady", false)
 	player:SetAttribute("BaseName", nil)
@@ -120,6 +121,7 @@ local function sync(player, state)
 			status = "Hatches in " .. remaining .. "s",
 		})
 	end
+	income = math.floor(income * Game.rebirthIncome(state.rebirths))
 	state.income = income
 	player:SetAttribute("PetInventory", Http:JSONEncode(inventory))
 	player:SetAttribute("GrowingEggs", Http:JSONEncode(eggs))
@@ -147,11 +149,15 @@ local function sync(player, state)
 			SatchelLevel = state.satchelLevel,
 			Playtime = state.playtime,
 			Multiplier = Game.Trails[state.trail].multiplier,
+			Rebirths = state.rebirths,
 		}
 	do
 		player:SetAttribute(key, value)
 	end
 	player:SetAttribute("CollectionRewardClaimed", state.rewardClaimed)
+	player:SetAttribute("DailyRewardAt", state.dailyRewardAt)
+	player:SetAttribute("RewardStreak", state.rewardStreak)
+	player:SetAttribute("RewardStreakAt", state.rewardStreakAt)
 end
 local function position(state, x, z)
 	local p = state.base.BaseAnchor.CFrame:PointToWorldSpace(Vector3.new(x, 0, z))
@@ -305,8 +311,30 @@ local function applySpeed(player)
 		humanoid.WalkSpeed = Game.walkSpeed(
 			(player:GetAttribute("Speed") or 16) * Game.Trails[states[player] and states[player].trail or 1].multiplier,
 			player:GetAttribute("SlowMode")
-		)
+		) * ((player:GetAttribute("CarryingCount") or 0) > 0 and Game.CargoSlow or 1)
 	end
+end
+-- Login reward: an egg needs a free inventory slot, so it is given first and a failure grants nothing.
+local function grantReward(player, state, reward)
+	if reward.pet then
+		local result = giveTool(player, state, "Egg", { kind = reward.pet, weight = 1 })
+		if not result.success then
+			return result
+		end
+	end
+	local parts = {}
+	if reward.cash then
+		state.cash = math.min(Game.MaxCash, state.cash + reward.cash)
+		table.insert(parts, "$" .. Game.number(reward.cash))
+	end
+	if reward.speed then
+		player:SetAttribute("Speed", math.min(Game.MaxSpeed, (player:GetAttribute("Speed") or 16) + reward.speed))
+		table.insert(parts, "+" .. reward.speed .. " speed")
+	end
+	if reward.pet then
+		table.insert(parts, "a " .. Game.pet(reward.pet).name .. " Egg")
+	end
+	return reply(true, "Received " .. table.concat(parts, " and ") .. "!")
 end
 local function perform(player, state, name, payload)
 	if name == "PlaceEgg" or name == "PlacePet" then
@@ -337,7 +365,7 @@ local function perform(player, state, name, payload)
 			if #state.eggs >= Config.MaxEggs then
 				return reply(false, "Hatch your growing eggs first.")
 			end
-			local model = World.egg()
+			local model = World.egg(nil, nil, "DefaultEgg")
 			model:SetAttribute("OwnerUserId", player.UserId)
 			model:SetAttribute("EggVisual", true)
 			model:PivotTo(CFrame.new(payload.position.X, state.floor, payload.position.Z))
@@ -540,6 +568,31 @@ local function perform(player, state, name, payload)
 			table.remove(state.pets, item.index)
 		end
 		return giveTool(player, state, "Egg", { kind = kind, weight = weight })
+	elseif name == "ClaimDailyReward" then
+		local now = os.time()
+		if now - state.dailyRewardAt < Game.RewardDay then
+			return reply(false, "Your daily reward is not ready yet.")
+		end
+		local result = grantReward(player, state, Game.DailyReward)
+		if result.success then
+			state.dailyRewardAt = now
+		end
+		return result
+	elseif name == "ClaimStreakReward" then
+		local now = os.time()
+		local claimed, ready = Game.rewardStreak(state.rewardStreak, state.rewardStreakAt, now)
+		if payload.day ~= claimed + 1 then
+			return reply(false, "Claim the days in order.")
+		end
+		if not ready then
+			return reply(false, "Come back tomorrow for Day " .. claimed + 1 .. ".")
+		end
+		local result = grantReward(player, state, Game.StreakRewards[claimed + 1])
+		if result.success then
+			state.rewardStreak = claimed + 1
+			state.rewardStreakAt = now
+		end
+		return result
 	elseif name == "ClaimFreeReward" then
 		if state.freeRewardClaimed then
 			return reply(false, "Reward already claimed.")
@@ -582,6 +635,38 @@ local function perform(player, state, name, payload)
 		state.settings[setting] = value
 		player:SetAttribute(setting, value)
 		return reply(true)
+	elseif name == "Rebirth" then
+		local cost = Game.rebirthCost(state.rebirths)
+		if cost > Game.MaxCash then
+			return reply(false, "You reached the maximum rebirth.")
+		end
+		if state.cash < cost then
+			return reply(false, "You need $" .. Game.number(cost - state.cash) .. " more to rebirth.")
+		end
+		state.cash = 0
+		state.rebirths += 1
+		player:SetAttribute("Speed", 16)
+		return reply(true, "Rebirth " .. state.rebirths .. "! Income x" .. Game.rebirthIncome(state.rebirths) .. ".")
+	elseif name == "SetHotbar" then
+		-- Keep only items the player owns now, so the saved layout cannot grow without bound.
+		local layout, owned = payload.layout, {}
+		for _, pet in state.pets do
+			owned[pet.id] = true
+		end
+		for _, egg in state.backpackEggs do
+			owned[egg.id] = true
+		end
+		if not Schema.ValidHotbar(layout) then
+			return reply(false)
+		end
+		local kept = {}
+		for key, slot in layout do
+			if owned[key] or Schema.HotbarTools[key] then
+				kept[key] = slot
+			end
+		end
+		state.hotbar = kept
+		return reply(true)
 	end
 	return reply(false, "This purchase is not available yet.")
 end
@@ -602,7 +687,13 @@ remote.OnServerInvoke = function(player, name, payload)
 	if result.success then
 		sync(player, state)
 		DataService.Commit(player)
-		if name == "ClaimOffline" or name == "ClaimCollectionReward" then
+		if
+			name == "ClaimOffline"
+			or name == "ClaimCollectionReward"
+			or name == "ClaimDailyReward"
+			or name == "ClaimStreakReward"
+			or name == "Rebirth"
+		then
 			DataService.RequestSave(player)
 		end
 	end
@@ -624,6 +715,7 @@ local function join(player)
 		discovered = false,
 		rewardClaimed = false,
 		settings = {},
+		hotbar = {},
 		lastAction = 0,
 		ready = false,
 		connections = {},
@@ -639,6 +731,10 @@ local function join(player)
 		satchelLevel = 1,
 		playtime = 0,
 		freeRewardClaimed = false,
+		dailyRewardAt = 0,
+		rewardStreak = 0,
+		rewardStreakAt = 0,
+		rebirths = 0,
 	}
 	states[player] = state
 	local list = bases:GetChildren()
@@ -679,6 +775,8 @@ local function join(player)
 	state.discovered = saved.discovered
 	state.rewardClaimed = saved.rewardClaimed
 	state.settings = table.clone(saved.settings)
+	state.hotbar = table.clone(saved.hotbar)
+	player:SetAttribute("HotbarLayout", Http:JSONEncode(state.hotbar))
 	state.offline = saved.offline
 	state.carriedKind = saved.carriedKind
 	state.carriedPet = saved.carriedPet
@@ -688,7 +786,21 @@ local function join(player)
 	for _, key in saved.discoveries do
 		state.discoveries[key == "TestChick" and "Chicken" or key] = true
 	end
-	for _, key in { "pickaxe", "trail", "penLevel", "treadmillLevel", "satchelLevel", "playtime", "freeRewardClaimed" } do
+	for _, key in
+		{
+			"pickaxe",
+			"trail",
+			"penLevel",
+			"treadmillLevel",
+			"satchelLevel",
+			"playtime",
+			"freeRewardClaimed",
+			"dailyRewardAt",
+			"rewardStreak",
+			"rewardStreakAt",
+			"rebirths",
+		}
+	do
 		state[key] = saved[key]
 	end
 	state.ownedPickaxes = table.clone(saved.ownedPickaxes)
@@ -722,7 +834,7 @@ local function join(player)
 		if egg.hatchesAt <= os.time() then
 			addPet(player, state, at, nil, egg.kind, egg.weight)
 		else
-			egg.model = World.egg()
+			egg.model = World.egg(nil, nil, "DefaultEgg")
 			egg.position = at
 			egg.model:SetAttribute("OwnerUserId", player.UserId)
 			egg.model:SetAttribute("EggVisual", true)
@@ -751,6 +863,12 @@ local function join(player)
 		player:GetAttributeChangedSignal("Speed"):Connect(function()
 			applySpeed(player)
 			DataService.Commit(player)
+		end)
+	)
+	table.insert(
+		state.connections,
+		player:GetAttributeChangedSignal("CarryingCount"):Connect(function()
+			applySpeed(player)
 		end)
 	)
 	table.insert(
@@ -827,7 +945,7 @@ Adventure.start({
 		then
 			return false
 		end
-		local pet = addPet(player, state, nil, nil, kind, weight, false)
+		addPet(player, state, nil, nil, kind, weight, false)
 		reconcileTools(player, state)
 		sync(player, state)
 		DataService.Commit(player)
@@ -845,6 +963,20 @@ Adventure.start({
 		end
 		return result
 	end,
+})
+require(script.Parent.DevTools).start({
+	states = states,
+	sync = sync,
+	commit = DataService.Commit,
+	addPet = addPet,
+	spawnPet = spawnPet,
+	equippedCount = equippedCount,
+	giveTool = giveTool,
+	reconcileTools = reconcileTools,
+	hatchReady = hatchReady,
+	inventoryCount = inventoryCount,
+	world = World,
+	adventure = Adventure,
 })
 local elapsed = 0
 RunService.Heartbeat:Connect(function(dt)

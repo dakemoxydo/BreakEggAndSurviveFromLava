@@ -1,0 +1,22 @@
+{
+  "robloxImageIds": {
+    "default-egg.png": "125435415548077",
+    "moss-egg.png": "97801077346901",
+    "birch-egg.png": "135689147139283",
+    "mushroom-egg.png": "77423077317398",
+    "acorn-egg.png": "105138814574486",
+    "enchanted-egg.png": "77647180204776"
+  },
+  "source": "Default: earlier generated icon; forest eggs: imagegen extraction from supplied Blender screenshot",
+  "outline": "black",
+  "format": "PNG RGBA",
+  "background": "transparent",
+  "icons": [
+    "default-egg.png",
+    "moss-egg.png",
+    "birch-egg.png",
+    "mushroom-egg.png",
+    "acorn-egg.png",
+    "enchanted-egg.png"
+  ]
+}

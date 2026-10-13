@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-09",
+  "date": "2026-10-11",
   "note": "Audio assets referenced by src/gameplay/SoundLibrary.luau. All free Creator Store assets; load verified in place 119583219290326.",
   "sounds": [
     {
@@ -45,15 +45,9 @@
       "creator": "DailySoundsFX"
     },
     {
-      "key": "EggHitCrit, HatchTierUp, HatchTease",
+      "key": "EggHitCrit",
       "assetId": "130378474223829",
       "name": "Coin Pickup - Daily Sounds",
-      "creator": "DailySoundsFX"
-    },
-    {
-      "key": "HatchCharge",
-      "assetId": "106623224876186",
-      "name": "Tiny Click - Daily Sounds",
       "creator": "DailySoundsFX"
     },
     {
@@ -84,6 +78,54 @@
       "key": "RevealLegendary",
       "assetId": "1839881844",
       "name": "Spinning Around (b)",
+      "creator": "APMOfficial"
+    },
+    {
+      "key": "HatchHeart",
+      "assetId": "9119882039",
+      "name": "Synth Whomps 38 (SFX)",
+      "creator": "ProSoundEffects"
+    },
+    {
+      "key": "HatchTry",
+      "assetId": "9119879867",
+      "name": "Synth Whomps 9 (SFX)",
+      "creator": "ProSoundEffects"
+    },
+    {
+      "key": "HatchChime",
+      "assetId": "72644163309528",
+      "name": "Glockenspiel C6",
+      "creator": "AEinsertnamelol (community upload)"
+    },
+    {
+      "key": "HatchShimmer",
+      "assetId": "9114369623",
+      "name": "Fairy Dust 1 (SFX)",
+      "creator": "ProSoundEffects"
+    },
+    {
+      "key": "HatchRiser",
+      "assetId": "9040281199",
+      "name": "Heated Hijack",
+      "creator": "APMOfficial"
+    },
+    {
+      "key": "HatchInhale",
+      "assetId": "9118158113",
+      "name": "Reversed Whoosh Backwards Hissing Burst 2 (SFX)",
+      "creator": "ProSoundEffects"
+    },
+    {
+      "key": "HatchShatter",
+      "assetId": "9114592102",
+      "name": "Glass Breaks 11 (SFX)",
+      "creator": "ProSoundEffects"
+    },
+    {
+      "key": "RevealEpic",
+      "assetId": "1839997962",
+      "name": "Right Answer",
       "creator": "APMOfficial"
     }
   ]

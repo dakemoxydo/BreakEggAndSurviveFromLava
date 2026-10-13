@@ -41,9 +41,9 @@ local countdown=label(gui,"Spawns in: 30:00",46,nil,UDim2.fromOffset(20,111),UDi
 for index,zone in {"Forest","Desert","Snow"} do
  local floor=map.Biomes[zone].Floor
  local point=part(zone.."Difficulty",Vector3.one,CFrame.new(0,13,floor.Position.Z+76),Color3.new(1,1,1));point.Transparency=1
- local b=Instance.new("BillboardGui");b.Name="DifficultyLabel";b.Size=UDim2.fromOffset(170,140);b.Adornee=point;b.MaxDistance=450;b.Parent=point
- label(b,"☺",76,Color3.fromRGB(255,205,38),UDim2.fromOffset(20,0),UDim2.fromOffset(130,83))
- label(b,({"Easy","Medium","Hard"})[index],32,({Color3.fromRGB(95,255,0),Color3.fromRGB(255,161,26),Color3.fromRGB(255,70,70)})[index],UDim2.fromOffset(0,85),UDim2.fromOffset(170,52))
+ local b=Instance.new("BillboardGui");b.Name="DifficultyLabel";b.Size=UDim2.fromScale(6,4.9);b.Adornee=point;b.MaxDistance=450;b.Parent=point
+ label(b,"☺",76,Color3.fromRGB(255,205,38),UDim2.fromScale(0.12,0),UDim2.fromScale(0.76,0.59)).TextScaled=true
+ label(b,({"Easy","Medium","Hard"})[index],32,({Color3.fromRGB(95,255,0),Color3.fromRGB(255,161,26),Color3.fromRGB(255,70,70)})[index],UDim2.fromScale(0,0.61),UDim2.fromScale(1,0.37)).TextScaled=true
 end
 -- Safe-zone marking faces upward, follows the existing red boundary, and has no collision.
 local safe=part("SafeZoneTitle",Vector3.new(88,.03,8),CFrame.new(0,.32,-31),Color3.fromRGB(255,255,255));safe.Transparency=1
@@ -65,14 +65,14 @@ board("TopSpeed","Top Speed",Vector3.new(-78,12.3,16),Color3.fromRGB(23,171,255)
 board("TopPlaytime","Top Playtime",Vector3.new(-57,12.3,16),Color3.fromRGB(245,67,144),"rbxassetid://80316475458538")
 local gift=part("FreeGift",Vector3.new(5,5,5),CFrame.new(-125,2.7,-10),Color3.fromRGB(250,35,55));gift:SetAttribute("Interaction","Free")
 part("GiftRibbonX",Vector3.new(5.1,.7,5.1),CFrame.new(-125,5.1,-10),Color3.fromRGB(255,211,25));part("GiftRibbonY",Vector3.new(.7,5.1,5.1),CFrame.new(-125,2.7,-10),Color3.fromRGB(255,211,25))
-local giftGui=Instance.new("BillboardGui");giftGui.Size=UDim2.fromOffset(160,65);giftGui.StudsOffsetWorldSpace=Vector3.new(0,5,0);giftGui.Adornee=gift;giftGui.Parent=gift;label(giftGui,"FREE!",40,Color3.fromRGB(183,255,0))
+local giftGui=Instance.new("BillboardGui");giftGui.Size=UDim2.fromScale(5,2);giftGui.StudsOffsetWorldSpace=Vector3.new(0,5,0);giftGui.Adornee=gift;giftGui.Parent=gift;label(giftGui,"FREE!",40,Color3.fromRGB(183,255,0)).TextScaled=true
 local portal=part("AnimalMerging",Vector3.new(11,.3,11),CFrame.new(154,.3,-7),Color3.fromRGB(21,210,255));portal.Material=Enum.Material.Neon;portal:SetAttribute("Interaction","Merge Pets")
-local portalGui=Instance.new("BillboardGui");portalGui.Size=UDim2.fromOffset(300,80);portalGui.StudsOffsetWorldSpace=Vector3.new(0,8,0);portalGui.Adornee=portal;portalGui.Parent=portal;label(portalGui,"Animal Merging",32,Color3.fromRGB(8,219,255))
+local portalGui=Instance.new("BillboardGui");portalGui.Size=UDim2.fromScale(10,2.7);portalGui.StudsOffsetWorldSpace=Vector3.new(0,8,0);portalGui.Adornee=portal;portalGui.Parent=portal;label(portalGui,"Animal Merging",32,Color3.fromRGB(8,219,255)).TextScaled=true
 local bag=part("SatchelShop",Vector3.new(7,5,4),CFrame.new(101,2.7,-6),Color3.fromRGB(145,84,45));bag:SetAttribute("Interaction","Satchel Shop")
-local bagGui=Instance.new("BillboardGui");bagGui.Size=UDim2.fromOffset(250,80);bagGui.StudsOffsetWorldSpace=Vector3.new(0,5,0);bagGui.Adornee=bag;bagGui.Parent=bag;label(bagGui,"Satchel Shop",32,Color3.fromRGB(255,205,59))
+local bagGui=Instance.new("BillboardGui");bagGui.Size=UDim2.fromScale(8,2.6);bagGui.StudsOffsetWorldSpace=Vector3.new(0,5,0);bagGui.Adornee=bag;bagGui.Parent=bag;label(bagGui,"Satchel Shop",32,Color3.fromRGB(255,205,59)).TextScaled=true
 for _,shop in map.StartZone.Shops:GetChildren() do
- if shop:IsA("Model") then local p=shop:FindFirstChildWhichIsA("BasePart",true);local title=shop:FindFirstChild("ShopTitle") or Instance.new("BillboardGui");title.Name="ShopTitle";title.Size=UDim2.fromOffset(270,75);title.Adornee=p;title.StudsOffsetWorldSpace=Vector3.new(0,12,0);title.Parent=shop
-  if #title:GetChildren()==0 then label(title,shop.Name=="BlueShopStand" and "Pickaxe Shop" or "Trails Shop",34,shop.Name=="BlueShopStand" and Color3.fromRGB(0,218,255) or Color3.fromRGB(106,255,0)) end
+ if shop:IsA("Model") then local p=shop:FindFirstChildWhichIsA("BasePart",true);local title=shop:FindFirstChild("ShopTitle") or Instance.new("BillboardGui");title.Name="ShopTitle";title.Size=UDim2.fromScale(12,3.3);title.Adornee=p;title.StudsOffsetWorldSpace=Vector3.new(0,12,0);title.Parent=shop
+  if #title:GetChildren()==0 then label(title,shop.Name=="BlueShopStand" and "Pickaxe Shop" or "Trails Shop",34,shop.Name=="BlueShopStand" and Color3.fromRGB(0,218,255) or Color3.fromRGB(106,255,0)).TextScaled=true end
  end
 end
 local bases=map.StartZone.PlayerBases

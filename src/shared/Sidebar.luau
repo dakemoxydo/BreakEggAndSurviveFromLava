@@ -5,6 +5,8 @@ local Theme = require(script.Parent.Theme)
 local Config = require(script.Parent.Config)
 local PetConfig = require(RS.PetConfig)
 local GrowingEggs = require(script.Parent.GrowingEggs)
+local Figma = require(script.Parent.FigmaTemplate)
+local PetsWindow = require(script.Parent.PetsWindow)
 local e = React.createElement
 local C = Theme.colors
 local function amount(value)
@@ -43,6 +45,46 @@ local function Sidebar(p)
 			p.onAction(name, payload or {})
 		end
 	end
+	local slotCost = p.slotCost or Config.PetSlotCost
+	local missing = math.max(0, slotCost - (p.cash or 0))
+	local maximum = p.capacity >= PetConfig.MaxCapacity
+	if isPets and Figma.get("Pets") then
+		-- Shared sidebar scale (same as Eggs); right margin as the React body.
+		local design, panel = PetsWindow.designSize()
+		-- Same place as Eggs; Equip Best hangs below the panel, so the whole window must still fit.
+		local s, y = Figma.sidebarScale(p.width, p.height, panel)
+		s = math.min(s, (p.height - y - 16) / design.Y)
+		local fw, fh = design.X * s, design.Y * s
+		return e(UI.Transition, {
+			name = "RightSidebar",
+			x = p.width - fw - 16,
+			y = y,
+			w = fw,
+			h = fh,
+			slide = true,
+			visible = p.visible,
+			transitionKey = p.kind,
+			reduced = p.reduced,
+			onClosed = p.onClosed,
+			z = 20,
+			children = {
+				Panel = e(PetsWindow.Component, {
+					scale = s,
+					pets = p.pets,
+					equipped = equipped,
+					capacity = p.capacity,
+					cash = p.cash or 0,
+					slotCost = slotCost,
+					missing = missing,
+					maximum = maximum,
+					busy = p.busy,
+					reduced = p.reduced,
+					onAction = act,
+					onClose = p.onClose,
+				}),
+			},
+		})
+	end
 	local function button(label, x, y, w, h, color, callback, name, size, disabled)
 		return e(UI.Button, {
 			label = label,
@@ -71,9 +113,6 @@ local function Sidebar(p)
 		nil,
 		{ fit = true }
 	)
-	local slotCost = p.slotCost or Config.PetSlotCost
-	local missing = math.max(0, slotCost - (p.cash or 0))
-	local maximum = p.capacity >= PetConfig.MaxCapacity
 	header.Action = button(
 		maximum and "MAX SLOTS" or "+1 Slot [$" .. amount(slotCost) .. "]",
 		stacked and 14 or panelW - 184,

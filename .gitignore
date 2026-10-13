@@ -3,3 +3,4 @@ ShopUIBundle.rbxmx
 assets/bundle.json
 assets/sourcemap.json
 *.log
+__pycache__/

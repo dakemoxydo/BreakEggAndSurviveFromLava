@@ -271,7 +271,7 @@ local petVisuals = setmetatable({}, { __mode = "k" })
 -- Carry pose is cosmetic on every client; ownership and banking stay server-side.
 local carryPoses = setmetatable({}, { __mode = "k" })
 RunService.PreAnimation:Connect(function()
-	for character, state in carryPoses do
+	for _, state in carryPoses do
 		for _, item in state.joints do
 			if item.joint.Parent then
 				item.joint.Transform = item.base
@@ -333,7 +333,7 @@ RunService.PreSimulation:Connect(function(dt)
 	end
 end)
 local function attachPetVisual(model)
-	local animated = model:GetAttribute("PetVisual") == true or model:GetAttribute("Guardian") == true
+	local animated = model:GetAttribute("PetVisual") == true
 	if not model:IsA("Model") or not animated or petVisuals[model] then
 		return
 	end
@@ -443,16 +443,15 @@ for _, key in { "ViewMyPets", "ViewOthersPets", "ViewMyEggs" } do
 end
 local weightGui = Instance.new("BillboardGui")
 weightGui.Name = "PetWeightHover"
-weightGui.Size = UDim2.fromOffset(180, 48)
+weightGui.Size = UDim2.fromScale(4, 1.1)
 weightGui.AlwaysOnTop = true
-weightGui.MaxDistance = 140
 weightGui.Enabled = false
 weightGui.Parent = player:WaitForChild("PlayerGui")
 local weightText = Instance.new("TextLabel")
 weightText.Size = UDim2.fromScale(1, 1)
 weightText.BackgroundTransparency = 1
 weightText.Font = Enum.Font.GothamBlack
-weightText.TextSize = 28
+weightText.TextScaled = true
 weightText.TextColor3 = Color3.new(1, 1, 1)
 weightText.Parent = weightGui
 local weightStroke = Instance.new("UIStroke")

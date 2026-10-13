@@ -669,7 +669,7 @@ function Effects.stopEggRecoil(model)
 	end
 end
 
-local function impactPoint(model, character, scale, at)
+local function impactPoint(_model, character, scale, at)
 	local origin = at + Vector3.new(0, 2.3 * scale, 0)
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	local normal = root and (root.Position - origin) or Vector3.new(0, 0, 1)
@@ -736,16 +736,18 @@ local function damageNumber(point, damage, crit, final, own)
 	Debris:AddItem(anchor, 1.1)
 	local gui = Instance.new("BillboardGui")
 	gui.Name = "EggDamage"
-	gui.Size = UDim2.fromOffset(220, 90)
+	gui.Size = UDim2.fromScale(4.4, 1.8)
 	gui.StudsOffsetWorldSpace = Vector3.new(0, 1, 0)
 	gui.AlwaysOnTop = false
 	gui.LightInfluence = 0
 	gui.Parent = anchor
 	local label = Instance.new("TextLabel")
-	label.Size = UDim2.fromScale(1, 0.7)
+	local height = crit and 0.58 or final and 0.51 or 0.4
+	label.Size = UDim2.fromScale(1, height)
+	label.Position = UDim2.fromScale(0, 0.35 - height / 2)
 	label.BackgroundTransparency = 1
 	label.Font = Enum.Font.GothamBlack
-	label.TextSize = crit and 52 or final and 46 or 36
+	label.TextScaled = true
 	label.TextColor3 = crit and Color3.fromRGB(255, 120, 40) or Color3.fromRGB(255, 235, 138)
 	label.Text = (crit and "CRIT -" or "-") .. Game.number(damage or 0)
 	label.Parent = gui
@@ -758,11 +760,11 @@ local function damageNumber(point, damage, crit, final, own)
 	local fades = { label, outline }
 	if own and combo >= 3 then
 		local comboLabel = Instance.new("TextLabel")
-		comboLabel.Size = UDim2.fromScale(1, 0.32)
-		comboLabel.Position = UDim2.fromScale(0, 0.68)
+		comboLabel.Size = UDim2.fromScale(1, 0.27)
+		comboLabel.Position = UDim2.fromScale(0, 0.7)
 		comboLabel.BackgroundTransparency = 1
 		comboLabel.Font = Enum.Font.GothamBlack
-		comboLabel.TextSize = 24
+		comboLabel.TextScaled = true
 		comboLabel.TextColor3 = Color3.fromHSV((combo * 0.07) % 1, 0.55, 1)
 		comboLabel.Text = "x" .. combo .. " COMBO"
 		comboLabel.Parent = gui
@@ -845,6 +847,68 @@ local function seed(text)
 	end
 	return value
 end
+local function crackPart(model, color, size, cframe)
+	local crack = Instance.new("Part")
+	crack.Name = "EggCrack"
+	crack.Anchored = true
+	crack.CanCollide = false
+	crack.CanTouch = false
+	crack.CanQuery = false
+	crack.CastShadow = false
+	crack.Material = Enum.Material.SmoothPlastic
+	crack.Color = color
+	crack.Size = size
+	crack.CFrame = cframe
+	crack.Parent = model
+end
+-- Imported voxel shells (one MeshPart): raycasts hit the exact axis-aligned voxel faces,
+-- so each crack starts on a side face and grows only while the next point stays on that plane.
+local function meshCracks(model, shell, rng, color, stage)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = { shell }
+	local size = shell.Size
+	local thickness = math.max(0.06, size.Y * 0.016)
+	for _ = 1, 2 + stage do
+		local yaw = rng:NextInteger(0, 3) * math.pi / 2 + rng:NextNumber(-0.35, 0.35)
+		local center = shell.CFrame * Vector3.new(0, rng:NextNumber(-0.22, 0.22) * size.Y, 0)
+		local origin = center + shell.CFrame:VectorToWorldSpace(Vector3.new(math.cos(yaw), 0, math.sin(yaw)) * size.X)
+		local hit = workspace:Raycast(origin, center - origin, params)
+		if hit then
+			local point, normal = hit.Position, hit.Normal
+			local function onPlane(at)
+				local probe = workspace:Raycast(at + normal * 0.3, -normal * 0.6, params)
+				return probe and probe.Normal:Dot(normal) > 0.99 and math.abs(probe.Distance - 0.3) < 0.02
+			end
+			local right = math.abs(normal.Y) > 0.9 and Vector3.xAxis or (-normal:Cross(Vector3.yAxis)).Unit
+			local up = normal:Cross(right)
+			local angle = rng:NextNumber(0, math.pi * 2)
+			for _ = 1, 3 do
+				local direction = right * math.cos(angle) + up * math.sin(angle)
+				local length = rng:NextNumber(0.08, 0.16) * size.Y
+				local stop
+				for _ = 1, 2 do
+					if onPlane(point + direction * length) and onPlane(point + direction * length / 2) then
+						stop = point + direction * length
+						break
+					end
+					length /= 2
+				end
+				if not stop then
+					break
+				end
+				crackPart(
+					model,
+					color,
+					Vector3.new(length, thickness, 0.04),
+					CFrame.fromMatrix((point + stop) / 2 + normal * 0.02, direction, normal:Cross(direction), normal)
+				)
+				point = stop
+				angle += rng:NextNumber(-1, 1)
+			end
+		end
+	end
+end
 local function addCracks(model, stage)
 	local faces = {}
 	for _, p in model:GetChildren() do
@@ -857,6 +921,10 @@ local function addCracks(model, stage)
 	end
 	local rng = Random.new(seed(tostring(model:GetAttribute("EggId") or model.Name) .. stage))
 	local color = (model.PrimaryPart and model.PrimaryPart.Color or Color3.new(1, 1, 1)):Lerp(Color3.new(0, 0, 0), 0.65)
+	if faces[1]:IsA("MeshPart") then
+		meshCracks(model, faces[1], rng, color, stage)
+		return
+	end
 	for _ = 1, 2 + stage do
 		local base = faces[rng:NextInteger(1, #faces)]
 		local side = rng:NextInteger(1, 4)
@@ -876,20 +944,14 @@ local function addCracks(model, stage)
 				+ normal * (base.Size.X * math.abs(normal.X) + base.Size.Z * math.abs(normal.Z)) / 2
 			local span = math.sqrt((nu - u) ^ 2 + (nv - v) ^ 2)
 			if span > 0.05 then
-				local crack = Instance.new("Part")
-				crack.Name = "EggCrack"
-				crack.Anchored = true
-				crack.CanCollide = false
-				crack.CanTouch = false
-				crack.CanQuery = false
-				crack.CastShadow = false
-				crack.Material = Enum.Material.SmoothPlastic
-				crack.Color = color
-				crack.Size = Vector3.new(span, thickness, 0.04)
-				crack.CFrame = base.CFrame
-					* CFrame.fromMatrix(mid, tangent, Vector3.yAxis, normal)
-					* CFrame.Angles(0, 0, math.atan2(nv - v, nu - u))
-				crack.Parent = model
+				crackPart(
+					model,
+					color,
+					Vector3.new(span, thickness, 0.04),
+					base.CFrame
+						* CFrame.fromMatrix(mid, tangent, Vector3.yAxis, normal)
+						* CFrame.Angles(0, 0, math.atan2(nv - v, nu - u))
+				)
 			end
 			u, v = nu, nv
 			angle += rng:NextNumber(-1, 1)

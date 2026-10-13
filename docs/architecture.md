@@ -7,24 +7,27 @@
 | Исходник | Объект Studio | Ответственность |
 |---|---|---|
 | `src/server/Pets.server.luau` | ServerScriptService.PetGameplay | Базы, состояние игроков, UIAction, инвентарь, доход, загрузка и запуск Adventure |
-| `src/server/Adventure.luau` | ServerScriptService.Adventure | Полевые яйца, груз, стражи, бита, лава, Titanic, стенды |
+| `src/server/Adventure.luau` | ServerScriptService.Adventure | Полевые яйца по точкам карты, груз, бита, лава, Titanic, стенды |
 | `src/server/Treadmills.server.luau` | ServerScriptService.TreadmillTraining | Вход, фиксация, начисление Speed и выход |
 | `src/server/PetWorld.luau` | ServerScriptService.PetWorld | Tool, модели яиц, таблички, оформление базы |
 | `src/server/MergeSelection.luau` | ServerScriptService.MergeSelection | Проверка точной подтверждённой тройки ID до расходования |
 | `src/server/WorldDisplays.server.luau` | ServerScriptService.WorldDisplays | Рейтинги и баннер события |
+| `src/server/DevTools.luau` | ServerScriptService.DevTools | Команды DevAction и `DevAccess` только для владельца |
 | `src/server/data/` | ServerScriptService.PlayerData | Config, Schema и Service сохранений |
 | `src/serverPackages/ProfileStore.luau` | ServerStorage.ServerPackages.ProfileStore | Библиотека постоянных профилей и блокировки сессии |
 | `src/gameplay/` | Модули ReplicatedStorage | GameConfig, PetConfig, TrainingConfig, PetVisuals, PetAnimation |
 | `src/shared/` | ReplicatedStorage.ShopUI | React-компоненты, оформление и данные Shop |
 | `src/client/ShopUI.client.luau` | StarterPlayerScripts.ShopUIBootstrap | Монтирование UI и контроллер окон |
-| `src/client/Adventure.client.luau` | StarterPlayerScripts.AdventureControls | Выбор цели, удар, вспышки и маркер своей базы |
+| `src/client/Adventure.client.luau` | StarterPlayerScripts.AdventureControls | Выбор цели, удар, вспышки, маркер своей базы, забор баз, дистанция надписей в мире, отрисовка поднимающейся лавы |
 | `src/gameplay/PickaxeEffects.luau` | ReplicatedStorage.PickaxeEffects | Клиентский замах, хват второй рукой (IK), hitstop, предсказание и эффекты попадания, крит, комбо, трещины яиц |
 | `src/gameplay/HatchEffects.luau` | ReplicatedStorage.HatchEffects | Рост полевого яйца, лестница редкости, счётчик удачи, взрыв оболочки, титул редкости и появление питомца |
+| `src/gameplay/BaseFence.luau` | ReplicatedStorage.BaseFence | Локальный вид забора базы по `PenLevel`: цвета, свечение, волна перестройки при улучшении |
 | `src/gameplay/Audio.luau` | ReplicatedStorage.Audio | Единый клиентский звук: SoundGroup, громкость из настроек, лимиты, 3D/2D, музыка |
 | `src/gameplay/SoundLibrary.luau` | ReplicatedStorage.SoundLibrary | Каталог всех звуков по ключам: ассеты, группа, громкость, высота, лимиты |
 | `src/gameplay/GameFeel.luau` | ReplicatedStorage.GameFeel | Локальная тряска камеры и FOV punch |
 | `src/client/Pets.client.luau` | StarterPlayerScripts.PetControls | Предпросмотр размещения, сглаживание питомцев, видимость; запускает Audio |
 | `src/client/Treadmills.client.luau` | StarterPlayerScripts.TreadmillControls | Перехват прыжка для выхода |
+| `src/client/DevPanel.client.luau` | StarterPlayerScripts.DevPanel | Монтирование DevPanel при `DevAccess` |
 
 Имена StarterPlayerScripts в таблице относятся к содержимому `StarterPlayer.StarterPlayerScripts`, которое копируется в PlayerScripts игрока при запуске.
 
@@ -42,7 +45,7 @@ PetGameplay резервирует свободную базу, загружае
 
 Оперативное состояние находится в таблице `states[player]`; оно содержит и данные, и ссылки на сцену. Schema формирует из него сохраняемый снимок только с сериализуемыми полями. Commit обновляет Profile.Data; запрос к DataStore не нужен на каждый игровой клик.
 
-Adventure получает серверные зависимости через `Adventure.start(options)`: состояния, проверку активной сессии, банковку груза, действие и World. Модуль запускается один раз. Полевые яйца, стражи, лава и груз живут только в памяти текущего сервера.
+Adventure получает серверные зависимости через `Adventure.start(options)`: состояния, проверку активной сессии, банковку груза, действие и World. Модуль запускается один раз. Полевые яйца, лава и груз живут только в памяти текущего сервера.
 
 При выходе или потере сессии база и игровые модели освобождаются, прогресс прекращает изменяться. ProfileStore завершает сессию. Детали — в [saves.md](saves.md).
 
@@ -65,11 +68,11 @@ Workspace.Map
 └── Adventure                 создаётся сервером в Play
 ```
 
-PetContents создаётся для содержимого базы. `BaseAnchor` задаёт систему относительных координат сохранений; `FloorY`, `PenHalfWidth`, `PenHalfDepth` описывают пол и границы. Базы и дорожки получают `OwnerUserId`. `TrainingCenter` задаёт направление персонажа, `BeltCollision` обеспечивает физическую опору.
+PetContents создаётся для содержимого базы. `BaseAnchor` задаёт систему относительных координат сохранений; `FloorY`, `PenHalfWidth`, `PenHalfDepth` описывают пол и границы. Базы и дорожки получают `OwnerUserId`; база также получает `PenLevel` владельца. `TrainingCenter` задаёт направление персонажа, `BeltCollision` обеспечивает физическую опору.
 
-Adventure обращается к `Map.StartZone.Shops` и `Map.Biomes.<имя>.Floor` напрямую. Эти имена нельзя менять как косметические подписи. Объекты ReferenceDetails с атрибутом Interaction получают prompts; таблички рейтингов имеют ожидаемую иерархию Board/LeaderboardUI/Rows.
+Adventure обращается к `Map.StartZone.Shops` и `Map.Biomes.<имя>.Floor`/`EggSpots` напрямую. Эти имена нельзя менять как косметические подписи. Стенды `BlueShopStand` (кирки, синий) и `GreenShopStand` (следы, зелёный) — копии модели Shop; prompt у них нет: AdventureControls открывает окно, пока корень персонажа внутри `TouchZone.TouchPart` перед прилавком, и закрывает при выходе. Объекты ReferenceDetails с атрибутом Interaction получают prompts; таблички рейтингов `TopMoney`/`TopSpeed`/`TopPlaytime` — копии модели Leaderboard с ожидаемой иерархией Board/LeaderboardUI/Rows (SurfaceGui на грани Right панели, содержимое внутри рамки).
 
-Release дополнительно включает шаблоны `ServerStorage.Assets`, материал ReferenceHDStuds, освещение, облака, карту и Lava Bat в StarterPack. Модели кирок доступны как `ReplicatedStorage.PickaxeModels`. Lava Bat в Studio собрана из 15 обычных Part: деревянное навершие и сужающийся ствол, тёмная рукоять с пятью полосами. Невидимый Handle и Grip сохранены, визуальные детали приварены к Handle, без массы и коллизий; внешние меши биты не используются. Повторяемый помощник — tools/create-studio-bat.luau. Экспорт этой новой геометрии в release пока ожидает разрешения.
+Шаблоны `ServerStorage.Assets`, материал ReferenceHDStuds, освещение, облака, карта и Lava Bat в StarterPack живут только в place. Модели кирок доступны как `ReplicatedStorage.PickaxeModels`. Lava Bat в Studio собрана из 15 обычных Part: деревянное навершие и сужающийся ствол, тёмная рукоять с пятью полосами. Невидимый Handle и Grip сохранены, визуальные детали приварены к Handle, без массы и коллизий; внешние меши биты не используются. Повторяемый помощник — tools/create-studio-bat.luau.
 
 ## UI и визуальные модели
 
@@ -79,7 +82,7 @@ PetGameplay согласует реальные Tool с сохраняемыми
 
 App управляет окнами, читает атрибуты и вызывает UIAction. Правые Pets/Eggs открывают Sidebar с выездом справа. Общий Inventory открывается только Backquote и кнопкой рядом с Settings; его вкладки хранятся отдельно от состояния экранов. Hotbar и `useBackpack` работают с Tool. EquipmentShop и AdventurePanels обслуживают внутриигровые покупки, сумку и Merge; Config содержит предложения Shop. Theme/UI/Assets задают оформление, а ModelPreview и IndexSurface показывают модели через ViewportFrame. Полный контракт навигации и проверки перед изменениями — в [ui.md](ui.md).
 
-PetVisuals создаёт процедурные модели животных и яиц. Сервер задаёт целевую позицию, yaw и состояние ходьбы; PetControls сглаживает движение и применяет PetAnimation. Эти визуальные изменения не являются источником владения или дохода. Настройки видимости меняют локальное отображение.
+PetVisuals создаёт процедурные модели животных и яиц. `PetVisuals.egg(color, nest, skin)` с именем скина клонирует MeshPart из ReplicatedStorage.EggModels (PetWorld копирует его из ServerStorage.Assets.Items.Eggs при старте): масштаб ×4.2/2.325 (высота ступенчатого яйца), низ на 0.45 над pivot; без скина яйцо процедурное. Полевые яйца с `models` в GameConfig.Eggs получают случайный скин, Adventure сохраняет его для респавна. Яйцо на базе, Tool в руке и превью размещения — DefaultEgg в том же масштабе 1; Tool держит яйцо перед грудью (Grip 0.8, 0.4, 0.8). Сервер задаёт целевую позицию, yaw и состояние ходьбы; PetControls сглаживает движение и применяет PetAnimation. Эти визуальные изменения не являются источником владения или дохода. Настройки видимости меняют локальное отображение.
 
 PickaxeEffects поддерживает Motor6D и AnimationConstraint. Кинематический AnimationConstraint имеет те же C0, C1, Part0, Part1 и Transform, поэтому мировые CFrame частей вычисляются одной цепочкой от HumanoidRootPart с уже записанными в этом шаге Transform. Ключевые кадры удара (`Swings` в PickaxeEffects) описывают путь кадра хвата правой руки (`RightHand · RightGrip.C0`) в пространстве HumanoidRootPart; `applySwingPose` применяет наклон и поворот к Waist/RootJoint, затем решает правую руку (плечо, локоть, запястье с пределом изгиба 55°) и после неё левую по фактическому положению инструмента, смешивая результат с позой Animator по весу. tool.Grip не меняется. Та же функция используется для проверки поз на неподвижном манекене в Edit. Hitstop останавливает только время замаха, соединения и восстановление Transform не меняются. В PreAnimation снимается предыдущая добавка к Transform, после Animator в PreSimulation применяется новая поза. Это предотвращает накопление поворотов и сохраняет обычную анимацию персонажа. Завершение или снятие инструмента отключает соединения, восстанавливает Transform и выключает Trail. Для кирок без импортированного меша PetVisuals создаёт отдельный невидимый Handle у нижней части рукояти, как у Wooden и Stone.
 

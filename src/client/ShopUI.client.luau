@@ -20,6 +20,13 @@ local controller = Instance.new("BindableEvent")
 controller.Name = "UIController"
 controller.Parent = script
 root:render(React.createElement(App, { controller = controller }))
+-- Figma windows clone their templates on open; loading the art up front keeps the first open from popping in.
+task.spawn(function()
+	local templates = ReplicatedStorage:WaitForChild("UITemplates", 10)
+	if templates then
+		pcall(game:GetService("ContentProvider").PreloadAsync, game:GetService("ContentProvider"), { templates })
+	end
+end)
 script.Destroying:Connect(function()
 	root:unmount()
 	gui:Destroy()

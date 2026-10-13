@@ -33,7 +33,6 @@ local function Inventory(p)
 	local imageW = math.min(104, cell - 20)
 	local imageH = tight and 28 or 56
 	local isPets = p.kind == "Pets"
-	local isEggs = p.kind == "Eggs"
 	local list = isPets and p.pets or p.eggs
 	local shown = {}
 	for _, item in list do

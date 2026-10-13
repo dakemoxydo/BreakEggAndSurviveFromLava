@@ -26,6 +26,9 @@
       "HatchEffects": {
         "$path": "src/gameplay/HatchEffects.luau"
       },
+      "BaseFence": {
+        "$path": "src/gameplay/BaseFence.luau"
+      },
       "Audio": {
         "$path": "src/gameplay/Audio.luau"
       },
@@ -82,6 +85,9 @@
       },
       "WorldDisplays": {
         "$path": "src/server/WorldDisplays.server.luau"
+      },
+      "DevTools": {
+        "$path": "src/server/DevTools.luau"
       }
     },
     "StarterPlayer": {
@@ -101,6 +107,9 @@
         },
         "AdventureControls": {
           "$path": "src/client/Adventure.client.luau"
+        },
+        "DevPanel": {
+          "$path": "src/client/DevPanel.client.luau"
         }
       }
     }

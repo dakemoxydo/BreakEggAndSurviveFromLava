@@ -2,6 +2,8 @@ local React = require(game.ReplicatedStorage.Packages.React)
 local UI = require(script.Parent.UI)
 local Theme = require(script.Parent.Theme)
 local Config = require(script.Parent.Config)
+local Figma = require(script.Parent.FigmaTemplate)
+local EggsWindow = require(script.Parent.EggsWindow)
 local e = React.createElement
 local C = Theme.colors
 
@@ -20,6 +22,38 @@ local function GrowingEggs(p)
 	local cost = p.growCost or Config.GrowAllCost or 20
 	local missing = math.max(0, cost - (p.cash or 0))
 	local empty = #p.eggs == 0
+	if Figma.get("Eggs") then
+		-- Shared sidebar scale (same as Pets); right margin as the React body.
+		local design, panel = EggsWindow.designSize()
+		local s, y = Figma.sidebarScale(p.width, p.height, panel)
+		local fw, fh = design.X * s, design.Y * s
+		return e(UI.Transition, {
+			name = "RightSidebar",
+			x = p.width - fw - 16,
+			y = y,
+			w = fw,
+			h = fh,
+			slide = true,
+			visible = p.visible,
+			transitionKey = p.kind,
+			reduced = p.reduced,
+			onClosed = p.onClosed,
+			z = 20,
+			children = {
+				Panel = e(EggsWindow.Component, {
+					scale = s,
+					eggs = p.eggs,
+					cost = cost,
+					missing = missing,
+					empty = empty,
+					busy = p.busy,
+					reduced = p.reduced,
+					onAction = p.onAction,
+					onClose = p.onClose,
+				}),
+			},
+		})
+	end
 	local rows = {
 		Padding = e("UIPadding", {
 			PaddingLeft = UDim.new(0, 14),

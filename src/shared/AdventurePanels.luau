@@ -26,7 +26,7 @@ local function AdventurePanels(p)
 		body.Title = UI.text("Carry more animals per run!", 20, 12, p.width - 40, 48, compact and 24 or 34, C.gold)
 		body.Amount = UI.text("Your satchel: " .. level .. " Animals", 20, 68, p.width - 40, 50, compact and 28 or 40)
 		body.Description = UI.text(
-			"Bring stolen animals back to the Safe Zone.\nGuardians and lava make you lose your cargo.",
+			"Bring stolen animals back to the Safe Zone.\nLava and other players' bats make you lose your cargo.",
 			24,
 			126,
 			p.width - 48,

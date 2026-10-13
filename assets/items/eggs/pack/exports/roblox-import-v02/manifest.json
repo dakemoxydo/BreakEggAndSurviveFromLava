@@ -1,0 +1,251 @@
+{
+  "pack": "Eggs_Pack",
+  "version": "v02",
+  "fbx": "Eggs_Pack.fbx",
+  "unit": "1 Blender unit = 1 stud",
+  "textureSize": 2048,
+  "models": [
+    {
+      "name": "DefaultEgg",
+      "source": "EggDefault",
+      "fbx": "models/DefaultEgg.fbx",
+      "texture": "textures/DefaultEgg_Color.png",
+      "triangles": 1616,
+      "vertices": 810,
+      "materialCount": 1,
+      "uvSets": 1,
+      "pivot": "bottom centre",
+      "sizeStuds": [
+        1.86,
+        2.325,
+        1.86
+      ],
+      "packOffsetStuds": [
+        0.0,
+        0,
+        -0.0
+      ],
+      "importedToRoblox": false
+    },
+    {
+      "name": "MossEgg",
+      "source": "Egg01_Moss",
+      "fbx": "models/MossEgg.fbx",
+      "texture": "textures/MossEgg_Color.png",
+      "triangles": 4752,
+      "vertices": 2402,
+      "materialCount": 1,
+      "uvSets": 1,
+      "pivot": "bottom centre",
+      "sizeStuds": [
+        2.48,
+        2.402,
+        2.48
+      ],
+      "packOffsetStuds": [
+        3.0,
+        0,
+        -0.0
+      ],
+      "importedToRoblox": false
+    },
+    {
+      "name": "BirchEgg",
+      "source": "Egg02_Birch",
+      "fbx": "models/BirchEgg.fbx",
+      "texture": "textures/BirchEgg_Color.png",
+      "triangles": 1616,
+      "vertices": 810,
+      "materialCount": 1,
+      "uvSets": 1,
+      "pivot": "bottom centre",
+      "sizeStuds": [
+        1.86,
+        2.325,
+        1.86
+      ],
+      "packOffsetStuds": [
+        6.0,
+        0,
+        -0.0
+      ],
+      "importedToRoblox": false
+    },
+    {
+      "name": "MushroomEgg",
+      "source": "Egg03_Mushroom",
+      "fbx": "models/MushroomEgg.fbx",
+      "texture": "textures/MushroomEgg_Color.png",
+      "triangles": 3784,
+      "vertices": 2043,
+      "materialCount": 1,
+      "uvSets": 1,
+      "pivot": "bottom centre",
+      "sizeStuds": [
+        2.17,
+        2.402,
+        2.17
+      ],
+      "packOffsetStuds": [
+        9.0,
+        0,
+        -0.0
+      ],
+      "importedToRoblox": false
+    },
+    {
+      "name": "AcornEgg",
+      "source": "Egg04_Acorn",
+      "fbx": "models/AcornEgg.fbx",
+      "texture": "textures/AcornEgg_Color.png",
+      "triangles": 3464,
+      "vertices": 1782,
+      "materialCount": 1,
+      "uvSets": 1,
+      "pivot": "bottom centre",
+      "sizeStuds": [
+        2.17,
+        2.325,
+        2.17
+      ],
+      "packOffsetStuds": [
+        12.0,
+        0,
+        -0.0
+      ],
+      "importedToRoblox": false
+    },
+    {
+      "name": "EnchantedEgg",
+      "source": "Egg05_Enchanted",
+      "fbx": "models/EnchantedEgg.fbx",
+      "texture": "textures/EnchantedEgg_Color.png",
+      "triangles": 4336,
+      "vertices": 2290,
+      "materialCount": 1,
+      "uvSets": 1,
+      "pivot": "bottom centre",
+      "sizeStuds": [
+        2.17,
+        2.325,
+        2.17
+      ],
+      "packOffsetStuds": [
+        15.0,
+        0,
+        -0.0
+      ],
+      "importedToRoblox": false
+    },
+    {
+      "name": "CactusEgg",
+      "source": "Egg06_Cactus",
+      "fbx": "models/CactusEgg.fbx",
+      "texture": "textures/CactusEgg_Color.png",
+      "triangles": 6616,
+      "vertices": 3619,
+      "materialCount": 1,
+      "uvSets": 1,
+      "pivot": "bottom centre",
+      "sizeStuds": [
+        2.325,
+        2.557,
+        2.325
+      ],
+      "packOffsetStuds": [
+        3.0,
+        0,
+        -6.0
+      ],
+      "importedToRoblox": false
+    },
+    {
+      "name": "PharaohEgg",
+      "source": "Egg07_Pharaoh",
+      "fbx": "models/PharaohEgg.fbx",
+      "texture": "textures/PharaohEgg_Color.png",
+      "triangles": 5740,
+      "vertices": 3090,
+      "materialCount": 1,
+      "uvSets": 1,
+      "pivot": "bottom centre",
+      "sizeStuds": [
+        2.015,
+        3.255,
+        2.015
+      ],
+      "packOffsetStuds": [
+        6.0,
+        0,
+        -6.0
+      ],
+      "importedToRoblox": false
+    },
+    {
+      "name": "SandstormEgg",
+      "source": "Egg08_Sandstorm",
+      "fbx": "models/SandstormEgg.fbx",
+      "texture": "textures/SandstormEgg_Color.png",
+      "triangles": 5080,
+      "vertices": 2900,
+      "materialCount": 1,
+      "uvSets": 1,
+      "pivot": "bottom centre",
+      "sizeStuds": [
+        2.79,
+        2.325,
+        2.79
+      ],
+      "packOffsetStuds": [
+        9.0,
+        0,
+        -6.0
+      ],
+      "importedToRoblox": false
+    },
+    {
+      "name": "ScorpionEgg",
+      "source": "Egg09_Scorpion",
+      "fbx": "models/ScorpionEgg.fbx",
+      "texture": "textures/ScorpionEgg_Color.png",
+      "triangles": 5656,
+      "vertices": 2923,
+      "materialCount": 1,
+      "uvSets": 1,
+      "pivot": "bottom centre",
+      "sizeStuds": [
+        2.79,
+        3.1,
+        2.79
+      ],
+      "packOffsetStuds": [
+        12.0,
+        0,
+        -6.0
+      ],
+      "importedToRoblox": false
+    },
+    {
+      "name": "OasisEgg",
+      "source": "Egg10_Oasis",
+      "fbx": "models/OasisEgg.fbx",
+      "texture": "textures/OasisEgg_Color.png",
+      "triangles": 4776,
+      "vertices": 2303,
+      "materialCount": 1,
+      "uvSets": 1,
+      "pivot": "bottom centre",
+      "sizeStuds": [
+        2.015,
+        3.178,
+        2.015
+      ],
+      "packOffsetStuds": [
+        15.0,
+        0,
+        -6.0
+      ],
+      "importedToRoblox": false
+    }
+  ]
+}

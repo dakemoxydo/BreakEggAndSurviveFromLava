@@ -37,6 +37,7 @@ local function build(latest)
 	local function reduced()
 		return latest.current.reduced
 	end
+	Figma.studs(root, reduced)
 	local buttons = {
 		Figma.button(exit, function()
 			latest.current.onClose()
@@ -60,6 +61,15 @@ local function build(latest)
 			cards[i] = state
 		end
 	end
+	local shown = {}
+	for i, state in cards do
+		shown[i] = state.card
+		local image = state.card:FindFirstChild("Image")
+		if image then
+			table.insert(buttons, Figma.idle(image, "sway", i * 0.9, reduced))
+		end
+	end
+	Figma.reveal(shown, reduced())
 	return { root = root, scale = scale, shop = shop, scroll = scroll, cards = cards, buttons = buttons }
 end
 
@@ -113,7 +123,12 @@ local function TrailsShop(p)
 	props.reduced = reduced or p.reduced
 	latest.current = props
 	React.useEffect(function()
-		local built = build(latest)
+		-- A template that no longer matches the code must not take the whole React tree down.
+		local ok, built = pcall(build, latest)
+		if not ok then
+			warn("Figma template TrailsShop: " .. tostring(built))
+			return
+		end
 		view.current = built
 		update(built, latest.current)
 		built.root.Parent = host.current

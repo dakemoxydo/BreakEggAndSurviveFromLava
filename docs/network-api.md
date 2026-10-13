@@ -6,7 +6,7 @@
 
 Вызов: `UIAction:InvokeServer(actionName, payload)`. Payload всегда таблица, в том числе `{}` для действия без параметров. Ответ: `{success: boolean, message: string?}`.
 
-Общие условия: готовое состояние игрока, активная сессия профиля, строковое имя и таблица payload. Интервал принятых запросов — минимум 0.12 секунды. Успешное действие вызывает sync и Commit; ClaimOffline и ClaimCollectionReward дополнительно запрашивают сохранение.
+Общие условия: готовое состояние игрока, активная сессия профиля, строковое имя и таблица payload. Интервал принятых запросов — минимум 0.12 секунды. Успешное действие вызывает sync и Commit; ClaimOffline, ClaimCollectionReward, ClaimDailyReward и ClaimStreakReward дополнительно запрашивают сохранение.
 
 | Действие | Поля payload | Поведение |
 |---|---|---|
@@ -19,6 +19,8 @@
 | GrowAllEggs | — | Вылупить размещённые яйца за Cash |
 | ClaimOffline | — | Перенести офлайн-награду в Cash |
 | ClaimCollectionReward | — | Забрать награду за 8 Forest видов |
+| ClaimDailyReward | — | Забрать Daily Reward, если с прошлого прошло `RewardDay` |
+| ClaimStreakReward | day: number | Забрать день серии; только следующий по порядку и не раньше `RewardDay` после предыдущего |
 | BuyPickaxe / BuyTrail | index: number | Купить или выбрать запись; индекс начинается с 1 |
 | UpgradePen | — | Купить следующий уровень загона |
 | UpgradeTreadmill | — | Купить следующий уровень дорожки |
@@ -28,6 +30,8 @@
 | ReturnBase | — | Переместить персонажа к базе; нельзя с грузом или на дорожке |
 | SetSlowMode | enabled: boolean | Установить ограничение движения |
 | SetSetting | setting: string, value: number/boolean | Изменить разрешённую настройку |
+| Rebirth | нет | Cash ≥ `rebirthCost(rebirths)`: Cash = 0, Speed = 16, rebirths + 1, сохранение сразу |
+| SetHotbar | layout: { [key]: slot 0–10 } | Сохранить раскладку хотбара; повторный слот или неверный тип отклоняются, ключи непринадлежащих предметов отбрасываются |
 
 SetSetting принимает MusicVolume/SFXVolume как число с ограничением 0–1, ViewMyPets/ViewOthersPets/ViewMyEggs как boolean. Другие ключи отклоняются. Неизвестное действие возвращает отказ.
 
@@ -35,11 +39,18 @@ MergePets требует плотный массив трёх разных пр�
 
 Индекс оборудования — позиция в GameConfig, а `kind` — стабильный ключ вида. В профиле оборудование хранится индексами: перестановка таблиц без миграции меняет смысл существующих сохранений.
 
+## DevAction — RemoteFunction
+
+`DevAction:InvokeServer(name, payload)` → `{success, message, data?}`; создаёт `src/server/DevTools.luau`. Отвечает только UserId из `DevTools.Owners` (остальным — отказ). `payload.target` (UserId) выбирает игрока, по умолчанию — вызывающий; ушедший или незагруженный игрок — отказ. Вне Studio к чужому игроку допускаются только `DevTools.LiveOtherCommands` (GetPlayer, GetProfile, GoTo, Bring, Teleport, Ragdoll, DropCargo, Respawn, Kick, Notice). Успех — reconcile Tool, sync и Commit цели; команда над чужим игроком пишется в лог сервера `[DevTools]`. Владельцу сервер ставит атрибут `DevAccess=true`; он лишь включает показ панели.
+
+Команды: GetPlayer (`data`: имя, статистика, pets, backpackEggs, baseEggs), AddCash/SetCash, AddSpeed/SetSpeed, AddOffline (`amount`: конечное число, итог в пределах MaxCash/MaxSpeed), AddRebirth, ResetRebirths, ResetRewards, UnlockGear, MaxBase, GivePet/GiveEgg (`kind` из GameConfig, `weight` 0–1e6, лимит MaxPets), DiscoverAll, HatchBaseEggs, ClearPets, RemovePet (`pet`), RemoveEgg (`egg`: рюкзак или база), SetPetEquipped (`pet`, `equipped`; лимит слотов), SetPetWeight (`pet`, `weight` 0–1e6; модель пересоздаётся), StartLava, StopLava, SetLavaInterval (`seconds`: 10/30/60/120 или nil), SetLavaOff (`off`), SpawnTitan, RefillEggs, Broadcast (`text` до 120 символов после фильтра `TextService`, `kind`) — без цели; SetLavaImmune/SetOneHit (`on`), SetForceRarity (`rarity` из `GameConfig.Rarities` или nil), SetLuck (`value` 1–1e4) — для цели, не сохраняются; GetPlayer `data.dev` — их состояние и лава; Notice (`kind`: nil/danger/event), Teleport (`to`: Base, Forest, Desert, Snow, Titan), GoTo/Bring (только чужая цель), Ragdoll, DropCargo, Respawn, Kick (`reason` до 100 символов; себя нельзя). GetProfile (`data`: Profile.Data построчно по ключам, размер, хранилище), SaveNow, SimulateOffline (`hours`: 1/8/24/48), ResetProfile (только Studio; кик цели), GetServer и ClearServerLog — без цели; GetPlayer, GetProfile, GetServer и ClearServerLog не делают sync и Commit.
+
 ## GameplayAction — RemoteEvent
 
 | Вызов | Payload | Проверки |
 |---|---|---|
 | FireServer("Swing", eggId) | Строка ID яйца или nil для замаха без цели | Активный профиль, живой персонаж, кирка, задержка, отсутствие тренировки и груза; для урона дополнительно дистанция и состояние Egg |
+| FireServer("Drop") | Нет | Есть полевой груз; груз падает на землю рядом |
 | FireServer("Bat") | Нет | Lava Bat в руках, живой персонаж и задержка; воздействие на игрока требует обоих игроков в поле |
 
 Урон кирки берётся из серверного уровня; клиент не передаёт мощность или новый HP. Бита использует отдельную ветку проверок: не следует автоматически приписывать ей все условия Swing.
@@ -71,11 +82,14 @@ AdventureControls обрабатывает Open, ToolSwing, EggHit и Hatch. З�
 | OwnedPickaxes, OwnedTrails | JSON-массивы индексов купленного оборудования |
 | PickaxeLevel, TrailLevel, PenLevel, TreadmillLevel, SatchelLevel | Текущие индексы/уровни |
 | CarryingCount, CarryingName, InField | Полевой груз и положение относительно границы |
-| EventRemaining, GameplayNotice, GameplayNoticeAt | Обратный отсчёт лавы и уведомления |
+| EventRemaining, GameplayNotice, GameplayNoticeAt, GameplayNoticeKind | Обратный отсчёт лавы и уведомления; Kind — `danger`, `event` или пусто (инфо) |
 | MusicVolume, SFXVolume, ViewMyPets, ViewOthersPets, ViewMyEggs | Сохраняемые настройки |
+| DailyRewardAt, RewardStreak, RewardStreakAt | Награды входа: время Daily, число дней серии, время последнего дня (os.time) |
+
+Атрибут HotbarLayout (JSON сохранённой раскладки) ставится сервером при загрузке профиля.
 
 Локальные UI-атрибуты: UIWindowOpen, PlacementKind, PlacementValid, PlacementError, AutoSwing, ReducedMotion. Их нельзя использовать как доказательство владения или успешной серверной операции. AutoSwing и ReducedMotion не входят в сохраняемые настройки Schema.
 
-Workspace получает LavaCountdown, TitanCountdown и LavaActive. Полевые яйца имеют EggId, BreakableEgg, HP, MaxHP и Hatching. Модели базовых питомцев — OwnerUserId, PetId, PetKind, PetVisual, PetPosition, PetYaw, PetWalking, AnimationOffset и Weight. Все модели питомцев создаются с Weight в kg; Tool питомца также имеет Weight. Tool размещения сохраняет PlacementKind, PetKind и PetWeight для существующего протокола; Weight совпадает с PetWeight и сохраняемым weight. Кирка помечена Pickaxe.
+Workspace получает LavaCountdown, LavaActive и LavaWaveAt (GetServerTimeNow начала текущей волны; клиент рисует по нему лаву через `GameConfig.lavaHeight`). База (`PlayerBases.BaseNN`) — OwnerUserId и PenLevel владельца; у свободной базы оба атрибута отсутствуют. Полевые яйца имеют EggId, BreakableEgg, HP, MaxHP и Hatching. Модели базовых питомцев — OwnerUserId, PetId, PetKind, PetVisual, PetPosition, PetYaw, PetWalking, AnimationOffset и Weight. Все модели питомцев создаются с Weight в kg; Tool питомца также имеет Weight. Tool размещения сохраняет PlacementKind, PetKind и PetWeight для существующего протокола; Weight совпадает с PetWeight и сохраняемым weight. Кирка помечена Pickaxe.
 
 JSON-атрибуты являются представлением для UI, а не интерфейсом записи профиля. Новые действия должны проверять типы payload и права на сервере; общий проверяющий код UIAction не валидирует автоматически каждое вложенное поле.

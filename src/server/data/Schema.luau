@@ -32,6 +32,12 @@ Schema.Template = {
 	satchelLevel = 1,
 	playtime = 0,
 	freeRewardClaimed = false,
+	dailyRewardAt = 0,
+	rewardStreak = 0,
+	rewardStreakAt = 0,
+	rebirths = 0,
+	-- Hotbar layout: item key (InventoryId, "Pickaxe" or a tool name) -> slot 1..10, 0 = inventory only.
+	hotbar = {},
 }
 local function number(value, minimum, maximum)
 	return typeof(value) == "number" and value == value and value >= minimum and value <= maximum
@@ -48,6 +54,29 @@ local function array(value, maximum)
 		count += 1
 	end
 	return count == #value
+end
+-- Item keys that are not inventory IDs and may be stored in the hotbar layout.
+Schema.HotbarTools = { Pickaxe = true, ["Lava Bat"] = true }
+function Schema.ValidHotbar(layout)
+	if type(layout) ~= "table" then
+		return false
+	end
+	local count, used = 0, {}
+	for key, slot in layout do
+		count += 1
+		if
+			type(key) ~= "string"
+			or #key > 100
+			or not number(slot, 0, 10)
+			or slot % 1 ~= 0
+			or (slot > 0 and used[slot])
+			or count > PetConfig.MaxPets + 10
+		then
+			return false
+		end
+		used[slot] = slot > 0 or nil
+	end
+	return true
 end
 function Schema.MigrateOffline(data)
 	local offline = data.offline
@@ -201,8 +230,22 @@ function Schema.Validate(data)
 			return false, "Invalid carried pet"
 		end
 	end
+	if not Schema.ValidHotbar(data.hotbar) then
+		return false, "Invalid hotbar"
+	end
 	if not number(data.playtime, 0, 1e12) or type(data.freeRewardClaimed) ~= "boolean" then
 		return false, "Invalid progress"
+	end
+	if
+		not number(data.dailyRewardAt, 0, 1e12)
+		or not number(data.rewardStreakAt, 0, 1e12)
+		or not number(data.rewardStreak, 0, #Game.StreakRewards)
+		or data.rewardStreak % 1 ~= 0
+	then
+		return false, "Invalid rewards"
+	end
+	if not number(data.rebirths, 0, 1000) or data.rebirths % 1 ~= 0 then
+		return false, "Invalid rebirths"
 	end
 	return true
 end
@@ -257,9 +300,10 @@ function Schema.AccrueOffline(data, now)
 		end
 	end
 	local reward = 0
+	local boost = Game.rebirthIncome(data.rebirths or 0)
 	for _, pet in data.pets do
 		if pet.equipped then
-			reward += seconds * Game.income(pet)
+			reward += seconds * Game.income(pet) * boost
 		end
 	end
 	-- Eggs finishing while away can fill free active slots and begin earning too.
@@ -268,7 +312,7 @@ function Schema.AccrueOffline(data, now)
 	for _, egg in eggs do
 		if egg.hatchesAt <= now and equipped < data.capacity then
 			equipped += 1
-			reward += math.max(0, finish - math.max(data.lastSeen, egg.hatchesAt)) * Game.income(egg)
+			reward += math.max(0, finish - math.max(data.lastSeen, egg.hatchesAt)) * Game.income(egg) * boost
 		end
 	end
 	data.offline = math.min(Game.MaxCash, data.offline + reward)
@@ -299,6 +343,7 @@ function Schema.Snapshot(player, state)
 			income += Game.income(pet)
 		end
 	end
+	income = math.floor(income * Game.rebirthIncome(state.rebirths))
 	local discoveries = {}
 	for key in state.discoveries or {} do
 		table.insert(discoveries, key)
@@ -317,6 +362,7 @@ function Schema.Snapshot(player, state)
 		discovered = state.discovered,
 		rewardClaimed = state.rewardClaimed,
 		settings = table.clone(state.settings),
+		hotbar = table.clone(state.hotbar),
 		offline = state.offline,
 		income = income,
 		lastSeen = os.time(),
@@ -332,6 +378,10 @@ function Schema.Snapshot(player, state)
 		satchelLevel = state.satchelLevel,
 		playtime = state.playtime,
 		freeRewardClaimed = state.freeRewardClaimed,
+		rebirths = state.rebirths,
+		dailyRewardAt = state.dailyRewardAt,
+		rewardStreak = state.rewardStreak,
+		rewardStreakAt = state.rewardStreakAt,
 	}
 end
 return Schema

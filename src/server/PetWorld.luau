@@ -33,16 +33,22 @@ if petTemplates and not ReplicatedStorage:FindFirstChild("PetModels") then
 	runtimePets.Name = "PetModels"
 	runtimePets.Parent = ReplicatedStorage
 end
+-- Field, base, tool and placement eggs clone the same imported shells.
+local eggTemplates = assets and assets:FindFirstChild("Items") and assets.Items:FindFirstChild("Eggs")
+if eggTemplates and not ReplicatedStorage:FindFirstChild("EggModels") then
+	local runtimeEggs = eggTemplates:Clone()
+	runtimeEggs.Name = "EggModels"
+	runtimeEggs.Parent = ReplicatedStorage
+end
 World.chick = PetVisuals.chick
 World.pet = PetVisuals.pet
 World.egg = PetVisuals.egg
 function World.label(model, text)
 	local gui = Instance.new("BillboardGui")
 	gui.Name = "WorldLabel"
-	gui.Size = UDim2.fromOffset(240, 64)
+	gui.Size = UDim2.fromScale(7, 1.9)
 	local _, size = model:GetBoundingBox()
 	gui.StudsOffsetWorldSpace = Vector3.new(0, size.Y + 1.4, 0)
-	gui.MaxDistance = 200
 	gui.AlwaysOnTop = false
 	gui.Adornee = model.PrimaryPart
 	gui.Parent = model
@@ -51,7 +57,7 @@ function World.label(model, text)
 	label.Size = UDim2.fromScale(1, 1)
 	label.BackgroundTransparency = 1
 	label.Font = Enum.Font.GothamBlack
-	label.TextSize = 22
+	label.TextScaled = true
 	label.TextWrapped = true
 	label.TextColor3 = Color3.new(1, 1, 1)
 	label.Text = text
@@ -85,18 +91,19 @@ function World.tool(kind, petData, index)
 	tool.CanBeDropped = false
 	tool.RequiresHandle = true
 	local visual = kind == "Pickaxe" and PetVisuals.pickaxe(index)
-		or kind == "Egg" and World.egg(nil, false)
+		or kind == "Egg" and World.egg(nil, false, "DefaultEgg")
 		or World.pet(petData.kind, petData.weight)
 	if kind == "Pickaxe" then
 		visual:ScaleTo(visual:GetScale() * PetVisuals.PickaxeToolScale)
-	elseif kind == "Egg" then
-		visual:ScaleTo(0.65)
 	end
 	local handle = visual.PrimaryPart
 	handle.Name = "Handle"
 	-- The standard tool-hold pose already keeps local Y upright. Turn only
 	-- the head into the swing plane, leaving the shaft centered in the fist.
-	tool.Grip = kind == "Pickaxe" and CFrame.Angles(0, math.pi / 2, 0) or CFrame.new(0, -0.4, -0.5)
+	-- A full-size egg is held centred in front of the chest so it clears the torso.
+	tool.Grip = kind == "Pickaxe" and CFrame.Angles(0, math.pi / 2, 0)
+		or kind == "Egg" and CFrame.new(0.8, 0.4, 0.8)
+		or CFrame.new(0, -0.4, -0.5)
 	if kind == "Pickaxe" then
 		local mesh = visual:FindFirstChild("PickaxeMesh")
 		local head = mesh or visual:FindFirstChild("Head")
@@ -171,9 +178,9 @@ function World.board(parent, name, cf, title, action)
 	gui.CanvasSize = Vector2.new(550, 300)
 	gui.LightInfluence = 0
 	gui.Parent = board
-	local function text(name, value, y, h, color)
+	local function text(labelName, value, y, h, color)
 		local label = Instance.new("TextLabel")
-		label.Name = name
+		label.Name = labelName
 		label.Text = value
 		label.Font = Enum.Font.GothamBlack
 		label.TextSize = 47
@@ -240,25 +247,24 @@ function World.setupBase(player, state, action)
 	pole.Parent = state.contents
 	local gui = Instance.new("BillboardGui")
 	gui.Name = "BaseMarkerUI"
-	gui.Size = UDim2.fromOffset(260, 205)
+	gui.Size = UDim2.fromScale(10, 7.9)
 	gui.AlwaysOnTop = false
-	gui.MaxDistance = 500
 	gui.Adornee = pole
 	gui.Parent = pole
 	local thumb = Instance.new("ImageLabel")
 	thumb.Name = "OwnerHead"
 	thumb.BackgroundTransparency = 1
-	thumb.Size = UDim2.fromOffset(145, 145)
-	thumb.Position = UDim2.fromOffset(57, 0)
+	thumb.Size = UDim2.fromScale(0.56, 0.71)
+	thumb.Position = UDim2.fromScale(0.22, 0)
 	thumb.Image = "rbxthumb://type=AvatarHeadShot&id=" .. player.UserId .. "&w=150&h=150"
 	thumb.Parent = gui
 	local label = Instance.new("TextLabel")
 	label.Name = "OwnerTitle"
-	label.Size = UDim2.fromOffset(260, 55)
-	label.Position = UDim2.fromOffset(0, 145)
+	label.Size = UDim2.fromScale(1, 0.27)
+	label.Position = UDim2.fromScale(0, 0.71)
 	label.BackgroundTransparency = 1
 	label.Font = Enum.Font.GothamBlack
-	label.TextSize = 30
+	label.TextScaled = true
 	label.TextColor3 = Color3.new(1, 1, 1)
 	label.Text = "@" .. player.Name
 	label.Parent = gui
@@ -268,6 +274,7 @@ function World.setupBase(player, state, action)
 	World.updateBase(player, state)
 end
 function World.updateBase(player, state)
+	state.base:SetAttribute("PenLevel", state.penLevel)
 	for _, item in
 		{
 			{ state.penBoard, state.penLevel, Game.PenCosts[state.penLevel] },
@@ -328,7 +335,7 @@ function World.updateBase(player, state)
 		if not label then
 			label = Instance.new("BillboardGui")
 			label.Name = "GainDisplay"
-			label.Size = UDim2.fromOffset(270, 70)
+			label.Size = UDim2.fromScale(8, 2.1)
 			label.StudsOffsetWorldSpace = Vector3.new(0, 5, 0)
 			label.Adornee = station.TrainingCenter
 			label.Parent = station
@@ -337,7 +344,7 @@ function World.updateBase(player, state)
 			t.Size = UDim2.fromScale(1, 1)
 			t.BackgroundTransparency = 1
 			t.Font = Enum.Font.GothamBlack
-			t.TextSize = 32
+			t.TextScaled = true
 			t.TextColor3 = Color3.fromRGB(30, 198, 255)
 			t.Parent = label
 			local s = Instance.new("UIStroke")

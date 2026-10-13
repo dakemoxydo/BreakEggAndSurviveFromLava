@@ -1,5 +1,5 @@
 """Persist imported Roblox IDs and grip anchors in the Rojo-owned templates."""
-import ast
+import sys
 import json
 import shutil
 import xml.etree.ElementTree as ET
@@ -9,9 +9,9 @@ rows=json.loads((ROOT/'.tools/imported-full-pickaxes-v03.json').read_text(encodi
 manifest=json.loads((ROOT/'assets/items/pickaxes/pack/exports/roblox-import-v03/manifest.json').read_text(encoding='utf-8'))
 expected={r['assetKey']:r for r in manifest['models']}
 assert len(rows)==18 and {r['key'] for r in rows}==set(expected)
-tree=ast.parse((ROOT/'tools/build-world.py').read_text(encoding='utf-8'))
-namespace={}
-exec(compile(ast.Module(body=[n for n in tree.body if isinstance(n,(ast.Import,ast.ImportFrom,ast.FunctionDef))],type_ignores=[]),'serializers','exec'),namespace)
+sys.path.insert(0,str(ROOT/'tools'))
+import roblox_xml
+namespace={'item':roblox_xml.item}
 def prop(kind,value):return {'type':kind,'value':value}
 def cf(x=0,y=0,z=0):return [x,y,z,1,0,0,0,1,0,0,0,1]
 children=[]

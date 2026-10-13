@@ -6,7 +6,17 @@ local Game = require(RS:WaitForChild("GameConfig"))
 local Visuals = require(RS:WaitForChild("PetVisuals"))
 local Adventure = {}
 local services, field, remote, feedback
-local eggs, guards, cargo, lastSwing, stunned = {}, {}, {}, {}, {}
+local eggs, cargo, lastSwing, stunned = {}, {}, {}, {}
+-- DevTools test switches; per-player tables are keyed by Player and cleared when they leave.
+Adventure.dev = {
+	lavaInterval = nil, -- seconds between waves; nil = Game.LavaInterval
+	lavaOff = false,
+	immune = {},
+	oneHit = {},
+	rarity = {}, -- forced rarity key of eggs this player breaks
+	luck = {}, -- extra luck multiplier
+}
+local dev = Adventure.dev
 local random = Random.new()
 local function character(player)
 	local model = player.Character
@@ -16,10 +26,12 @@ local function character(player)
 		return root, humanoid
 	end
 end
-function Adventure.notice(player, message)
+-- kind: "danger" | "event" | nil (info); the client colors the toast and picks its sound.
+function Adventure.notice(player, message, kind)
 	if not message then
 		return
 	end
+	player:SetAttribute("GameplayNoticeKind", kind)
 	player:SetAttribute("GameplayNotice", message)
 	player:SetAttribute("GameplayNoticeAt", os.clock())
 end
@@ -37,21 +49,74 @@ local function prompt(parent, action, object, callback)
 	p.Triggered:Connect(callback)
 	return p
 end
-local function clearCargo(player, reason)
-	if not cargo[player] then
+-- Swaps rig joints for ball sockets and flings every limb; the server owns the
+-- parts while limp so the push is not lost to client ownership.
+local function ragdoll(player, velocity, duration)
+	local model = player.Character
+	local root, humanoid = character(player)
+	if not root then
 		return
 	end
-	for _, item in cargo[player] do
-		if item.model then
-			item.model:Destroy()
+	local token = {}
+	local already = stunned[player] and stunned[player].model == model
+	if not already then
+		local joints, sockets = {}, {}
+		for _, joint in model:GetDescendants() do
+			if (joint:IsA("Motor6D") or joint:IsA("AnimationConstraint")) and joint.Enabled and joint.Part1 then
+				-- Kinematic AnimationConstraint exposes the same C0/C1/Part0/Part1 as Motor6D.
+				local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
+				a0.CFrame, a1.CFrame = joint.C0, joint.C1
+				a0.Parent, a1.Parent = joint.Part0, joint.Part1
+				local socket = Instance.new("BallSocketConstraint")
+				socket.Attachment0, socket.Attachment1 = a0, a1
+				socket.LimitsEnabled, socket.TwistLimitsEnabled = true, true
+				socket.UpperAngle, socket.TwistLowerAngle, socket.TwistUpperAngle = 60, -45, 45
+				socket.Parent = joint.Part1
+				table.insert(sockets, a0)
+				table.insert(sockets, a1)
+				table.insert(joints, joint)
+				joint.Enabled = false
+			end
+		end
+		humanoid.RequiresNeck = false
+		humanoid.PlatformStand = true
+		stunned[player] = { model = model, joints = joints, sockets = sockets }
+	end
+	stunned[player].token = token
+	for _, part in model:GetDescendants() do
+		if part:IsA("BasePart") and not part.Anchored then
+			if part:CanSetNetworkOwnership() then
+				part:SetNetworkOwner(nil)
+			end
+			part.AssemblyLinearVelocity = velocity
 		end
 	end
-	cargo[player] = nil
-	player:SetAttribute("CarryingCount", 0)
-	player:SetAttribute("CarryingName", nil)
-	if reason then
-		Adventure.notice(player, reason)
-	end
+	task.delay(duration, function()
+		local state = stunned[player]
+		if not state or state.token ~= token then
+			return
+		end
+		stunned[player] = nil
+		for _, joint in state.joints do
+			joint.Enabled = true
+		end
+		for _, attachment in state.sockets do
+			attachment:Destroy()
+		end
+		if model.Parent and root.Parent and humanoid.Health > 0 then
+			local look = root.CFrame.LookVector * Vector3.new(1, 0, 1)
+			root.CFrame = CFrame.lookAt(
+				root.Position + Vector3.new(0, 2, 0),
+				root.Position + Vector3.new(0, 2, 0) + (look.Magnitude > 0.01 and look or Vector3.zAxis)
+			)
+			root.AssemblyLinearVelocity = Vector3.zero
+			humanoid.PlatformStand = false
+			humanoid.RequiresNeck = true
+			if root:CanSetNetworkOwnership() then
+				root:SetNetworkOwner(player)
+			end
+		end
+	end)
 end
 function Adventure.equipPickaxe(player, index)
 	local backpack = player:FindFirstChildOfClass("Backpack")
@@ -110,8 +175,7 @@ end
 local function eggLabel(model, info, hp)
 	local gui = Instance.new("BillboardGui")
 	gui.Name = "EggLabel"
-	gui.Size = UDim2.new(8, 0, 3.5, 0)
-	gui.MaxDistance = 140
+	gui.Size = UDim2.fromScale(8, 3.5)
 	gui.AlwaysOnTop = false
 	gui.Adornee = model.PrimaryPart
 	gui.Parent = model
@@ -165,16 +229,24 @@ local function eggLabel(model, info, hp)
 	outline.Parent = value
 	return gui
 end
-local function roll(info)
+-- `luck` already includes the breaker's rebirth bonus.
+local function roll(info, luck, forced)
 	if info.biome == "Titanic" then
 		return "TitanDragon"
+	end
+	if forced then
+		for _, pet in Game.Pets do
+			if pet.biome == info.biome and pet.rarity == forced then
+				return pet.key
+			end
+		end
 	end
 	local options, total = {}, 0
 	local index = 0
 	for _, pet in Game.Pets do
 		if pet.biome == info.biome then
 			index += 1
-			local weight = pet.weight * math.max(0.5, info.luck) ^ ((index - 1) * 0.45)
+			local weight = pet.weight * math.max(0.5, luck) ^ ((index - 1) * 0.45)
 			total += weight
 			table.insert(options, { pet = pet, total = total })
 		end
@@ -194,10 +266,11 @@ local function respawn(record, delay)
 		record.model:Destroy()
 		record.model = nil
 	end
-	if record.info.biome ~= "Titanic" then
+	-- Dropped animals have no egg info and never come back as eggs.
+	if record.info and record.info.biome ~= "Titanic" then
 		task.delay(delay, function()
 			if field.Parent then
-				spawnEgg(record.info, record.at, record.scale)
+				spawnEgg(record.info, record.at, record.scale, record.skin)
 			end
 		end)
 	end
@@ -271,6 +344,88 @@ local function steal(player, record)
 	player:SetAttribute("CarryingName", Game.pet(record.pet).name)
 	respawn(record, Game.EggRespawnSeconds)
 end
+-- A dropped animal hops from where it was carried to the ground and can be stolen again.
+local function dropAnimal(item, from, ground)
+	local info = Game.pet(item.kind)
+	local model = Visuals.pet(item.kind, item.weight)
+	model.Name = "DroppedAnimal"
+	model:SetAttribute("FieldAnimal", true)
+	model:PivotTo(CFrame.new(ground))
+	local box, size = model:GetBoundingBox()
+	local rest = CFrame.new(ground + Vector3.new(0, ground.Y - (box.Y - size.Y / 2), 0))
+		* CFrame.Angles(0, random:NextNumber(0, 2 * math.pi), 0)
+	model:PivotTo(rest.Rotation + from)
+	model.Parent = field
+	local record = {
+		id = Http:GenerateGUID(false),
+		pet = item.kind,
+		weight = item.weight,
+		at = rest.Position,
+		model = model,
+		status = "Dropping",
+	}
+	eggs[record.id] = record
+	model:SetAttribute("EggId", record.id)
+	services.world.label(
+		model,
+		info.name .. "\n+$" .. Game.number(Game.income({ kind = item.kind, weight = item.weight })) .. "/s"
+	)
+	prompt(model.PrimaryPart, "Steal", info.name, function(visitor)
+		steal(visitor, record)
+	end)
+	task.spawn(function()
+		local started = os.clock()
+		while model.Parent do
+			local t = math.min((os.clock() - started) / 0.45, 1)
+			model:PivotTo(rest.Rotation + from:Lerp(rest.Position, t) + Vector3.new(0, math.sin(t * math.pi) * 2.5, 0))
+			if t >= 1 then
+				break
+			end
+			task.wait()
+		end
+		if record.status == "Dropping" then
+			record.status = "Hatched"
+		end
+	end)
+	task.delay(45, function()
+		if record.status == "Hatched" or record.status == "Dropping" then
+			record.status = "Expired"
+			respawn(record, 1)
+		end
+	end)
+end
+-- Knocked-off cargo lands around the carrier instead of vanishing (GP-02: it still leaves the carrier).
+local function dropCargo(player, reason)
+	local held = cargo[player]
+	if not held then
+		return
+	end
+	cargo[player] = nil
+	player:SetAttribute("CarryingCount", 0)
+	player:SetAttribute("CarryingName", nil)
+	local ignore = { field }
+	for _, other in Players:GetPlayers() do
+		table.insert(ignore, other.Character)
+	end
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.FilterDescendantsInstances = ignore
+	for i, item in held do
+		local from = item.model and item.model.Parent and item.model:GetPivot().Position
+		if item.model then
+			item.model:Destroy()
+		end
+		if from then
+			local angle = (i / #held + random:NextNumber(0, 0.2)) * 2 * math.pi
+			local side = Vector3.new(math.cos(angle), 0, math.sin(angle)) * random:NextNumber(3, 5)
+			local hit = workspace:Raycast(from + side + Vector3.new(0, 2, 0), Vector3.new(0, -200, 0), params)
+			if hit then
+				dropAnimal(item, from, hit.Position)
+			end
+		end
+	end
+	Adventure.notice(player, reason, "danger")
+end
 local function hatch(record, player)
 	if record.status ~= "Egg" then
 		return
@@ -280,9 +435,13 @@ local function hatch(record, player)
 	record.model:SetAttribute("HatchStarted", started)
 	record.model:SetAttribute("HatchDuration", Game.FieldHatchDuration)
 	record.model:SetAttribute("HatchGrowth", Game.FieldHatchGrowth)
-	record.model:SetAttribute("HatchLuck", record.info.luck)
+	local breaker = player and services.states[player]
+	local luck = record.info.luck
+		* Game.rebirthLuck(breaker and breaker.rebirths or 0)
+		* (player and dev.luck[player] or 1)
+	record.model:SetAttribute("HatchLuck", luck)
 	-- Roll up front so clients can build the rarity reveal; the result is fixed either way.
-	record.pet = roll(record.info)
+	record.pet = roll(record.info, luck, player and dev.rarity[player])
 	record.weight = math.max(0.1, math.floor(record.scale ^ 3 * random:NextNumber(0.7, 2.4) * 10) / 10)
 	record.model:SetAttribute("HatchRarity", Game.pet(record.pet).rarity)
 	if player then
@@ -295,7 +454,7 @@ local function hatch(record, player)
 	feedback:FireAllClients(
 		"Hatch",
 		record.at,
-		{ model = record.model, started = started, duration = Game.FieldHatchDuration, luck = record.info.luck }
+		{ model = record.model, started = started, duration = Game.FieldHatchDuration, luck = luck }
 	)
 	task.delay(Game.FieldHatchDuration, function()
 		if record.status ~= "Hatching" or not record.model or not record.model.Parent then
@@ -354,8 +513,10 @@ local function hatch(record, player)
 		end)
 	end)
 end
-spawnEgg = function(info, at, scale)
-	local model = Visuals.egg(info.color)
+spawnEgg = function(info, at, scale, skin)
+	-- A respawn keeps its skin; a new egg picks one of its rarity's imported shells.
+	skin = skin or info.models and info.models[random:NextInteger(1, #info.models)]
+	local model = Visuals.egg(info.color, nil, skin)
 	model:ScaleTo(scale or 1)
 	model:PivotTo(CFrame.new(at))
 	-- Only field shells participate in aiming; base eggs and pets stay non-queryable.
@@ -370,6 +531,7 @@ spawnEgg = function(info, at, scale)
 		info = info,
 		at = at,
 		scale = scale or 1,
+		skin = skin,
 		model = model,
 		status = "Egg",
 		hp = info.hp,
@@ -385,7 +547,7 @@ spawnEgg = function(info, at, scale)
 end
 local function swing(player, id)
 	local state = services.states[player]
-	local root, humanoid = character(player)
+	local root = character(player)
 	if
 		not state
 		or not state.ready
@@ -410,7 +572,8 @@ local function swing(player, id)
 		return
 	end
 	local crit = random:NextNumber() < Game.CritChance
-	local damage = math.min(record.hp, Game.Pickaxes[state.pickaxe].power * (crit and Game.CritMultiplier or 1))
+	local damage = dev.oneHit[player] and record.hp
+		or math.min(record.hp, Game.Pickaxes[state.pickaxe].power * (crit and Game.CritMultiplier or 1))
 	record.hp = math.max(0, record.hp - damage)
 	record.model:SetAttribute("HP", record.hp)
 	record.model:SetAttribute("LastHit", os.clock())
@@ -441,6 +604,7 @@ local function bat(player)
 		or not root
 		or player:GetAttribute("OnTreadmill")
 		or Adventure.hasCargo(player)
+		or stunned[player]
 	then
 		return
 	end
@@ -458,13 +622,12 @@ local function bat(player)
 	end
 	for _, other in Players:GetPlayers() do
 		if other ~= player then
-			local target, humanoid = character(other)
+			local target = character(other)
 			if target and target.Position.Z < Game.SafeZ and (target.Position - root.Position).Magnitude < 10 then
 				local delta = target.Position - root.Position
 				local direction = delta.Magnitude > 0.01 and delta.Unit or root.CFrame.LookVector
-				clearCargo(other, "You dropped your animals!")
-				target.AssemblyLinearVelocity = direction * 65 + Vector3.new(0, 30, 0)
-				humanoid:TakeDamage(10)
+				dropCargo(other, "You dropped your animals!")
+				ragdoll(other, direction * 75 + Vector3.new(0, 60, 0), 2)
 			end
 		end
 	end
@@ -475,20 +638,7 @@ local function openShop(player, name)
 	end
 end
 local function setupPrompts()
-	local shops = workspace.Map.StartZone.Shops
-	for _, model in shops:GetChildren() do
-		if model:IsA("Model") then
-			local _, size = model:GetBoundingBox()
-			local cf = model:GetPivot()
-			local name = model.Name == "BlueShopStand" and "Pickaxe Shop" or "Trails Shop"
-			local base = model:FindFirstChildWhichIsA("BasePart", true)
-			if base then
-				prompt(base, "Open", name, function(player)
-					openShop(player, name)
-				end)
-			end
-		end
-	end
+	-- Pickaxe and Trails stands have no prompt: the client opens them from their TouchZone.
 	local details = workspace.Map.StartZone:FindFirstChild("ReferenceDetails")
 	if details then
 		for _, p in details:GetDescendants() do
@@ -505,22 +655,6 @@ local function setupPrompts()
 			end
 		end
 	end
-end
-local function guardian(kind, at, biome)
-	local model = Visuals.pet(kind, 1)
-	model:ScaleTo(model:GetScale() * 4)
-	model.Name = biome .. "Guardian"
-	model:SetAttribute("Guardian", true)
-	-- Clients smooth and animate guardians from these attributes, like base pets.
-	model:SetAttribute("PetPosition", at)
-	model:SetAttribute("PetYaw", 0)
-	model:SetAttribute("PetWalking", false)
-	model:PivotTo(CFrame.new(at))
-	model.Parent = field
-	services.world.label(model, "GUARDIAN")
-	local item = { model = model, home = at, at = at, biome = biome, cooldown = 0 }
-	table.insert(guards, item)
-	return item
 end
 function Adventure.start(options)
 	assert(not services, "Adventure already started")
@@ -539,92 +673,108 @@ function Adventure.start(options)
 			swing(player, payload)
 		elseif name == "Bat" then
 			bat(player)
+		elseif name == "Drop" then
+			dropCargo(player)
 		end
 	end)
 	for biomeIndex, biome in { "Forest", "Desert", "Snow" } do
-		local zone = workspace.Map.Biomes[biome]
-		local floor = zone.Floor
-		local surface = floor.Position.Y + floor.Size.Y / 2
-		for row = 1, 4 do
-			for col = 1, 4 do
-				local rarity = (row == 4 and col % 2 == 0) and 3 or (row == 3 and col == 3) and 2 or 1
-				local info = Game.Eggs[(biomeIndex - 1) * 3 + rarity]
-				local at = Vector3.new(
-					-56 + (col - 1) * 37,
-					surface,
-					floor.Position.Z + floor.Size.Z / 2 - 18 - (row - 1) * 40
-				)
-				spawnEgg(info, at, random:NextNumber(0.72, 1.28) * (rarity == 3 and 1.5 or 1))
-			end
+		-- Egg spots are authored on the map (tools/build-parkour-field.luau); rarer eggs sit higher.
+		for _, spot in workspace.Map.Biomes[biome].EggSpots:GetChildren() do
+			local rarity = spot:GetAttribute("Rarity")
+			local info = Game.Eggs[(biomeIndex - 1) * 3 + rarity]
+			spawnEgg(info, spot.Position, random:NextNumber(0.72, 1.28) * (rarity == 3 and 1.5 or 1))
 		end
 	end
-	guardian("Chicken", Vector3.new(76, 0.1, -153), "Forest")
-	guardian("Lion", Vector3.new(-75, 0.1, -330), "Desert")
-	guardian("Yeti", Vector3.new(77, 0.1, -510), "Snow")
 	setupPrompts()
-	local nextLava = os.clock() + Game.LavaInterval
+	local function lavaInterval()
+		return dev.lavaInterval or Game.LavaInterval
+	end
+	local nextLava = os.clock() + lavaInterval()
 	local nextTitan = os.clock() + Game.TitanInterval
-	local wave, waveZ, waveEnd
+	local waveAt -- server time when the current lava wave started
 	local scan = 0
+	-- DevTools: bring the next timed event forward to now.
+	function Adventure.forceLava()
+		nextLava = os.clock()
+	end
+	-- Ends a running wave on the next tick; clients stop drawing once LavaWaveAt is far in the past.
+	function Adventure.stopLava()
+		if waveAt then
+			waveAt = -math.huge
+			workspace:SetAttribute("LavaWaveAt", 0)
+		end
+	end
+	function Adventure.setLavaInterval(seconds)
+		dev.lavaInterval = seconds
+		nextLava = math.min(nextLava, os.clock() + lavaInterval())
+	end
+	-- Every unbroken field egg back to full HP.
+	function Adventure.refillEggs()
+		local count = 0
+		for _, record in eggs do
+			if record.status == "Egg" and record.model then
+				record.hp = record.info.hp
+				record.model:SetAttribute("HP", record.hp)
+				record.label.Health.Visible = false
+				count += 1
+			end
+		end
+		return count
+	end
+	function Adventure.lavaState()
+		return { active = waveAt ~= nil, nextIn = math.max(0, math.ceil(nextLava - os.clock())) }
+	end
+	function Adventure.forceTitan()
+		nextTitan = os.clock()
+	end
+	Adventure.ragdoll = ragdoll
+	Adventure.dropCargo = dropCargo
 	RunService.Heartbeat:Connect(function(dt)
 		scan += dt
 		if scan < 0.1 then
 			return
 		end
-		local step = math.min(scan, 0.3)
 		scan = 0
 		local now = os.clock()
 		workspace:SetAttribute("LavaCountdown", math.max(0, math.ceil(nextLava - now)))
-		workspace:SetAttribute("TitanCountdown", math.max(0, math.ceil(nextTitan - now)))
 		if now >= nextTitan then
 			nextTitan = now + Game.TitanInterval
 			local record = spawnEgg(Game.Eggs[#Game.Eggs], Vector3.new(0, 0.1, -192), 4)
+			for _, player in Players:GetPlayers() do
+				Adventure.notice(player, "TITANIC EGG has appeared in the field! Break it together!", "event")
+			end
 			task.delay(Game.TitanDuration, function()
-				if record.model and record.model.Parent then
+				-- Only an unbroken egg vanishes; a hatched Titan keeps its normal reveal and expiry.
+				if record.status == "Egg" and record.model and record.model.Parent then
 					respawn(record, 0)
 				end
 			end)
 		end
-		if not wave and now >= nextLava then
-			wave = Instance.new("Part")
-			wave.Name = "LavaWave"
-			wave.Anchored = true
-			wave.CanCollide = false
-			wave.Material = Enum.Material.Neon
-			wave.Color = Color3.fromRGB(255, 89, 6)
-			wave.Transparency = 0.13
-			wave.Size = Vector3.new(238, 12, 18)
-			waveZ = -588
-			wave.Position = Vector3.new(0, 5, waveZ)
-			wave.Parent = field
-			local light = Instance.new("PointLight")
-			light.Color = wave.Color
-			light.Range = 60
-			light.Brightness = 3
-			light.Parent = wave
+		if dev.lavaOff and not waveAt then
+			nextLava = math.max(nextLava, now + lavaInterval())
+		end
+		if not waveAt and now >= nextLava then
+			waveAt = workspace:GetServerTimeNow()
+			workspace:SetAttribute("LavaWaveAt", waveAt)
 			workspace:SetAttribute("LavaActive", true)
 			for _, player in Players:GetPlayers() do
-				Adventure.notice(player, "LAVA! Get back to the Safe Zone!")
+				Adventure.notice(player, "LAVA IS RISING! Climb high or get back to the Safe Zone!", "danger")
 			end
 		end
-		if wave then
-			waveZ += Game.LavaSpeed * step
-			wave.Position = Vector3.new(0, 5, waveZ)
-			if waveZ > Game.SafeZ - 10 then
-				wave:Destroy()
-				wave = nil
-				nextLava = now + Game.LavaInterval
-				workspace:SetAttribute("LavaActive", false)
-			end
+		local lavaY = waveAt and Game.lavaHeight(workspace:GetServerTimeNow() - waveAt)
+		if waveAt and not lavaY then
+			waveAt = nil
+			nextLava = now + lavaInterval()
+			workspace:SetAttribute("LavaActive", false)
 		end
 		for _, player in Players:GetPlayers() do
 			player:SetAttribute("EventRemaining", math.max(0, math.ceil(nextLava - now)))
-			local root, humanoid = character(player)
+			local root = character(player)
 			player:SetAttribute("InField", root and root.Position.Z < Game.SafeZ or false)
 			local held = cargo[player]
 			if held then
 				if not root then
-					clearCargo(player, "You lost your stolen animals.")
+					dropCargo(player, "You lost your stolen animals.")
 				elseif root.Position.Z >= Game.SafeZ then
 					for i = #held, 1, -1 do
 						local item = held[i]
@@ -642,63 +792,32 @@ function Adventure.start(options)
 					end
 				end
 			end
+			-- The root sits ~3 studs above the feet: feet in the lava drop the cargo and fling the
+			-- player up and toward the Safe Zone, aimed at its edge (the ragdoll slide carries it inside).
 			if
 				root
-				and wave
+				and lavaY
+				and not stunned[player]
 				and root.Position.Z < Game.SafeZ
-				and math.abs(root.Position.Z - waveZ) < 14
-				and root.Position.Y < 17
+				and root.Position.Y - 3 < lavaY
+				and not dev.immune[player]
 			then
-				clearCargo(player)
-				humanoid.Health = 0
-			end
-		end
-		for _, guard in guards do
-			local target, minimum = nil, math.huge
-			local zone = workspace.Map.Biomes[guard.biome].Floor
-			for _, player in Players:GetPlayers() do
-				if Adventure.hasCargo(player) then
-					local root = character(player)
-					if
-						root
-						and root.Position.Z < Game.SafeZ
-						and math.abs(root.Position.Z - zone.Position.Z) < zone.Size.Z / 2 + 12
-					then
-						local distance = (root.Position - guard.at).Magnitude
-						if distance < minimum then
-							target = player
-							minimum = distance
-						end
-					end
-				end
-			end
-			local root = target and character(target)
-			local goal = root and Vector3.new(root.Position.X, 0.1, root.Position.Z) or guard.home
-			local delta = goal - guard.at
-			local walking = delta.Magnitude > 1
-			if walking then
-				local direction = delta.Unit
-				guard.at += direction * math.min((root and 24 or 10) * step, delta.Magnitude)
-				guard.model:SetAttribute("PetPosition", guard.at)
-				guard.model:SetAttribute("PetYaw", math.atan2(-direction.X, -direction.Z))
-			end
-			if guard.model:GetAttribute("PetWalking") ~= walking then
-				guard.model:SetAttribute("PetWalking", walking)
-			end
-			if root and minimum < 8 and now > guard.cooldown then
-				guard.cooldown = now + 2
-				clearCargo(target, "The guardian caught you! Your animals were dropped.")
-				local _, humanoid = character(target)
-				if humanoid then
-					humanoid:TakeDamage(25)
-					root.AssemblyLinearVelocity = (root.Position - guard.at + Vector3.new(0, 2, 0)).Unit * 65
-				end
+				dropCargo(player)
+				Adventure.notice(player, "The lava threw you back!", "danger")
+				local flight = 2 * Game.LavaFling.up / workspace.Gravity
+				local away = math.clamp((Game.SafeZ - root.Position.Z) / flight, 40, Game.LavaFling.maxAway)
+				ragdoll(player, Vector3.new(0, Game.LavaFling.up, away), Game.LavaFling.duration)
 			end
 		end
 	end)
 	Players.PlayerRemoving:Connect(function(player)
-		clearCargo(player)
+		-- Leaving mid-run drops the cargo like a knock-off, so others can still grab it.
+		dropCargo(player)
 		lastSwing[player] = nil
+		stunned[player] = nil
+		for _, list in { dev.immune, dev.oneHit, dev.rarity, dev.luck } do
+			list[player] = nil
+		end
 	end)
 end
 return Adventure

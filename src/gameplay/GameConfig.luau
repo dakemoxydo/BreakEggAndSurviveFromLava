@@ -12,10 +12,26 @@ Config.FieldHatchDuration = 7
 Config.FieldHatchGrowth = 1.65
 Config.FieldRevealDuration = 0.65
 Config.EggRespawnSeconds = 12
-Config.LavaInterval = 90
-Config.LavaSpeed = 35
+Config.LavaInterval = 30
+-- Lava rises from under the field floor, holds, then sinks: seconds and studs above the floor top.
+Config.FieldFloorY = 0.1
+Config.LavaWave = { rise = 5, hold = 10, fall = 5, low = -3, high = 10 }
+-- Lava surface world Y `elapsed` seconds into a wave, or nil once the wave is over.
+-- Touching lava flings the player: vertical speed, max speed toward the Safe Zone, ragdoll seconds.
+Config.LavaFling = { up = 100, maxAway = 150, duration = 2 }
+function Config.lavaHeight(elapsed)
+	local w = Config.LavaWave
+	if elapsed < 0 or elapsed > w.rise + w.hold + w.fall then
+		return nil
+	end
+	local t = elapsed < w.rise and elapsed / w.rise
+		or elapsed < w.rise + w.hold and 1
+		or 1 - (elapsed - w.rise - w.hold) / w.fall
+	return Config.FieldFloorY + w.low + (w.high - w.low) * t * t * (3 - 2 * t)
+end
+-- Titanic Egg: spawns every TitanInterval seconds with no public countdown, lasts TitanDuration.
 Config.TitanInterval = 1800
-Config.TitanDuration = 120
+Config.TitanDuration = 600
 Config.StudTexture = "rbxassetid://107033945808299"
 -- Ascending rarity ladder; hatch effects climb it up to the rolled rarity.
 Config.Rarities = {
@@ -252,13 +268,62 @@ Config.ByPet.TestChick = {
 	size = 1,
 	weight = 0,
 }
+-- models: shells from ServerStorage.Assets.Items.Eggs, one picked at random per field egg; without them the egg is procedural.
 Config.Eggs = {
-	{ biome = "Forest", name = "Forest Egg", rarity = "Common", hp = 5, color = C(255, 204, 159), luck = 0.53 },
-	{ biome = "Forest", name = "Forest Egg", rarity = "Uncommon", hp = 25, color = C(135, 238, 90), luck = 1.67 },
-	{ biome = "Forest", name = "Forest Egg", rarity = "Rare", hp = 120, color = C(72, 187, 255), luck = 3 },
-	{ biome = "Desert", name = "Desert Egg", rarity = "Common", hp = 250, color = C(249, 199, 85), luck = 0.53 },
-	{ biome = "Desert", name = "Desert Egg", rarity = "Uncommon", hp = 1200, color = C(227, 148, 64), luck = 1.67 },
-	{ biome = "Desert", name = "Desert Egg", rarity = "Rare", hp = 6000, color = C(216, 83, 40), luck = 3 },
+	{
+		biome = "Forest",
+		name = "Forest Egg",
+		rarity = "Common",
+		hp = 5,
+		color = C(255, 204, 159),
+		luck = 0.53,
+		models = { "MossEgg", "BirchEgg", "AcornEgg" },
+	},
+	{
+		biome = "Forest",
+		name = "Forest Egg",
+		rarity = "Uncommon",
+		hp = 25,
+		color = C(135, 238, 90),
+		luck = 1.67,
+		models = { "MushroomEgg" },
+	},
+	{
+		biome = "Forest",
+		name = "Forest Egg",
+		rarity = "Rare",
+		hp = 120,
+		color = C(72, 187, 255),
+		luck = 3,
+		models = { "EnchantedEgg" },
+	},
+	{
+		biome = "Desert",
+		name = "Desert Egg",
+		rarity = "Common",
+		hp = 250,
+		color = C(249, 199, 85),
+		luck = 0.53,
+		models = { "CactusEgg", "SandstormEgg", "ScorpionEgg" },
+	},
+	{
+		biome = "Desert",
+		name = "Desert Egg",
+		rarity = "Uncommon",
+		hp = 1200,
+		color = C(227, 148, 64),
+		luck = 1.67,
+		models = { "OasisEgg" },
+	},
+	{
+		biome = "Desert",
+		name = "Desert Egg",
+		rarity = "Rare",
+		hp = 6000,
+		color = C(216, 83, 40),
+		luck = 3,
+		models = { "PharaohEgg" },
+	},
 	{ biome = "Snow", name = "Snow Egg", rarity = "Common", hp = 15000, color = C(226, 243, 255), luck = 0.53 },
 	{ biome = "Snow", name = "Snow Egg", rarity = "Uncommon", hp = 60000, color = C(104, 224, 255), luck = 1.67 },
 	{ biome = "Snow", name = "Snow Egg", rarity = "Rare", hp = 250000, color = C(145, 125, 249), luck = 3 },
@@ -276,6 +341,19 @@ function Config.weight(value)
 	end
 	return string.format("%.1f", value):gsub("%.0$", "")
 end
+-- Rebirth: resets Cash and Speed; each rebirth adds income and egg luck. Cost grows by costGrowth each time.
+Config.Rebirth = { baseCost = 1e6, costGrowth = 3, income = 0.5, luck = 0.1 }
+function Config.rebirthCost(rebirths)
+	return Config.Rebirth.baseCost * Config.Rebirth.costGrowth ^ rebirths
+end
+function Config.rebirthIncome(rebirths)
+	return 1 + Config.Rebirth.income * rebirths
+end
+function Config.rebirthLuck(rebirths)
+	return 1 + Config.Rebirth.luck * rebirths
+end
+-- Walk speed multiplier while carrying field cargo.
+Config.CargoSlow = 0.8
 function Config.walkSpeed(speed, slow)
 	return slow and 16 or math.clamp(16 + math.log(1 + math.max(0, speed - 16)) * 4, 16, 96)
 end
@@ -286,5 +364,39 @@ function Config.number(value)
 		end
 	end
 	return tostring(math.floor(value))
+end
+-- Login rewards (Rewards window). Daily: once per RewardDay. Streak: one day per RewardDay in order;
+-- missing a whole day restarts it at Day 1, and a finished Day 15 starts a new cycle.
+-- kind picks the card art of the template (Speed = Day1, Cash = Day2, Egg = Day3, Chest = Day4).
+Config.RewardDay = 86400
+Config.DailyReward = { cash = 1000 }
+Config.StreakRewards = {
+	{ kind = "Speed", speed = 20 },
+	{ kind = "Cash", cash = 500 },
+	{ kind = "Egg", pet = "Fox" },
+	{ kind = "Chest", cash = 2000, speed = 40 },
+	{ kind = "Speed", speed = 50 },
+	{ kind = "Cash", cash = 5000 },
+	{ kind = "Egg", pet = "Wolf" },
+	{ kind = "Chest", cash = 20000, speed = 80 },
+	{ kind = "Speed", speed = 100 },
+	{ kind = "Cash", cash = 50000 },
+	{ kind = "Egg", pet = "Bear" },
+	{ kind = "Chest", cash = 200000, speed = 150 },
+	{ kind = "Speed", speed = 200 },
+	{ kind = "Cash", cash = 500000 },
+	{ kind = "Egg", pet = "ForestDragon" },
+}
+-- Streak days still counted at `now` (claimed: saved count, at: time of the last streak claim)
+-- and whether the next day can be claimed.
+function Config.rewardStreak(claimed, at, now)
+	local since = now - at
+	if
+		claimed > 0
+		and (since >= 2 * Config.RewardDay or claimed >= #Config.StreakRewards and since >= Config.RewardDay)
+	then
+		claimed = 0
+	end
+	return claimed, claimed == 0 or since >= Config.RewardDay
 end
 return Config

@@ -3,7 +3,17 @@ local Game = require(game.ReplicatedStorage:WaitForChild("GameConfig"))
 local Config = {
 	PetCapacity = 8,
 	PetSlotCost = 100,
-	DataDefaults = { Cash = 0, Speed = 0, Multiplier = 1, Income = 0, OfflineCash = 0, EventRemaining = 0 },
+	DataDefaults = {
+		Cash = 0,
+		Speed = 0,
+		Multiplier = 1,
+		Income = 0,
+		OfflineCash = 0,
+		EventRemaining = 0,
+		DailyRewardAt = 0,
+		RewardStreak = 0,
+		RewardStreakAt = 0,
+	},
 	FeaturedName = "FALLEN ANGEL EGG",
 	Offers = {
 		{ key = "egg50", section = "Featured", amount = "50 Eggs", price = 3499, icon = "angelEgg", productId = 0 },

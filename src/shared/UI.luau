@@ -139,11 +139,16 @@ function UI.Button(p)
 	local binding, update = React.useBinding(0)
 	local states = React.useRef({ hover = false, pressed = false })
 	local hoverScale = p.hoverScale or (p.w > 240 and Theme.motion.denseHoverScale or Theme.motion.hoverScale)
+	local tilt = p.w > 240 and Theme.motion.denseTilt or Theme.motion.tilt
+	-- -1/1: the side the pointer entered from; the hover tilt leans that way.
+	local side = React.useRef(1)
 	local motion = React.useMemo(function()
-		return Ripple.createSpring(
-			0,
-			{ frequency = Theme.motion.frequency, dampingRatio = 1, precision = Theme.motion.precision, start = true }
-		)
+		return Ripple.createSpring(0, {
+			frequency = Theme.motion.frequency,
+			dampingRatio = Theme.motion.dampingRatio,
+			precision = Theme.motion.precision,
+			start = true,
+		})
 	end, {})
 	-- Scale one centered visual subtree. Keep layout, child geometry and stroke
 	-- thickness in design units; Roblox applies the shared scale exactly once.
@@ -152,6 +157,11 @@ function UI.Button(p)
 			return t < 0 and 1 + (1 - Theme.motion.pressedScale) * t or 1 + (hoverScale - 1) * t
 		end)
 	end, { binding, hoverScale })
+	local rotationBinding = React.useMemo(function()
+		return binding:map(function(t)
+			return math.max(t, 0) * tilt * side.current
+		end)
+	end, { binding, tilt })
 	React.useEffect(function()
 		local disconnect = motion:onChange(update)
 		return function()
@@ -257,7 +267,8 @@ function UI.Button(p)
 				p.onClick()
 			end
 		end,
-		[React.Event.MouseEnter] = function()
+		[React.Event.MouseEnter] = function(rbx, x)
+			side.current = x < rbx.AbsolutePosition.X + rbx.AbsoluteSize.X / 2 and -1 or 1
 			state("hover", true)
 		end,
 		[React.Event.MouseLeave] = function()
@@ -281,6 +292,7 @@ function UI.Button(p)
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.fromScale(0.5, 0.5),
 			Size = UDim2.fromOffset(p.w, p.h),
+			Rotation = rotationBinding,
 			BackgroundTransparency = 1,
 		}, {
 			Scale = e("UIScale", { Scale = scaleBinding }),
@@ -301,27 +313,48 @@ end
 function UI.Transition(p)
 	local inputEnabled = React.useContext(UI.InputEnabled)
 	local progress, update = React.useBinding(0)
+	local dimProgress, updateDim = React.useBinding(0)
 	local latest = React.useRef(p)
 	latest.current = p
-	local motion = React.useMemo(function()
-		return Ripple.createSpring(0, {
-			frequency = Theme.motion.transitionFrequency,
-			dampingRatio = 1,
-			precision = Theme.motion.transitionPrecision,
-			start = true,
-		})
-	end, {})
+	-- onClosed fires once per close: early (closedAt) or on completion, whichever comes first.
+	local notified = React.useRef(false)
+	local function finish()
+		if not notified.current and not latest.current.visible and latest.current.onClosed then
+			notified.current = true
+			latest.current.onClosed()
+		end
+	end
+	local motion, dim = table.unpack(React.useMemo(function()
+		local function spring()
+			return Ripple.createSpring(0, {
+				frequency = Theme.motion.transitionFrequency,
+				dampingRatio = 1,
+				precision = Theme.motion.transitionPrecision,
+				start = true,
+			})
+		end
+		return { spring(), spring() }
+	end, {}))
 	React.useEffect(function()
-		local change = motion:onChange(update)
-		local complete = motion:onComplete(function(value)
-			if value == 0 and not latest.current.visible and latest.current.onClosed then
-				latest.current.onClosed()
+		local change = motion:onChange(function(value)
+			update(value)
+			-- The window is already invisible here; the rest of the spring tail would only delay the HUD.
+			if value <= Theme.motion.closedAt then
+				finish()
 			end
 		end)
+		local complete = motion:onComplete(function(value)
+			if value == 0 then
+				finish()
+			end
+		end)
+		local changeDim = dim:onChange(updateDim)
 		return function()
 			change()
 			complete()
+			changeDim()
 			motion:destroy()
+			dim:destroy()
 		end
 	end, { motion })
 	React.useEffect(function()
@@ -331,24 +364,34 @@ function UI.Transition(p)
 	end, { p.transitionKey })
 	React.useEffect(function()
 		local goal = p.visible and 1 or 0
+		if p.visible then
+			notified.current = false
+		end
 		if p.reduced then
-			motion:stop()
-			motion:setGoal(goal)
-			motion:setPosition(goal)
-			motion:setVelocity(0)
+			for _, spring in { motion, dim } do
+				spring:stop()
+				spring:setGoal(goal)
+				spring:setPosition(goal)
+				spring:setVelocity(0)
+			end
 			update(goal)
+			updateDim(goal)
 			if goal == 0 then
-				task.defer(function()
-					if not latest.current.visible and latest.current.onClosed then
-						latest.current.onClosed()
-					end
-				end)
+				task.defer(finish)
 			end
 		else
+			-- Opening is a little slower and overshoots; closing settles without bounce.
+			-- The backdrop follows visibility only, so switching windows does not flash it.
+			local options = goal == 1
+					and { frequency = Theme.motion.openFrequency, dampingRatio = Theme.motion.openDampingRatio }
+				or { frequency = Theme.motion.transitionFrequency, dampingRatio = 1 }
 			motion:start()
-			motion:setGoal(goal)
+			motion:setGoal(goal, options)
+			dim:start()
+			dim:setGoal(goal, { frequency = options.frequency, dampingRatio = 1 })
 		end
 	end, { p.visible, p.transitionKey, p.reduced })
+	local backdrop = p.backdrop
 	return e("Frame", {
 		Name = p.name or "Transition",
 		Position = UDim2.fromOffset(p.x, p.y),
@@ -356,6 +399,20 @@ function UI.Transition(p)
 		BackgroundTransparency = 1,
 		ZIndex = p.z or 2,
 	}, {
+		-- Full-screen dimmer behind the window; fades with it and blocks clicks to the scene.
+		Backdrop = backdrop and e("TextButton", {
+			Name = backdrop.name,
+			Position = UDim2.fromOffset(-p.x, -p.y),
+			Size = UDim2.fromOffset(backdrop.w, backdrop.h),
+			BackgroundColor3 = backdrop.color,
+			BackgroundTransparency = dimProgress:map(function(t)
+				return 1 - (1 - backdrop.transparency) * math.clamp(t, 0, 1)
+			end),
+			Text = "",
+			AutoButtonColor = false,
+			Selectable = false,
+			ZIndex = 0,
+		}),
 		Group = e("CanvasGroup", {
 			Name = "AnimatedGroup",
 			AnchorPoint = Vector2.new(0.5, 0.5),
@@ -371,7 +428,12 @@ function UI.Transition(p)
 				return 1 - math.clamp(t, 0, 1)
 			end),
 		}, {
-
+			-- Modal windows grow in from openScale; slide-in panels keep their size.
+			Scale = not p.slide and e("UIScale", {
+				Scale = progress:map(function(t)
+					return Theme.motion.openScale + (1 - Theme.motion.openScale) * t
+				end),
+			}) or nil,
 			Content = e("Frame", {
 				Name = "Content",
 				Position = UDim2.fromOffset(16, 16),

@@ -51,6 +51,8 @@ Adventure получает серверные зависимости через 
 
 ## Контракт сцены
 
+`Workspace.StreamingEnabled=false`: со streaming в Studio не рендерились мир и ViewportFrame.
+
 ```text
 Workspace.Map
 ├── StartZone

@@ -11,6 +11,7 @@
 | [balance.md](balance.md) | Числа, формулы, каталоги кирок, следов, дорожек, животных | — |
 | [ui.md](ui.md) | Любой UI, HUD, окна, ввод | UI |
 | [ui-figma.md](ui-figma.md) | Окна, импортированные из Figma (FigBlox) | UI |
+| [ui-rebirth.md](ui-rebirth.md) | Макет, данные и анимации Rebirth | UI |
 | [dev-panel.md](dev-panel.md) | Тестовую панель владельца и команды DevAction | — |
 | [inventory.md](inventory.md) | Инвентарь, Backpack, Tool, хотбар, переходы на базу | INV |
 | [pets.md](pets.md) | Питомцы, яйца на базе, Merge, видимость | — |
@@ -22,8 +23,6 @@
 | [development.md](development.md) | Сборку, Rojo, MCP, инструменты, ассеты | — |
 | [verification.md](verification.md) | Методы проверки и статус | — |
 | [backlog.md](backlog.md) | Отложенную работу: дефекты, непроверенное, решения пользователя | — |
-
-`history/` — журналы прошлых работ и проверок. Не читать без запроса; это не правила.
 
 ## Как вести документацию
 

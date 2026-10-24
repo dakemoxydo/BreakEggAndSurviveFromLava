@@ -19,6 +19,8 @@
 | Roblox Studio | PlayerProfiles_Studio_v1 | строковый UserId |
 | Опубликованный сервер Roblox | PlayerProfiles_Live_v1 | строковый UserId |
 
+Рейтинги — OrderedDataStore `EggRanks_<Studio|Live>_<Cash|Speed|Playtime>_v1` (`WorldDisplays.server.luau`); при StudioMode=Mock в них ничего не пишется.
+
 Выбор определяется `RunService:IsStudio()`. Запуск опубликованного place внутри Studio всё равно использует тестовое хранилище. Данные игроков между этими двумя хранилищами не переносятся. Имена нельзя менять ради обычного обновления схемы: новое имя создаёт отдельную базу данных.
 
 По умолчанию StudioMode=Persistent. Для сохранений между Play требуется Game Settings → Security → Enable Studio Access to API Services. В текущем Studio доступ проверен и работает. При недоступном API игрок получает понятное сообщение; сервис не подменяет постоянное хранилище временной памятью и не запускает игру с пустым профилем.

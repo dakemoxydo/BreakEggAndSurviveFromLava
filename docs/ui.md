@@ -1,6 +1,6 @@
 # UI: контракт навигации и устройство
 
-Читать перед изменением UI, кнопок HUD, инвентаря или ввода. Состав предметов и переходы Backpack/база — в [inventory.md](inventory.md). Статус проверок — в [verification.md](verification.md).
+Для изменений UI и ввода. Предметы и переходы Backpack/база — в [inventory.md](inventory.md); проверки — в [verification.md](verification.md).
 
 ## Инварианты
 
@@ -95,7 +95,7 @@ AddPetSlot недоступна при нехватке Cash или достиж
 - **Pickaxe/Trails Shop:** один ряд карточек во всю высоту, прокрутка только горизонтальная, при открытии — к надетому предмету; баланс, Buy с ценой, Equip/Equipped, недостающая сумма. Купленный предмет можно экипировать при любом балансе. Полоса `xN Speed` / `N Power`, значение зелёное. Trails Shop — окно из Figma (ниже); Pickaxe Shop пока на `EquipmentShop`.
 - **Index:** Common — белая карточка; неизвестные виды — силуэты.
 - **Merge Pets:** выбор трёх питомцев одного вида и подтверждение — [inventory.md](inventory.md#окно-merge-pets).
-- **Rebirth** (`RebirthWindow.luau`, золотая шапка, 760×до 570): число перерождений, Income и Egg Luck «сейчас > после», полоса Cash до цены, строка о сбросе. Первое нажатие — красное «TAP AGAIN TO REBIRTH» на 3 s, второе отправляет `Rebirth`; без денег кнопка неактивна и пишет недостающую сумму. Вход — кнопка Rebirth широкого Figma-HUD.
+- **Rebirth:** [Figma-окно 975×668](ui-rebirth.md): реальные бонусы, плавная полоса Cash, пояснения сброса, подтверждение на 3 s и ReducedMotion. Вход — Rebirth широкого Figma-HUD; без шаблона — React fallback.
 - **UpgradeSatchel** учитывает Cash и максимальный уровень, показывает недостающую сумму.
 - **Offline Cash:** из Figma ([ui-figma.md](ui-figma.md)); React-окно: пачка денег с суммой, sunburst, Claim. Блок 2x Cash отключён (Unavailable). Claim закрывает окно после успешного ответа.
 
@@ -135,7 +135,7 @@ App объединяет изменения атрибутов в один от�
 | `src/shared/useToolDrag.luau`, `ToolDragPreview.luau` | Перенос указателем |
 | `src/shared/Settings.luau` | Громкость и видимость; громкость применяет Audio |
 | `src/shared/EquipmentShop.luau`, `AdventurePanels.luau` | Магазины оборудования, сумка, Merge |
-| `src/shared/FigmaTemplate.luau`, `FigmaHud.luau`, `TrailsShop.luau`, `*Window.luau` | Окна и HUD из Figma-шаблонов; `RebirthWindow` — кодом |
+| `src/shared/FigmaTemplate.luau`, `FigmaHud.luau`, `TrailsShop.luau`, `*Window.luau` | Окна и HUD из Figma-шаблонов; `RebirthWindow` — React fallback |
 | `src/shared/LavaTimer.luau` | Таймер фаз лавы в HUD |
 | `src/shared/OfflineCash.luau` | Окно офлайн-дохода без шаблона |
 | `src/shared/Theme.luau`, `UI.luau`, `Assets.luau` | Тема, поверхности, кнопки, переходы, изображения |

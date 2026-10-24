@@ -20,10 +20,12 @@ local Settings = require(script.Parent.Settings)
 local EquipmentShop = require(script.Parent.EquipmentShop)
 local TrailsShop = require(script.Parent.TrailsShop)
 local ShopWindow = require(script.Parent.ShopWindow)
+local IndexWindow = require(script.Parent.IndexWindow)
 local SettingsWindow = require(script.Parent.SettingsWindow)
 local OfflineWindow = require(script.Parent.OfflineWindow)
 local RewardsWindow = require(script.Parent.RewardsWindow)
 local RebirthWindow = require(script.Parent.RebirthWindow)
+local FigmaRebirthWindow = require(script.Parent.FigmaRebirthWindow)
 local Figma = require(script.Parent.FigmaTemplate)
 local FigmaHud = require(script.Parent.FigmaHud)
 local ModelPreview = require(script.Parent.ModelPreview)
@@ -218,9 +220,12 @@ local function App(props)
 	local width, height = viewport.X / scale, viewport.Y / scale
 	local short = height < 520
 	local narrow = width < 600
+	local figmaRebirth = screen == "Rebirth" and Figma.get("Rebirth") ~= nil
 	local windowW = compact and width - 32
 		or math.min(
-			(screen == "Settings" or screen == "Rebirth") and 760 or screen == "Offline Cash" and 900 or 1100,
+			(screen == "Settings" or screen == "Rebirth" and not figmaRebirth) and 760
+				or screen == "Offline Cash" and 900
+				or 1100,
 			-- Index stays between the HUD button columns.
 			width - (screen == "Index" and 580 or 460)
 		)
@@ -245,7 +250,7 @@ local function App(props)
 		headerH = 64
 	end
 	-- Rebirth content is short: the window hugs it instead of the shared 660 height.
-	if screen == "Rebirth" and not compact then
+	if screen == "Rebirth" and not compact and not figmaRebirth then
 		windowH = math.min(windowH, 570)
 		wy = math.max(64, (height - windowH) / 2 - 24)
 	end
@@ -1640,6 +1645,17 @@ local function App(props)
 				onAction = action,
 				onClose = close,
 			})
+		elseif screen == "Rebirth" and Figma.get("Rebirth") then
+			figmaWindow = e(FigmaRebirthWindow, {
+				width = windowW,
+				height = windowH,
+				data = data,
+				enabled = not closing,
+				busy = busy,
+				reduced = data.ReducedMotion,
+				onAction = action,
+				onClose = close,
+			})
 		elseif screen == "Rewards" and Figma.get("Rewards") then
 			figmaWindow = e(RewardsWindow, {
 				width = windowW,
@@ -1647,6 +1663,21 @@ local function App(props)
 				data = data,
 				enabled = not closing and not busy,
 				reduced = data.ReducedMotion,
+				onAction = action,
+				onClose = close,
+			})
+		elseif screen == "Index" and not compact and Figma.get("Index") then
+			figmaWindow = e(IndexWindow, {
+				width = windowW,
+				height = windowH,
+				discovered = decode(data.DiscoveredPets) or {},
+				discoveryKey = data.DiscoveredPets or "[]",
+				formatNumber = number,
+				claimed = data.CollectionRewardClaimed == true,
+				selection = indexSelection,
+				enabled = not closing and not busy,
+				reduced = data.ReducedMotion,
+				onSelect = setIndexSelection,
 				onAction = action,
 				onClose = close,
 			})
